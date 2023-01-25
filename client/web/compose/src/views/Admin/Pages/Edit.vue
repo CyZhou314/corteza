@@ -122,6 +122,65 @@
                   {{ $t('edit.visible') }}
                 </b-form-checkbox>
               </b-form-group>
+
+              <b-form-group
+                data-test-id="checkbox-show-sub-pages-in-sidebar"
+                class="d-flex"
+                switch
+              >
+                <b-form-checkbox
+                  v-model="a"
+                >
+                  {{ $t('showSubPages') }}
+                </b-form-checkbox>
+              </b-form-group>
+
+              <b-button
+                variant="light"
+                size="lg"
+                class="text-dark"
+                @click="showModal = true"
+              >
+                <!-- <font-awesome-icon
+                  :icon="['fas', 'plus']"
+                  class="mr-2"
+                /> -->
+                {{ $t('icon.set') }}
+              </b-button>
+              <b-modal
+                v-model="showModal"
+                size="lg"
+                ok-only
+                :title="$t('icon.configure')"
+                :ok-title="$t('label.saveAndClose')"
+                @ok="onModalSave"
+              >
+                <b-form-group
+                  :label="$t('icon.upload')"
+                >
+                  <uploader
+                    :endpoint="endpoint"
+                    :max-filesize="$s('compose.Page.Attachments.MaxSize', 100)"
+                    :accepted-files="$s('compose.Page.Attachments.Mimetypes', ['*/*'])"
+                    @uploaded="appendAttachment"
+                  />
+                </b-form-group>
+
+                <hr>
+
+                <!-- list of uploaded icons -->
+                <!-- <div
+                  class="p-2 h-100"
+                >
+                  <list-loader
+                    kind="page"
+                    :set="options.attachments"
+                    :namespace="namespace"
+                    :mode="options.mode"
+                    class="h-100"
+                  />
+                </div> -->
+              </b-modal>
             </b-form>
           </b-card>
         </b-col>
@@ -171,8 +230,10 @@ import { mapGetters, mapActions } from 'vuex'
 import EditorToolbar from 'corteza-webapp-compose/src/components/Admin/EditorToolbar'
 import PageTranslator from 'corteza-webapp-compose/src/components/Admin/Page/PageTranslator'
 import pages from 'corteza-webapp-compose/src/mixins/pages'
+import Uploader from 'corteza-webapp-compose/src/components/Public/Page/Attachment/Uploader'
 import { compose, NoID } from '@cortezaproject/corteza-js'
 import { handle } from '@cortezaproject/corteza-vue'
+import ListLoader from 'corteza-webapp-compose/src/components/Public/Page/Attachment/ListLoader'
 
 export default {
   i18nOptions: {
@@ -184,6 +245,8 @@ export default {
   components: {
     EditorToolbar,
     PageTranslator,
+    Uploader,
+    ListLoader,
   },
 
   mixins: [
@@ -206,6 +269,7 @@ export default {
     return {
       modulesList: [],
       page: new compose.Page(),
+      showModal: false,
     }
   },
 
@@ -250,6 +314,12 @@ export default {
       return this.hasChildren && this.page.canDeletePage && !this.page.deletedAt
     },
 
+    endpoint () {
+      return this.$ComposeAPI.pageUploadEndpoint({
+        namespaceID: this.namespace.namespaceID,
+        pageID: this.pageID,
+      })
+    },
   },
 
   watch: {
@@ -295,6 +365,16 @@ export default {
       this.deletePage({ ...this.page, strategy }).then(() => {
         this.$router.push({ name: 'admin.pages' })
       }).catch(this.toastErrorHandler(this.$t('notification:page.deleteFailed')))
+    },
+
+    appendAttachment ({ attachmentID } = {}) {
+      this.page.pageIcons.push(attachmentID)
+    },
+
+    onModalSave () {
+      // update icon
+      // update expand value
+      this.showModal = false
     },
   },
 }
