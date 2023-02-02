@@ -43,6 +43,20 @@
         >
           {{ $t('internal.signup.enabled') }}
         </b-form-checkbox>
+        <b-form-checkbox
+          v-model="settings['auth.internal.profile-photo.enabled-avatar']"
+          :value="true"
+          :unchecked-value="false"
+        >
+          {{ $t('internal.profile-photo.enabled-avatar') }}
+        </b-form-checkbox>
+        <b-form-checkbox
+          v-model="settings['auth.internal.profile-photo.enabled-initials']"
+          :value="true"
+          :unchecked-value="false"
+        >
+          {{ $t('internal.profile-photo.enabled-initials') }}
+        </b-form-checkbox>
       </b-form-group>
       <b-form-group
         label-cols="2"

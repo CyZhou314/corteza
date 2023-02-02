@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/cortezaproject/corteza/server/pkg/actionlog"
@@ -43,6 +44,7 @@ type (
 		Find(ctx context.Context, filter types.AttachmentFilter) (types.AttachmentSet, types.AttachmentFilter, error)
 		CreateSettingsAttachment(ctx context.Context, name string, size int64, fh io.ReadSeeker, labels map[string]string) (*types.Attachment, error)
 		CreateApplicationAttachment(ctx context.Context, name string, size int64, fh io.ReadSeeker, labels map[string]string) (*types.Attachment, error)
+		CreateAuthAttachment(ctx context.Context, name string, size int64, fh io.ReadSeeker, labels map[string]string) (*types.Attachment, error)
 		OpenOriginal(att *types.Attachment) (io.ReadSeekCloser, error)
 		OpenPreview(att *types.Attachment) (io.ReadSeekCloser, error)
 		DeleteByID(ctx context.Context, ID uint64) error
@@ -198,8 +200,51 @@ func (svc attachment) CreateApplicationAttachment(ctx context.Context, name stri
 	return att, svc.recordAction(ctx, aaProps, AttachmentActionCreate, err)
 }
 
+func (svc attachment) CreateAuthAttachment(ctx context.Context, name string, size int64, fh io.ReadSeeker, labels map[string]string) (att *types.Attachment, err error) {
+	var (
+		aaProps       = &attachmentActionProps{}
+		currentUserID = intAuth.GetIdentityFromContext(ctx).Identity()
+	)
+
+	// check the file type
+	ext := filepath.Ext(name)
+	if ext != ".jpg" && ext != ".jpeg" && ext != ".png" {
+		err = fmt.Errorf("invalid file type. only JPEG and PNG are allowed")
+		return
+	}
+
+	//check the file size
+	if size > 3000000 {
+		err = fmt.Errorf("file size is too large. Maximum file size is 3MB")
+		return
+	}
+
+	err = func() (err error) {
+		att = &types.Attachment{
+			OwnerID: currentUserID,
+			Name:    strings.TrimSpace(name),
+			Kind:    types.AttachmentKindAvatar,
+		}
+
+		aaProps.setAttachment(att)
+
+		if labels != nil {
+			att.Meta.Labels = labels
+		}
+
+		if err = svc.create(ctx, name, size, fh, att); err != nil {
+			return err
+		}
+
+		return err
+	}()
+
+	return att, svc.recordAction(ctx, aaProps, AttachmentActionCreate, err)
+}
+
 func (svc attachment) create(ctx context.Context, name string, size int64, fh io.ReadSeeker, att *types.Attachment) (err error) {
 	var (
+		avatar  image.Image
 		aaProps = &attachmentActionProps{}
 	)
 
@@ -227,6 +272,30 @@ func (svc attachment) create(ctx context.Context, name string, size int64, fh io
 
 	att.Url = svc.files.Original(att.ID, att.Meta.Original.Extension)
 	aaProps.setUrl(att.Url)
+
+	// process avatar
+	if att.Kind == types.AttachmentKindAvatar {
+		if avatar, err = imaging.Decode(fh); err != nil {
+			return fmt.Errorf("could not decode original avatar: %w", err)
+		}
+
+		avatar = imaging.Resize(avatar, 300, 300, imaging.Lanczos)
+
+		var buf = &bytes.Buffer{}
+		if err = imaging.Encode(buf, avatar, imaging.JPEG); err != nil {
+			return
+		}
+
+		if err = svc.files.Save(att.Url, buf); err != nil {
+			return AttachmentErrFailedToStoreFile(aaProps).Wrap(err)
+		}
+
+		if err = store.CreateAttachment(ctx, svc.store, att); err != nil {
+			return
+		}
+
+		return nil
+	}
 
 	if err = svc.files.Save(att.Url, fh); err != nil {
 		return AttachmentErrFailedToStoreFile(aaProps).Wrap(err)

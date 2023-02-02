@@ -637,6 +637,10 @@ func updateAuthSettings(svc authServicer, current *types.AppSettings) {
 			BackgroundImageSrcUrl: setAuthBgImageSrcUrl(current.Auth.UI.BackgroundImageSrc),
 			Styles:                setAuthBgStyles(current.Auth.UI.Styles),
 		},
+		ProfilePhoto: authSettings.ProfilePhoto{
+			EnabledAvatar:   current.Auth.Internal.ProfilePhoto.EnabledAvatar,
+			EnabledInitials: current.Auth.Internal.ProfilePhoto.EnabledInitials,
+		},
 	}
 
 	for _, p := range current.Auth.External.Providers {

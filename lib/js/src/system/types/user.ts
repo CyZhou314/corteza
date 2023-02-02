@@ -11,6 +11,10 @@ interface PartialUser extends Partial<Omit<User, 'createdAt' | 'updatedAt' | 'de
 interface UserMeta {
   preferredLanguage?: string;
   securityPolicy?: SecurityPolicy;
+  avatarID?: string;
+  avatarInitials?: string;
+  avatarInitialsTextColor?: string;
+  avatarInitialsBgColor?: string;
 }
 
 interface SecurityPolicy {
@@ -38,6 +42,10 @@ export class User {
         enforcedTOTP: false,
       },
     },
+    avatarID: NoID,
+    avatarInitials: '',
+    avatarInitialsTextColor: '',
+    avatarInitialsBgColor: '',
   }
 
   public canGrant = false

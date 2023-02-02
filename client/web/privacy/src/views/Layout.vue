@@ -9,11 +9,12 @@
           helpDocumentation: $t('navigation:help.documentation'),
           helpFeedback: $t('navigation:help.feedback'),
           helpVersion: $t('navigation:help.version'),
-          userSettingsLoggedInAs: $t('navigation:userSettings.loggedInAs', { user }),
+          userSettingsLoggedInAs: $t('navigation:userSettings.loggedInAs', { username }),
           userSettingsProfile: $t('navigation:userSettings.profile'),
           userSettingsChangePassword: $t('navigation:userSettings.changePassword'),
           userSettingsLogout: $t('navigation:userSettings.logout'),
         }"
+        :user="user"
       >
         <template #title>
           <portal-target
@@ -102,7 +103,7 @@ export default {
   computed: {
     user () {
       const { user } = this.$auth
-      return user.name || user.handle || user.email || ''
+      return user
     },
 
     icon () {
@@ -111,6 +112,11 @@ export default {
 
     logo () {
       return this.$Settings.attachment('ui.mainLogo')
+    },
+
+    username () {
+      const { user } = this.$auth
+      return user.name || user.handle || user.email || ''
     },
   },
 

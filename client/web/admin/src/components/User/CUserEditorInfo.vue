@@ -49,6 +49,86 @@
       </b-form-group>
 
       <b-form-group
+        :label="$t('avatar.title')"
+        label-cols="2"
+      >
+        <b-button
+          v-if="uploadedAvatar('profile-photo-avatar')"
+          variant="link"
+          class="d-flex align-items-top text-dark p-1"
+          @click="$emit('resetAttachment', 'profile-photo-avatar')"
+        >
+          <font-awesome-icon :icon="['far', 'trash-alt']" />
+        </b-button>
+
+        <c-uploader-with-preview
+          :value="uploadedAvatar('profile-photo-avatar')"
+          :endpoint="`/users/${user.userID}/avatar`"
+          :labels="$t('avatar.uploader', { returnObjects: true })"
+          class="w-50"
+          @upload="$emit('onUpload')"
+          @clear="$emit('resetAttachment', 'profile-photo-avatar')"
+        />
+      </b-form-group>
+
+      <b-form-group
+        :label="$t('avatarInitial.title')"
+        label-cols="2"
+      >
+        <div class="row justify-content-center">
+          <div class="col">
+            <b-form-input
+              v-model="user.meta.avatarInitials"
+              data-test-id="input-handle"
+            />
+          </div>
+          <div class="col">
+            <div
+              :style="{
+                height: '4rem',
+                width: '4rem',
+                color: user.meta.avatarInitialsTextColor,
+                backgroundColor: user.meta.avatarInitialsBgColor
+              }"
+              class="mr-3 d-flex justify-content-center align-items-center rounded-circle"
+            >
+              <span style="font-size: 1.5rem; line-height: 2rem; letter-spacing: 0.05em;">{{ user.meta.avatarInitials }}</span>
+            </div>
+          </div>
+        </div>
+
+        <b-form-invalid-feedback :state="handleState">
+          {{ $t('invalid-handle-characters') }}
+        </b-form-invalid-feedback>
+      </b-form-group>
+
+      <b-form-group
+        :label="$t('avatarInitial.color')"
+        label-cols="2"
+        class="mt-3"
+      >
+        <b-form-input
+          v-model="user.meta.avatarInitialsTextColor"
+          type="color"
+          class="col-6"
+          data-test-id="input-handle"
+        />
+      </b-form-group>
+
+      <b-form-group
+        :label="$t('avatarInitial.backgroundColor')"
+        label-cols="2"
+        class="mt-3"
+      >
+        <b-form-input
+          v-model="user.meta.avatarInitialsBgColor"
+          type="color"
+          class="col-6"
+          data-test-id="input-handle"
+        />
+      </b-form-group>
+
+      <b-form-group
         v-if="user.updatedAt"
         :label="$t('updatedAt')"
         label-cols="2"
@@ -182,6 +262,7 @@ import { NoID } from '@cortezaproject/corteza-js'
 import { handle } from '@cortezaproject/corteza-vue'
 import ConfirmationToggle from 'corteza-webapp-admin/src/components/ConfirmationToggle'
 import CSubmitButton from 'corteza-webapp-admin/src/components/CSubmitButton'
+import CUploaderWithPreview from 'corteza-webapp-admin/src/components/CUploaderWithPreview'
 
 export default {
   name: 'CUserEditorInfo',
@@ -194,6 +275,7 @@ export default {
   components: {
     ConfirmationToggle,
     CSubmitButton,
+    CUploaderWithPreview,
   },
 
   props: {
@@ -261,6 +343,21 @@ export default {
 
     suspendButtonStatusCypressId () {
       return `button-${this.getSuspendStatus.toLowerCase()}`
+    },
+  },
+
+  methods: {
+    uploadedAvatar (name) {
+      const attachmentID = this.user.meta.avatarID
+
+      return (
+        this.$SystemAPI.baseURL +
+            this.$SystemAPI.attachmentOriginalEndpoint({
+              attachmentID,
+              kind: 'avatar',
+              name,
+            })
+      )
     },
   },
 }

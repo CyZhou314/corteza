@@ -11,6 +11,14 @@ template:
     handle:
       label: Handle
       placeholder: Short name, nickname or handle
+    avatar:
+      label: Avatar
+      delete: Delete
+      update: Update
+    avatar-initial:
+      label: Avatar initial
+      color: Avatar initial color
+      background-color: Avatar initial background color
     preferred-language:
       label: Preferred language
     buttons:

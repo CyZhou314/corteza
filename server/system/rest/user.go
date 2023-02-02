@@ -34,6 +34,7 @@ type (
 		user service.UserService
 		role service.RoleService
 		cred userCredentials
+		att  service.AttachmentService
 
 		userAc userAccessController
 		roleAc roleAccessController
@@ -86,6 +87,7 @@ func (User) New() *User {
 		user: service.DefaultUser,
 		role: service.DefaultRole,
 		cred: service.DefaultCredentials,
+		att:  service.DefaultAttachment,
 
 		userAc: service.DefaultAccessControl,
 		roleAc: service.DefaultAccessControl,
@@ -153,10 +155,54 @@ func (ctrl User) Update(ctx context.Context, r *request.UserUpdate) (interface{}
 		Handle: r.Handle,
 		Kind:   r.Kind,
 		Labels: r.Labels,
+		Meta:   r.Meta,
 	}
 
 	res, err := ctrl.user.Update(ctx, user)
 	return ctrl.makePayload(ctx, res, err)
+}
+
+func (ctrl User) ProfileAvatar(ctx context.Context, r *request.UserProfileAvatar) (interface{}, error) {
+	u, err := ctrl.user.FindByID(ctx, r.UserID)
+	if err != nil {
+		return nil, err
+	}
+
+	file, err := r.Upload.Open()
+	if err != nil {
+		return nil, err
+	}
+
+	defer file.Close()
+
+	if u.Meta.AvatarID != 0 {
+		err = ctrl.att.DeleteByID(ctx, u.Meta.AvatarID)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	att, err := ctrl.att.CreateAuthAttachment(
+		ctx,
+		r.Upload.Filename,
+		r.Upload.Size,
+		file,
+		map[string]string{"key": "profile-photo-avatar"},
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	u.Meta.AvatarID = att.ID
+
+	u, err = ctrl.user.Update(ctx, u)
+
+	return ctrl.makePayload(ctx, u, err)
+}
+
+func (ctrl User) DeleteAvatar(ctx context.Context, r *request.UserDeleteAvatar) (interface{}, error) {
+	return api.OK(), ctrl.user.DeleteAvatar(ctx, r.UserID)
 }
 
 type (

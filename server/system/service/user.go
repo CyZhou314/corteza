@@ -45,6 +45,8 @@ type (
 		//
 		// It also does negative caching by assigning empty User structs
 		preloaded map[string]*types.User
+
+		att AttachmentService
 	}
 
 	synteticUserDataGen interface {
@@ -99,6 +101,8 @@ type (
 
 		DeleteAuthTokensByUserID(ctx context.Context, userID uint64) (err error)
 		DeleteAuthSessionsByUserID(ctx context.Context, userID uint64) (err error)
+
+		DeleteAvatar(ctx context.Context, id uint64) error
 	}
 )
 
@@ -116,6 +120,7 @@ func User(opt UserOptions) *user {
 		opt: opt,
 
 		preloaded: make(map[string]*types.User),
+		att:       DefaultAttachment,
 	}
 }
 
@@ -1034,4 +1039,40 @@ func toLabeledUsers(set []*types.User) []label.LabeledResource {
 	}
 
 	return ll
+}
+
+// DeleteAvatar will delete user's avatar
+func (svc user) DeleteAvatar(ctx context.Context, userID uint64) (err error) {
+	var (
+		u       *types.User
+		uaProps = &userActionProps{user: &types.User{ID: userID}}
+	)
+
+	err = func() (err error) {
+		if u, err = loadUser(ctx, svc.store, userID); err != nil {
+			return
+		}
+
+		if u.Kind == types.SystemUser {
+			return UserErrNotAllowedToDelete()
+		}
+
+		if !svc.ac.CanUpdateUser(ctx, u) {
+			return UserErrNotAllowedToDelete()
+		}
+
+		if err = svc.att.DeleteByID(ctx, u.Meta.AvatarID); err != nil {
+			return err
+		}
+
+		u.Meta.AvatarID = 0
+
+		if err = store.UpdateUser(ctx, svc.store, u); err != nil {
+			return
+		}
+
+		return nil
+	}()
+
+	return svc.recordAction(ctx, uaProps, UserActionDeleteAvatar, err)
 }

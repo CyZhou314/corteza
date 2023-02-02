@@ -12,11 +12,12 @@
           helpDocumentation: $t('help.documentation'),
           helpFeedback: $t('help.feedback'),
           helpVersion: $t('help.version'),
-          userSettingsLoggedInAs: $t('userSettings.loggedInAs', { user }),
+          userSettingsLoggedInAs: $t('userSettings.loggedInAs', { username }),
           userSettingsProfile: $t('userSettings.profile'),
           userSettingsChangePassword: $t('userSettings.changePassword'),
           userSettingsLogout: $t('userSettings.logout'),
         }"
+        :user="user"
       >
         <template #help-dropdown>
           <portal-target name="topbar-help-dropdown" />
@@ -81,6 +82,11 @@ export default {
     },
 
     user () {
+      const { user } = this.$auth
+      return user
+    },
+
+    username () {
       const { user } = this.$auth
       return user.name || user.handle || user.email || ''
     },

@@ -50,6 +50,8 @@
       @status="onStatusChange"
       @patch="onPatch"
       @sessionsRevoke="onSessionsRevoke"
+      @onUpload="onAvatarUpload"
+      @resetAttachment="onResetAvatar"
     />
 
     <c-user-editor-roles
@@ -450,6 +452,22 @@ export default {
         .finally(() => {
           this.decLoader()
         })
+    },
+
+    onAvatarUpload () {
+      this.fetchUser()
+    },
+
+    onResetAvatar () {
+      const userID = this.userID
+
+      this.$SystemAPI.userDeleteAvatar({ userID })
+        .then(() => {
+          this.fetchUser()
+
+          this.toastSuccess(this.$t('notification:user.avatarDelete.success'))
+        })
+        .catch(this.toastErrorHandler(this.$t('notification:user.avatarDelete.error')))
     },
   },
 }

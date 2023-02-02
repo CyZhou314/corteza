@@ -9,11 +9,12 @@
           helpDocumentation: $t('help.documentation'),
           helpFeedback: $t('help.feedback'),
           helpVersion: $t('help.version'),
-          userSettingsLoggedInAs: $t('userSettings.loggedInAs', { user }),
+          userSettingsLoggedInAs: $t('userSettings.loggedInAs', { username }),
           userSettingsProfile: $t('userSettings.profile'),
           userSettingsChangePassword: $t('userSettings.changePassword'),
           userSettingsLogout: $t('userSettings.logout'),
         }"
+        :user="user"
       >
         <template #title>
           {{ $t('discovery') }}
@@ -83,7 +84,7 @@ export default {
   computed: {
     user () {
       const { user } = this.$auth
-      return user.name || user.handle || user.email || ''
+      return user
     },
 
     icon () {
@@ -92,6 +93,11 @@ export default {
 
     logo () {
       return this.$Settings.attachment('ui.mainLogo')
+    },
+
+    username () {
+      const { user } = this.$auth
+      return user.name || user.handle || user.email || ''
     },
   },
 

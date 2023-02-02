@@ -1052,6 +1052,7 @@ export default class System {
       email,
       name,
       handle,
+      meta,
       kind,
       labels,
     } = (a as KV) || {}
@@ -1075,6 +1076,7 @@ export default class System {
       email,
       name,
       handle,
+      meta,
       kind,
       labels,
     }
@@ -1476,6 +1478,65 @@ export default class System {
       credentialsID,
     } = a || {}
     return `/users/${userID}/credentials/${credentialsID}`
+  }
+
+  // User&#x27;s profile avatar
+  async userProfileAvatar (a: KV, extra: AxiosRequestConfig = {}): Promise<KV> {
+    const {
+      userID,
+      upload,
+      width,
+      height,
+    } = (a as KV) || {}
+    if (!userID) {
+      throw Error('field userID is empty')
+    }
+    const cfg: AxiosRequestConfig = {
+      ...extra,
+      method: 'post',
+      url: this.userProfileAvatarEndpoint({
+        userID,
+      }),
+    }
+    cfg.data = {
+      upload,
+      width,
+      height,
+    }
+    return this.api().request(cfg).then(result => stdResolve(result))
+  }
+
+  userProfileAvatarEndpoint (a: KV): string {
+    const {
+      userID,
+    } = a || {}
+    return `/users/${userID}/avatar`
+  }
+
+  // delete user&#x27;s profile avatar
+  async userDeleteAvatar (a: KV, extra: AxiosRequestConfig = {}): Promise<KV> {
+    const {
+      userID,
+    } = (a as KV) || {}
+    if (!userID) {
+      throw Error('field userID is empty')
+    }
+    const cfg: AxiosRequestConfig = {
+      ...extra,
+      method: 'delete',
+      url: this.userDeleteAvatarEndpoint({
+        userID,
+      }),
+    }
+
+    return this.api().request(cfg).then(result => stdResolve(result))
+  }
+
+  userDeleteAvatarEndpoint (a: KV): string {
+    const {
+      userID,
+    } = a || {}
+    return `/users/${userID}/avatar`
   }
 
   // Export users

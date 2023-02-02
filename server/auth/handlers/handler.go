@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/gob"
 	"fmt"
+	"github.com/cortezaproject/corteza/server/system/service"
 	"html/template"
 	"io"
 	"net/http"
@@ -121,6 +122,7 @@ type (
 		Opt                options.AuthOpt
 		Settings           *settings.Settings
 		SamlSPService      *saml.SamlSPService
+		Attachment         service.AttachmentService
 	}
 
 	handlerFn func(req *request.AuthReq) error

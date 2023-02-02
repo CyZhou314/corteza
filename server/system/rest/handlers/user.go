@@ -36,6 +36,8 @@ type (
 		SessionsRemove(context.Context, *request.UserSessionsRemove) (interface{}, error)
 		ListCredentials(context.Context, *request.UserListCredentials) (interface{}, error)
 		DeleteCredentials(context.Context, *request.UserDeleteCredentials) (interface{}, error)
+		ProfileAvatar(context.Context, *request.UserProfileAvatar) (interface{}, error)
+		DeleteAvatar(context.Context, *request.UserDeleteAvatar) (interface{}, error)
 		Export(context.Context, *request.UserExport) (interface{}, error)
 		Import(context.Context, *request.UserImport) (interface{}, error)
 	}
@@ -59,6 +61,8 @@ type (
 		SessionsRemove    func(http.ResponseWriter, *http.Request)
 		ListCredentials   func(http.ResponseWriter, *http.Request)
 		DeleteCredentials func(http.ResponseWriter, *http.Request)
+		ProfileAvatar     func(http.ResponseWriter, *http.Request)
+		DeleteAvatar      func(http.ResponseWriter, *http.Request)
 		Export            func(http.ResponseWriter, *http.Request)
 		Import            func(http.ResponseWriter, *http.Request)
 	}
@@ -338,6 +342,38 @@ func NewUser(h UserAPI) *User {
 
 			api.Send(w, r, value)
 		},
+		ProfileAvatar: func(w http.ResponseWriter, r *http.Request) {
+			defer r.Body.Close()
+			params := request.NewUserProfileAvatar()
+			if err := params.Fill(r); err != nil {
+				api.Send(w, r, err)
+				return
+			}
+
+			value, err := h.ProfileAvatar(r.Context(), params)
+			if err != nil {
+				api.Send(w, r, err)
+				return
+			}
+
+			api.Send(w, r, value)
+		},
+		DeleteAvatar: func(w http.ResponseWriter, r *http.Request) {
+			defer r.Body.Close()
+			params := request.NewUserDeleteAvatar()
+			if err := params.Fill(r); err != nil {
+				api.Send(w, r, err)
+				return
+			}
+
+			value, err := h.DeleteAvatar(r.Context(), params)
+			if err != nil {
+				api.Send(w, r, err)
+				return
+			}
+
+			api.Send(w, r, value)
+		},
 		Export: func(w http.ResponseWriter, r *http.Request) {
 			defer r.Body.Close()
 			params := request.NewUserExport()
@@ -393,6 +429,8 @@ func (h User) MountRoutes(r chi.Router, middlewares ...func(http.Handler) http.H
 		r.Delete("/users/{userID}/sessions", h.SessionsRemove)
 		r.Get("/users/{userID}/credentials", h.ListCredentials)
 		r.Delete("/users/{userID}/credentials/{credentialsID}", h.DeleteCredentials)
+		r.Post("/users/{userID}/avatar", h.ProfileAvatar)
+		r.Delete("/users/{userID}/avatar", h.DeleteAvatar)
 		r.Get("/users/export/{filename}.zip", h.Export)
 		r.Post("/users/import", h.Import)
 	})

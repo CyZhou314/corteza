@@ -1,9 +1,11 @@
 {{ template "inc_header.html.tpl" set . "activeNav" "profile" }}
 <div class="card-body p-0">
 	<h4 class="card-title p-3 border-bottom">{{ tr "profile.template.title" }}</h4>
+
 	<form
 		method="POST"
 		action="{{ links.Profile }}"
+        enctype="multipart/form-data"
 		class="p-3"
 	>
 		{{ .csrfField }}
@@ -17,6 +19,62 @@
 			{{ .form.error }}
 		</div>
 		{{ end }}
+
+        <div class="mb-3">
+            <label for="profileFormHandle">{{ tr "profile.template.form.avatar.label" }}</label>
+            <div class="d-block">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <img style="height: 4rem; width: 4rem;" class="rounded-circle" src="{{ .form.avatarUrl }}" alt="Profile Photo">
+                    </div>
+                    <div>
+                        <button
+                            name="avatar-delete"
+                            value="avatar-delete"
+                            class="btn btn-danger"
+                        >
+                        {{ tr "profile.template.form.avatar.delete" }}
+                        </button>
+
+                        <label for="avatar" class="p-2 ml-3 bg-light text-dark rounded">
+                        {{ tr "profile.template.form.avatar.update" }}
+                        </label>
+                        <input id="avatar" name="avatar" type="file" class="sr-only" accept="image/*">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="mb-3">
+            <label for="avatarInitials">{{ tr "profile.template.form.avatar-initial.label" }}</label>
+            <div class="d-block">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div>
+                        <input class="col-10 form-control" type="text" id="avatarInitials" name="avatar-initials" value="{{ .form.avatarInitial }}">
+                    </div>
+
+                    <div>
+                        <div
+                            style="height: 4rem; width: 4rem; color: {{ .form.initialTextColor }}; background-color: {{ .form.initialBgColor }} ;" 
+                            class="d-flex justify-content-center align-items-center rounded-circle"
+                        >
+                            <span style="font-size: 1.5rem; line-height: 2rem; letter-spacing: 0.05em;">{{ .form.avatarInitial }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="initialColor">{{ tr "profile.template.form.avatar-initial.color" }}</label>
+            <input type="color" id="initialColor" class="col-6 form-control" value="{{ .form.initialTextColor }}" name="initial-color">
+        </div>
+
+        <div class="mb-3">    
+            <label for="customColor">{{ tr "profile.template.form.avatar-initial.background-color" }}</label>
+            <input type="color" id="customColor" class="col-6 form-control" value="{{ .form.initialBgColor }}" name="initial-bg">
+        </div>
 
         <div class="mb-3">
             <label for="profileFormEmail">{{ tr "profile.template.form.email.label" }}</label>

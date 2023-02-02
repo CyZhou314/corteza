@@ -74,6 +74,14 @@ type (
 				SplitCredentialsCheck bool `json:"-" kv:"split-credentials-check"`
 
 				PasswordConstraints PasswordConstraints `kv:"password-constraints" json:"passwordConstraints"`
+
+				ProfilePhoto struct {
+					// Can users set their own profile photo
+					EnabledAvatar bool `json:"enabled-avatar"`
+
+					// Can users set their own profile Initials
+					EnabledInitials bool `json:"enabled-initials"`
+				} `kv:"profile-photo" json:"profile-photo"`
 			} `json:"internal"`
 
 			External struct {

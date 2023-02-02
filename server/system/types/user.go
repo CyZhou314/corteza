@@ -37,8 +37,14 @@ type (
 	}
 
 	UserMeta struct {
-		// @todo remove, obsolete.
-		Avatar string `json:"avatar,omitempty"`
+		// User's profile avatar photo attachment ID
+		AvatarID uint64 `json:"avatarID,string"`
+
+		// User's profile avatar custom initials
+		AvatarInitials string `json:"avatarInitials,omitempty"`
+		// User's profile Initial background and text color
+		AvatarInitialsTextColor string `json:"avatarInitialsTextColor,omitempty"`
+		AvatarInitialsBgColor   string `json:"avatarInitialsBgColor,omitempty"`
 
 		PreferredLanguage string `json:"preferredLanguage"`
 
@@ -157,3 +163,13 @@ func (u *User) Clone() *User {
 
 func (meta *UserMeta) Scan(src any) error           { return sql.ParseJSON(src, meta) }
 func (meta *UserMeta) Value() (driver.Value, error) { return json.Marshal(meta) }
+
+func ParseUserMeta(ss []string) (p *UserMeta, err error) {
+	p = &UserMeta{}
+
+	if len(ss) == 0 {
+		return
+	}
+
+	return p, json.Unmarshal([]byte(ss[0]), &p)
+}

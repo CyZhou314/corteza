@@ -107,15 +107,38 @@
       data-test-id="dropdown-profile"
       data-v-onboarding="profile"
       size="lg"
-      variant="outline-light"
+      variant="light-outline"
       class="nav-user-icon"
-      toggle-class="nav-icon text-decoration-none text-dark rounded-circle border"
+      toggle-class="nav-icon text-decoration-none text-dark rounded-circle"
+      :style="{
+        'border-radius': '50%',
+
+        'display': 'flex',
+        'justify-content': 'center',
+        'align-items': 'center',
+        'background-color': user.meta.avatarInitials && avatarID ? `${user.meta.avatarInitialsBgColor}` : '',
+
+        'background-image': user.meta.avatarID ? `url(${profileAvatarUrl})` : 'none',
+        'background-size': 'cover',
+        'background-repeat': 'no-repeat',
+        'background-position': 'center',
+        }"
       menu-class="topbar-dropdown-menu border-0 shadow-sm text-dark font-weight-bold mt-2"
       right
       no-caret
     >
       <template #button-content>
+        <div v-if="!avatarID"></div>
+        <div v-else-if="user.meta.avatarInitials" :style="{
+          color: user.meta.avatarInitialsTextColor,
+        }">
+          <span :style="{
+            lineHeight: '2rem',
+            letterSpacing: '0.05em'
+          }">{{ user.meta.avatarInitials }}</span>
+        </div>
         <div
+          v-else
           class="d-flex align-items-center justify-content-center"
         >
           <font-awesome-icon
@@ -199,6 +222,11 @@ export default {
       type: Object,
       required: true,
     },
+
+    user: {
+      Object,
+      required: true
+    }
   },
 
   computed: {
@@ -239,6 +267,14 @@ export default {
       /* eslint-disable no-undef */
       return VERSION
     },
+
+    profileAvatarUrl () {
+      return `${this.$SystemAPI.baseURL}/attachment/avatar/${this.user.meta.avatarID}/original/profile-photo-avatar`
+    },
+
+    avatarID () {
+      return this.user.meta.avatarID === "0"
+    }
   }
 }
 </script>
@@ -275,6 +311,15 @@ $nav-user-icon-size: 50px;
 .topbar-dropdown-menu {
   max-height: 80vh;
   overflow-y: auto;
+}
+
+.btn-outline-light:hover {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.btn {
+
 }
 
 .spacer {

@@ -561,6 +561,11 @@ endpoints:
         type: string
         required: false
         title: Handle
+      - name: meta
+        type: "*types.UserMeta"
+        parser: "types.ParseUserMeta"
+        required: false
+        title: User Meta
       - name: kind
         type: types.UserKind
         required: false
@@ -730,6 +735,39 @@ endpoints:
       path:
        - { type: uint64, name: userID,        required: true, title: ID }
        - { type: uint64, name: credentialsID, required: true, title: Credentials ID }
+
+  - name: profileAvatar
+    method: POST
+    title: User's profile avatar
+    path: "/{userID}/avatar"
+    parameters:
+      path:
+        - type: uint64
+          name: userID
+          required: true
+          title: User ID
+      post:
+        - name: upload
+          type: "*multipart.FileHeader"
+          title: Avatar to upload
+        - name: width
+          type: uint
+          title: Avatar width dimension
+          required: false
+        - name: height
+          type: uint
+          title: Avatar height dimension
+          required: false
+  - name: deleteAvatar
+    method: DELETE
+    title: delete user's profile avatar
+    path: "/{userID}/avatar"
+    parameters:
+      path:
+        - type: uint64
+          name: userID
+          required: true
+          title: User ID
 
   - name: export
     method: GET

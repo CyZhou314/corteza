@@ -13,6 +13,7 @@ type (
 		Saml                      SAML
 		MultiFactor               MultiFactor
 		BackgroundUI              BackgroundUI
+		ProfilePhoto              ProfilePhoto
 	}
 
 	SAML struct {
@@ -85,6 +86,11 @@ type (
 	BackgroundUI struct {
 		BackgroundImageSrcUrl string
 		Styles                string
+	}
+
+	ProfilePhoto struct {
+		EnabledAvatar   bool
+		EnabledInitials bool
 	}
 )
 
