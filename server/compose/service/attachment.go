@@ -59,6 +59,7 @@ type (
 		FindByID(ctx context.Context, namespaceID, attachmentID uint64) (*types.Attachment, error)
 		Find(ctx context.Context, filter types.AttachmentFilter) (types.AttachmentSet, types.AttachmentFilter, error)
 		CreatePageAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker, pageID uint64) (*types.Attachment, error)
+		CreatePageIconAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker, pageID uint64) (*types.Attachment, error)
 		CreateRecordAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker, moduleID, recordID uint64, fieldName string) (*types.Attachment, error)
 		CreateNamespaceAttachment(ctx context.Context, name string, size int64, fh io.ReadSeeker) (*types.Attachment, error)
 		OpenOriginal(att *types.Attachment) (io.ReadSeekCloser, error)
@@ -163,7 +164,7 @@ func (svc attachment) DeleteByID(ctx context.Context, namespaceID, attachmentID 
 	return svc.recordAction(ctx, aProps, AttachmentActionDelete, err)
 }
 
-//func (svc attachment) findNamespaceByID(namespaceID uint64) (ns *types.Namespace, err error) {
+// func (svc attachment) findNamespaceByID(namespaceID uint64) (ns *types.Namespace, err error) {
 //	if namespaceID == 0 {
 //		return nil, AttachmentErrInvalidNamespaceID()
 //	}
@@ -178,9 +179,9 @@ func (svc attachment) DeleteByID(ctx context.Context, namespaceID, attachmentID 
 //	}
 //
 //	return ns, nil
-//}
+// }
 //
-//func (svc attachment) findPageByID(namespaceID, pageID uint64) (p *types.Page, err error) {
+// func (svc attachment) findPageByID(namespaceID, pageID uint64) (p *types.Page, err error) {
 //	if pageID == 0 {
 //		return nil, AttachmentErrInvalidPageID()
 //	}
@@ -195,9 +196,9 @@ func (svc attachment) DeleteByID(ctx context.Context, namespaceID, attachmentID 
 //	}
 //
 //	return p, nil
-//}
+// }
 //
-//func (svc attachment) findModuleByID(namespaceID, moduleID uint64) (m *types.Module, err error) {
+// func (svc attachment) findModuleByID(namespaceID, moduleID uint64) (m *types.Module, err error) {
 //	if moduleID == 0 {
 //		return nil, AttachmentErrInvalidModuleID()
 //	}
@@ -212,9 +213,9 @@ func (svc attachment) DeleteByID(ctx context.Context, namespaceID, attachmentID 
 //	}
 //
 //	return m, nil
-//}
+// }
 //
-//func (svc attachment) findRecordByID(m *types.Module, recordID uint64) (r *types.Record, err error) {
+// func (svc attachment) findRecordByID(m *types.Module, recordID uint64) (r *types.Record, err error) {
 //	if recordID == 0 {
 //		return nil, AttachmentErrInvalidRecordID()
 //	}
@@ -229,7 +230,7 @@ func (svc attachment) DeleteByID(ctx context.Context, namespaceID, attachmentID 
 //	}
 //
 //	return r, nil
-//}
+// }
 
 func (svc attachment) OpenOriginal(att *types.Attachment) (io.ReadSeekCloser, error) {
 	if len(att.Url) == 0 {
@@ -309,6 +310,71 @@ func (svc attachment) CreatePageAttachment(ctx context.Context, namespaceID uint
 
 	return att, svc.recordAction(ctx, aProps, AttachmentActionCreate, err)
 
+}
+
+// todo: refactor & add handler to handle both page icon and attachments
+func (svc attachment) CreatePageIconAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker, pageID uint64) (att *types.Attachment, err error) {
+	var (
+		ns *types.Namespace
+		p  *types.Page
+
+		aProps = &attachmentActionProps{
+			namespace: &types.Namespace{ID: namespaceID},
+			page:      &types.Page{ID: pageID},
+		}
+	)
+
+	err = store.Tx(ctx, svc.store, func(ctx context.Context, s store.Storer) (err error) {
+		if size == 0 {
+			return AttachmentErrNotAllowedToCreateEmptyAttachment()
+		}
+
+		ns, p, err = loadPageCombo(ctx, s, namespaceID, pageID)
+		if err != nil {
+			return err
+		}
+
+		aProps.setNamespace(ns)
+		aProps.setPage(p)
+
+		if !svc.ac.CanUpdatePage(ctx, p) {
+			return AttachmentErrNotAllowedToUpdatePage()
+		}
+
+		{
+			// Verify size and type of the uploaded page attachment
+			// Max size & allowed mime-types are pulled from the current settings
+			// Todo: add settings for icons
+			var (
+			// maxSize      = int64(systemService.CurrentSettings.Compose.Page.Attachments.MaxSize) * megabyte
+			// allowedTypes = systemService.CurrentSettings.Compose.Page.Attachments.Mimetypes
+			// mimeType     *mimetype.MIME
+			)
+
+			// if maxSize > 0 && maxSize < size {
+			// 	return AttachmentErrTooLarge().Apply(
+			// 		errors.Meta("size", size),
+			// 		errors.Meta("maxSize", maxSize),
+			// 	)
+			// }
+
+			// if mimeType, err = svc.extractMimetype(fh); err != nil {
+			// 	return err
+			// } else if !svc.checkMimeType(mimeType, allowedTypes...) {
+			// 	return AttachmentErrNotAllowedToUploadThisType()
+			// }
+		}
+
+		att = &types.Attachment{
+			NamespaceID: namespaceID,
+			Name:        strings.TrimSpace(name),
+			Kind:        types.PageIconAttachment,
+		}
+
+		return svc.create(ctx, s, name, size, fh, att)
+	})
+
+	return att, svc.recordAction(ctx, aProps, AttachmentActionCreate, err)
 }
 
 func (svc attachment) CreateRecordAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker, moduleID, recordID uint64, fieldName string) (att *types.Attachment, err error) {

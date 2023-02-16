@@ -98,14 +98,14 @@ type (
 
 		Buttons *PageButtonConfig `json:"buttons,omitempty"`
 
-		//// Example how page-config structure can evolve in the future
-		//Views []struct {
+		// // Example how page-config structure can evolve in the future
+		// Views []struct {
 		//	// what kind of output is this view intended for (screen, mobile...?)
 		//	Output string
 		//
 		//	// Migrated page blocks, might be replaced someday with a more complex structure
 		//	Blocks []PageBlock
-		//}
+		// }
 	}
 
 	PageConfigIcon struct {
@@ -127,7 +127,7 @@ type (
 		// Type: "svg"
 		// SRC contains raw SVG document
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// //////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Other types that might be implemented in the future:
 		// "attachment"
 		// Reference (ID) to an existing attachment in local Corteza instance is expected
@@ -166,6 +166,7 @@ type (
 	}
 
 	PageChildrenDeleteStrategy string
+	PageIconType               string
 )
 
 const (
@@ -173,6 +174,24 @@ const (
 	PageChildrenOnDeleteForce   PageChildrenDeleteStrategy = "force"
 	PageChildrenOnDeleteRebase  PageChildrenDeleteStrategy = "rebase"
 	PageChildrenOnDeleteCascade PageChildrenDeleteStrategy = "cascade"
+
+	// PageIconTypeLink empty or "link" (default):
+	// Indicate that src will contain an absolute or relative link to an icon.
+	// Can also be used for inline images (storing "base64:" prefixed string in source).
+	// This type and reference is not validated by the backend.
+	PageIconTypeLink PageIconType = "link" // type, source
+	// PageIconTypeLibrary "library"
+	// Source references an icon from a library. Ref's value should be in the following
+	// notation: "font-awesome://<icon-identifier>".
+	// This type and source is not validated by the backend.
+	PageIconTypeLibrary PageIconType = "library" // type, library(font-awesome), icon name
+	// PageIconTypeSvg "svg"
+	// SRC contains raw SVG document
+	PageIconTypeSvg PageIconType = "svg" // source
+	// PageIconTypeAttachment "attachment"
+	// Reference (ID) to an existing attachment in local Corteza instance is expected
+	// This type and reference must be validated by the backend.
+	PageIconTypeAttachment PageIconType = "attachment" // type, Icon, name
 )
 
 func (m Page) Clone() *Page {

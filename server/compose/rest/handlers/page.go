@@ -30,6 +30,8 @@ type (
 		TriggerScript(context.Context, *request.PageTriggerScript) (interface{}, error)
 		ListTranslations(context.Context, *request.PageListTranslations) (interface{}, error)
 		UpdateTranslations(context.Context, *request.PageUpdateTranslations) (interface{}, error)
+		ListIcons(context.Context, *request.PageListIcons) (interface{}, error)
+		UploadIcon(context.Context, *request.PageUploadIcon) (interface{}, error)
 	}
 
 	// HTTP API interface
@@ -45,6 +47,8 @@ type (
 		TriggerScript      func(http.ResponseWriter, *http.Request)
 		ListTranslations   func(http.ResponseWriter, *http.Request)
 		UpdateTranslations func(http.ResponseWriter, *http.Request)
+		ListIcons          func(http.ResponseWriter, *http.Request)
+		UploadIcon         func(http.ResponseWriter, *http.Request)
 	}
 )
 
@@ -226,6 +230,38 @@ func NewPage(h PageAPI) *Page {
 
 			api.Send(w, r, value)
 		},
+		ListIcons: func(w http.ResponseWriter, r *http.Request) {
+			defer r.Body.Close()
+			params := request.NewPageListIcons()
+			if err := params.Fill(r); err != nil {
+				api.Send(w, r, err)
+				return
+			}
+
+			value, err := h.ListIcons(r.Context(), params)
+			if err != nil {
+				api.Send(w, r, err)
+				return
+			}
+
+			api.Send(w, r, value)
+		},
+		UploadIcon: func(w http.ResponseWriter, r *http.Request) {
+			defer r.Body.Close()
+			params := request.NewPageUploadIcon()
+			if err := params.Fill(r); err != nil {
+				api.Send(w, r, err)
+				return
+			}
+
+			value, err := h.UploadIcon(r.Context(), params)
+			if err != nil {
+				api.Send(w, r, err)
+				return
+			}
+
+			api.Send(w, r, value)
+		},
 	}
 }
 
@@ -243,5 +279,7 @@ func (h Page) MountRoutes(r chi.Router, middlewares ...func(http.Handler) http.H
 		r.Post("/namespace/{namespaceID}/page/{pageID}/trigger", h.TriggerScript)
 		r.Get("/namespace/{namespaceID}/page/{pageID}/translation", h.ListTranslations)
 		r.Patch("/namespace/{namespaceID}/page/{pageID}/translation", h.UpdateTranslations)
+		r.Get("/namespace/{namespaceID}/page/{pageID}/icon", h.ListIcons)
+		r.Post("/namespace/{namespaceID}/page/{pageID}/icon", h.UploadIcon)
 	})
 }

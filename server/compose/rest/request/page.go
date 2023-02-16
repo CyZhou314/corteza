@@ -11,6 +11,7 @@ package request
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/cortezaproject/corteza/server/compose/types"
 	"github.com/cortezaproject/corteza/server/pkg/label"
 	"github.com/cortezaproject/corteza/server/pkg/locale"
 	"github.com/cortezaproject/corteza/server/pkg/payload"
@@ -321,6 +322,70 @@ type (
 		//
 		// Resource translation to upsert
 		Translations locale.ResourceTranslationSet
+	}
+
+	PageListIcons struct {
+		// NamespaceID PATH parameter
+		//
+		// Namespace ID
+		NamespaceID uint64 `json:",string"`
+
+		// PageID PATH parameter
+		//
+		// ID
+		PageID uint64 `json:",string"`
+
+		// Limit GET parameter
+		//
+		// Limit
+		Limit uint
+
+		// IncTotal GET parameter
+		//
+		// Include total counter
+		IncTotal bool
+
+		// PageCursor GET parameter
+		//
+		// Page cursor
+		PageCursor string
+
+		// Sort GET parameter
+		//
+		// Sort items
+		Sort string
+	}
+
+	PageUploadIcon struct {
+		// NamespaceID PATH parameter
+		//
+		// Namespace ID
+		NamespaceID uint64 `json:",string"`
+
+		// PageID PATH parameter
+		//
+		// Page ID
+		PageID uint64 `json:",string"`
+
+		// Type POST parameter
+		//
+		// Icon type
+		Type types.PageIconType
+
+		// Name POST parameter
+		//
+		// Icon name
+		Name string
+
+		// Source POST parameter
+		//
+		// Icon source/library
+		Source string
+
+		// Icon POST parameter
+		//
+		// Icon to upload
+		Icon *multipart.FileHeader
 	}
 )
 
@@ -1166,12 +1231,12 @@ func (r *PageReorder) Fill(req *http.Request) (err error) {
 
 		// POST params
 
-		//if val, ok := req.Form["pageIDs[]"]; ok && len(val) > 0  {
+		// if val, ok := req.Form["pageIDs[]"]; ok && len(val) > 0  {
 		//    r.PageIDs, err = val, nil
 		//    if err != nil {
 		//        return err
 		//    }
-		//}
+		// }
 	}
 
 	{
@@ -1580,12 +1645,261 @@ func (r *PageUpdateTranslations) Fill(req *http.Request) (err error) {
 
 		// POST params
 
-		//if val, ok := req.Form["translations[]"]; ok && len(val) > 0  {
+		// if val, ok := req.Form["translations[]"]; ok && len(val) > 0  {
 		//    r.Translations, err = locale.ResourceTranslationSet(val), nil
 		//    if err != nil {
 		//        return err
 		//    }
-		//}
+		// }
+	}
+
+	{
+		var val string
+		// path params
+
+		val = chi.URLParam(req, "namespaceID")
+		r.NamespaceID, err = payload.ParseUint64(val), nil
+		if err != nil {
+			return err
+		}
+
+		val = chi.URLParam(req, "pageID")
+		r.PageID, err = payload.ParseUint64(val), nil
+		if err != nil {
+			return err
+		}
+
+	}
+
+	return err
+}
+
+// NewPageListIcons request
+func NewPageListIcons() *PageListIcons {
+	return &PageListIcons{}
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r PageListIcons) Auditable() map[string]interface{} {
+	return map[string]interface{}{
+		"namespaceID": r.NamespaceID,
+		"pageID":      r.PageID,
+		"limit":       r.Limit,
+		"incTotal":    r.IncTotal,
+		"pageCursor":  r.PageCursor,
+		"sort":        r.Sort,
+	}
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r PageListIcons) GetNamespaceID() uint64 {
+	return r.NamespaceID
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r PageListIcons) GetPageID() uint64 {
+	return r.PageID
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r PageListIcons) GetLimit() uint {
+	return r.Limit
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r PageListIcons) GetIncTotal() bool {
+	return r.IncTotal
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r PageListIcons) GetPageCursor() string {
+	return r.PageCursor
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r PageListIcons) GetSort() string {
+	return r.Sort
+}
+
+// Fill processes request and fills internal variables
+func (r *PageListIcons) Fill(req *http.Request) (err error) {
+
+	{
+		// GET params
+		tmp := req.URL.Query()
+
+		if val, ok := tmp["limit"]; ok && len(val) > 0 {
+			r.Limit, err = payload.ParseUint(val[0]), nil
+			if err != nil {
+				return err
+			}
+		}
+		if val, ok := tmp["incTotal"]; ok && len(val) > 0 {
+			r.IncTotal, err = payload.ParseBool(val[0]), nil
+			if err != nil {
+				return err
+			}
+		}
+		if val, ok := tmp["pageCursor"]; ok && len(val) > 0 {
+			r.PageCursor, err = val[0], nil
+			if err != nil {
+				return err
+			}
+		}
+		if val, ok := tmp["sort"]; ok && len(val) > 0 {
+			r.Sort, err = val[0], nil
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	{
+		var val string
+		// path params
+
+		val = chi.URLParam(req, "namespaceID")
+		r.NamespaceID, err = payload.ParseUint64(val), nil
+		if err != nil {
+			return err
+		}
+
+		val = chi.URLParam(req, "pageID")
+		r.PageID, err = payload.ParseUint64(val), nil
+		if err != nil {
+			return err
+		}
+
+	}
+
+	return err
+}
+
+// NewPageUploadIcon request
+func NewPageUploadIcon() *PageUploadIcon {
+	return &PageUploadIcon{}
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r PageUploadIcon) Auditable() map[string]interface{} {
+	return map[string]interface{}{
+		"namespaceID": r.NamespaceID,
+		"pageID":      r.PageID,
+		"type":        r.Type,
+		"name":        r.Name,
+		"source":      r.Source,
+		"icon":        r.Icon,
+	}
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r PageUploadIcon) GetNamespaceID() uint64 {
+	return r.NamespaceID
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r PageUploadIcon) GetPageID() uint64 {
+	return r.PageID
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r PageUploadIcon) GetType() types.PageIconType {
+	return r.Type
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r PageUploadIcon) GetName() string {
+	return r.Name
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r PageUploadIcon) GetSource() string {
+	return r.Source
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r PageUploadIcon) GetIcon() *multipart.FileHeader {
+	return r.Icon
+}
+
+// Fill processes request and fills internal variables
+func (r *PageUploadIcon) Fill(req *http.Request) (err error) {
+
+	if strings.HasPrefix(strings.ToLower(req.Header.Get("content-type")), "application/json") {
+		err = json.NewDecoder(req.Body).Decode(r)
+
+		switch {
+		case err == io.EOF:
+			err = nil
+		case err != nil:
+			return fmt.Errorf("error parsing http request body: %w", err)
+		}
+	}
+
+	{
+		// Caching 32MB to memory, the rest to disk
+		if err = req.ParseMultipartForm(32 << 20); err != nil && err != http.ErrNotMultipart {
+			return err
+		} else if err == nil {
+			// Multipart params
+
+			if val, ok := req.MultipartForm.Value["type"]; ok && len(val) > 0 {
+				r.Type, err = types.PageIconType(val[0]), nil
+				if err != nil {
+					return err
+				}
+			}
+
+			if val, ok := req.MultipartForm.Value["name"]; ok && len(val) > 0 {
+				r.Name, err = val[0], nil
+				if err != nil {
+					return err
+				}
+			}
+
+			if val, ok := req.MultipartForm.Value["source"]; ok && len(val) > 0 {
+				r.Source, err = val[0], nil
+				if err != nil {
+					return err
+				}
+			}
+
+			// Ignoring icon as its handled in the POST params section
+		}
+	}
+
+	{
+		if err = req.ParseForm(); err != nil {
+			return err
+		}
+
+		// POST params
+
+		if val, ok := req.Form["type"]; ok && len(val) > 0 {
+			r.Type, err = types.PageIconType(val[0]), nil
+			if err != nil {
+				return err
+			}
+		}
+
+		if val, ok := req.Form["name"]; ok && len(val) > 0 {
+			r.Name, err = val[0], nil
+			if err != nil {
+				return err
+			}
+		}
+
+		if val, ok := req.Form["source"]; ok && len(val) > 0 {
+			r.Source, err = val[0], nil
+			if err != nil {
+				return err
+			}
+		}
+
+		if _, r.Icon, err = req.FormFile("icon"); err != nil {
+			return fmt.Errorf("error processing uploaded file: %w", err)
+		}
+
 	}
 
 	{

@@ -2,6 +2,7 @@ package rest
 
 import (
 	"context"
+	"mime/multipart"
 
 	"github.com/cortezaproject/corteza/server/compose/rest/request"
 	"github.com/cortezaproject/corteza/server/compose/service"
@@ -91,6 +92,7 @@ func (ctrl *Page) List(ctx context.Context, r *request.PageList) (interface{}, e
 	}
 
 	set, filter, err := ctrl.page.Find(ctx, f)
+
 	return ctrl.makeFilterPayload(ctx, set, filter, err)
 }
 
@@ -238,6 +240,53 @@ func (ctrl *Page) TriggerScript(ctx context.Context, r *request.PageTriggerScrip
 	return ctrl.makePayload(ctx, page, err)
 }
 
+func (ctrl *Page) ListIcons(ctx context.Context, r *request.PageListIcons) (interface{}, error) {
+	var (
+		err error
+		f   = types.AttachmentFilter{
+			NamespaceID: r.NamespaceID,
+			PageID:      r.PageID,
+			Kind:        types.PageIconAttachment,
+		}
+	)
+
+	if f.Paging, err = filter.NewPaging(r.Limit, r.PageCursor); err != nil {
+		return nil, err
+	}
+
+	if f.Sorting, err = filter.NewSorting(r.Sort); err != nil {
+		return nil, err
+	}
+
+	set, filter, err := ctrl.attachment.Find(ctx, f)
+	return ctrl.makeIconFilterPayload(ctx, set, filter, err)
+}
+
+func (ctrl *Page) UploadIcon(ctx context.Context, r *request.PageUploadIcon) (interface{}, error) {
+	file, err := r.Icon.Open()
+	if err != nil {
+		return nil, err
+	}
+
+	defer func(file multipart.File) {
+		err = file.Close()
+		if err != nil {
+			return
+		}
+	}(file)
+
+	a, err := ctrl.attachment.CreatePageIconAttachment(
+		ctx,
+		r.NamespaceID,
+		r.Icon.Filename,
+		r.Icon.Size,
+		file,
+		r.PageID,
+	)
+
+	return makeAttachmentPayload(ctx, a, err)
+}
+
 func (ctrl Page) makePayload(ctx context.Context, c *types.Page, err error) (*pagePayload, error) {
 	if err != nil || c == nil {
 		return nil, err
@@ -286,6 +335,20 @@ func (ctrl Page) makeFilterPayload(ctx context.Context, nn types.PageSet, f type
 
 	for i := range nn {
 		modp.Set[i], _ = ctrl.makePayload(ctx, nn[i], nil)
+	}
+
+	return modp, nil
+}
+
+func (ctrl Page) makeIconFilterPayload(ctx context.Context, nn types.AttachmentSet, f types.AttachmentFilter, err error) (*attachmentSetPayload, error) {
+	if err != nil {
+		return nil, err
+	}
+
+	modp := &attachmentSetPayload{Filter: f, Set: make([]*attachmentPayload, len(nn))}
+
+	for i := range nn {
+		modp.Set[i], _ = makeAttachmentPayload(ctx, nn[i], nil)
 	}
 
 	return modp, nil

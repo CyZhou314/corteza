@@ -484,16 +484,63 @@ endpoints:
     path: "/{pageID}/translation"
     parameters:
       path:
-      - type: uint64
-        name: pageID
-        required: true
-        title: ID
+        - type: uint64
+          name: pageID
+          required: true
+          title: ID
       post:
-      - name: translations
-        type: locale.ResourceTranslationSet
-        title: Resource translation to upsert
-        required: true
-
+        - name: translations
+          type: locale.ResourceTranslationSet
+          title: Resource translation to upsert
+          required: true
+  - name: listIcons
+    method: GET
+    title: List page icons
+    path: "/{pageID}/icon"
+    parameters:
+      path:
+        - type: uint64
+          name: pageID
+          required: true
+          title: ID
+      get:
+        - type: uint
+          name: limit
+          title: Limit
+        - type: bool
+          name: incTotal
+          title: Include total counter
+        - type: string
+          name: pageCursor
+          title: Page cursor
+        - type: string
+          name: sort
+          title: Sort items
+  - name: uploadIcon
+    path: "/{pageID}/icon"
+    method: POST
+    title: Upload icon for page
+    parameters:
+      path:
+        - type: uint64
+          name: pageID
+          required: true
+          title: Page ID
+      post:
+        - name: type
+          type: "types.PageIconType"
+          required: true
+          title: Icon type
+        - name: name
+          type: string
+          required: true
+          title: Icon name
+        - name: source
+          type: string
+          title: Icon source/library
+        - name: icon
+          type: "*multipart.FileHeader"
+          title: Icon to upload
 - title: Modules
   description: Compose module definitions
   entrypoint: module
