@@ -30,6 +30,10 @@ type (
 		Set    []*pagePayload   `json:"set"`
 	}
 
+	pageIconPayload struct {
+		*types.PageConfigIcon
+	}
+
 	Page struct {
 		page interface {
 			FindByID(ctx context.Context, namespaceID, pageID uint64) (*types.Page, error)
@@ -42,6 +46,8 @@ type (
 			Create(ctx context.Context, page *types.Page) (*types.Page, error)
 			Update(ctx context.Context, page *types.Page) (*types.Page, error)
 			DeleteByID(ctx context.Context, namespaceID, pageID uint64, pds types.PageChildrenDeleteStrategy) error
+
+			UpdateIcon(ctx context.Context, namespaceID, pageID uint64, icon *types.PageConfigIcon) (out *types.PageConfigIcon, err error)
 
 			Reorder(ctx context.Context, namespaceID, selfID uint64, pageIDs []uint64) error
 		}
@@ -288,7 +294,17 @@ func (ctrl *Page) UploadIcon(ctx context.Context, r *request.PageUploadIcon) (in
 }
 
 func (ctrl *Page) UpdateIcon(ctx context.Context, r *request.PageUpdateIcon) (interface{}, error) {
-	return nil, nil
+	var (
+		err  error
+		icon = &types.PageConfigIcon{
+			Type:  r.Type,
+			Src:   r.Source,
+			Style: r.Style,
+		}
+	)
+
+	icon, err = ctrl.page.UpdateIcon(ctx, r.NamespaceID, r.PageID, icon)
+	return ctrl.makeIconPayload(ctx, icon, err)
 }
 
 func (ctrl Page) makePayload(ctx context.Context, c *types.Page, err error) (*pagePayload, error) {
@@ -303,6 +319,16 @@ func (ctrl Page) makePayload(ctx context.Context, c *types.Page, err error) (*pa
 
 		CanUpdatePage: ctrl.ac.CanUpdatePage(ctx, c),
 		CanDeletePage: ctrl.ac.CanDeletePage(ctx, c),
+	}, nil
+}
+
+func (ctrl Page) makeIconPayload(_ context.Context, i *types.PageConfigIcon, err error) (*pageIconPayload, error) {
+	if err != nil || i == nil {
+		return nil, err
+	}
+
+	return &pageIconPayload{
+		PageConfigIcon: i,
 	}, nil
 }
 

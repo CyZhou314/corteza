@@ -133,8 +133,8 @@ type (
 		// Reference (ID) to an existing attachment in local Corteza instance is expected
 		// This type and reference must be validated by the backend.
 
-		Type string `json:"type,omitempty"`
-		Src  string `json:"src"`
+		Type PageIconType `json:"type,omitempty"`
+		Src  string       `json:"src"`
 
 		// Any custom styling that should be applied to the icon
 		Style map[string]string `json:"style,omitempty"`
