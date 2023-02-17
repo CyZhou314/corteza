@@ -287,6 +287,10 @@ func (ctrl *Page) UploadIcon(ctx context.Context, r *request.PageUploadIcon) (in
 	return makeAttachmentPayload(ctx, a, err)
 }
 
+func (ctrl *Page) UpdateIcon(ctx context.Context, r *request.PageUpdateIcon) (interface{}, error) {
+	return nil, nil
+}
+
 func (ctrl Page) makePayload(ctx context.Context, c *types.Page, err error) (*pagePayload, error) {
 	if err != nil || c == nil {
 		return nil, err

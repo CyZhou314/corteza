@@ -32,6 +32,7 @@ type (
 		UpdateTranslations(context.Context, *request.PageUpdateTranslations) (interface{}, error)
 		ListIcons(context.Context, *request.PageListIcons) (interface{}, error)
 		UploadIcon(context.Context, *request.PageUploadIcon) (interface{}, error)
+		UpdateIcon(context.Context, *request.PageUpdateIcon) (interface{}, error)
 	}
 
 	// HTTP API interface
@@ -49,6 +50,7 @@ type (
 		UpdateTranslations func(http.ResponseWriter, *http.Request)
 		ListIcons          func(http.ResponseWriter, *http.Request)
 		UploadIcon         func(http.ResponseWriter, *http.Request)
+		UpdateIcon         func(http.ResponseWriter, *http.Request)
 	}
 )
 
@@ -262,6 +264,22 @@ func NewPage(h PageAPI) *Page {
 
 			api.Send(w, r, value)
 		},
+		UpdateIcon: func(w http.ResponseWriter, r *http.Request) {
+			defer r.Body.Close()
+			params := request.NewPageUpdateIcon()
+			if err := params.Fill(r); err != nil {
+				api.Send(w, r, err)
+				return
+			}
+
+			value, err := h.UpdateIcon(r.Context(), params)
+			if err != nil {
+				api.Send(w, r, err)
+				return
+			}
+
+			api.Send(w, r, value)
+		},
 	}
 }
 
@@ -281,5 +299,6 @@ func (h Page) MountRoutes(r chi.Router, middlewares ...func(http.Handler) http.H
 		r.Patch("/namespace/{namespaceID}/page/{pageID}/translation", h.UpdateTranslations)
 		r.Get("/namespace/{namespaceID}/page/{pageID}/icon", h.ListIcons)
 		r.Post("/namespace/{namespaceID}/page/{pageID}/icon", h.UploadIcon)
+		r.Patch("/namespace/{namespaceID}/page/{pageID}/icon", h.UpdateIcon)
 	})
 }

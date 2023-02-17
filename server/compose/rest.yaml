@@ -255,6 +255,7 @@ endpoints:
     - sqlxTypes github.com/jmoiron/sqlx/types
     - github.com/cortezaproject/corteza/server/pkg/locale
     - github.com/cortezaproject/corteza/server/pkg/label
+    - github.com/cortezaproject/corteza/server/compose/types
   parameters:
     path:
     - type: uint64
@@ -541,6 +542,28 @@ endpoints:
         - name: icon
           type: "*multipart.FileHeader"
           title: Icon to upload
+  - name: updateIcon
+    path: "/{pageID}/icon"
+    method: PATCH
+    title: Update icon for page
+    parameters:
+      path:
+        - type: uint64
+          name: pageID
+          required: true
+          title: Page ID
+      post:
+        - name: type
+          type: "types.PageIconType"
+          required: true
+          title: Icon type
+        - name: source
+          type: string
+          title: Icon source/library
+        - name: style
+          type: map[string]string
+          title: Icon style
+          parser: label.ParseStrings
 - title: Modules
   description: Compose module definitions
   entrypoint: module
