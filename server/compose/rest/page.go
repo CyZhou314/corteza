@@ -251,7 +251,6 @@ func (ctrl *Page) ListIcons(ctx context.Context, r *request.PageListIcons) (inte
 		err error
 		f   = types.AttachmentFilter{
 			NamespaceID: r.NamespaceID,
-			PageID:      r.PageID,
 			Kind:        types.PageIconAttachment,
 		}
 	)
@@ -264,8 +263,8 @@ func (ctrl *Page) ListIcons(ctx context.Context, r *request.PageListIcons) (inte
 		return nil, err
 	}
 
-	set, filter, err := ctrl.attachment.Find(ctx, f)
-	return ctrl.makeIconFilterPayload(ctx, set, filter, err)
+	set, f, err := ctrl.attachment.Find(ctx, f)
+	return ctrl.makeIconFilterPayload(ctx, set, f, err)
 }
 
 func (ctrl *Page) UploadIcon(ctx context.Context, r *request.PageUploadIcon) (interface{}, error) {
