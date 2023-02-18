@@ -128,7 +128,7 @@ type (
 					Enforced bool
 
 					// Require fresh Email OTP on every client authorization
-					//Strict bool
+					// Strict bool
 
 					Expires uint
 				} `kv:"email-otp"`
@@ -141,7 +141,7 @@ type (
 					Enforced bool
 
 					// Require fresh TOTP on every client authorization
-					//Strict bool
+					// Strict bool
 
 					// TOTP issuer, defaults to "Corteza"
 					Issuer string
@@ -153,7 +153,7 @@ type (
 				FromName    string `kv:"from-name"`
 			} `json:"-"`
 
-			//Auth Background Image settings
+			// Auth Background Image settings
 			UI struct {
 				BackgroundImageSrc string `kv:"background-image-src" json:"backgroundImageSrc"`
 				Styles             string `kv:"styles" json:"styles"`
@@ -199,6 +199,15 @@ type (
 			Page struct {
 				// @todo implementation
 				Attachments struct {
+					// What is max size (in MB, so: MaxSize x 2^20)
+					MaxSize uint `kv:"max-size"`
+
+					// List of mime-types we support,
+					Mimetypes []string
+				}
+
+				// @todo implementation
+				Icons struct {
 					// What is max size (in MB, so: MaxSize x 2^20)
 					MaxSize uint `kv:"max-size"`
 

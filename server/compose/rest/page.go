@@ -286,7 +286,6 @@ func (ctrl *Page) UploadIcon(ctx context.Context, r *request.PageUploadIcon) (in
 		r.Icon.Filename,
 		r.Icon.Size,
 		file,
-		r.PageID,
 	)
 
 	return makeAttachmentPayload(ctx, a, err)

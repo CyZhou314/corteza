@@ -59,7 +59,7 @@ type (
 		FindByID(ctx context.Context, namespaceID, attachmentID uint64) (*types.Attachment, error)
 		Find(ctx context.Context, filter types.AttachmentFilter) (types.AttachmentSet, types.AttachmentFilter, error)
 		CreatePageAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker, pageID uint64) (*types.Attachment, error)
-		CreatePageIconAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker, pageID uint64) (*types.Attachment, error)
+		CreatePageIconAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker) (*types.Attachment, error)
 		CreateRecordAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker, moduleID, recordID uint64, fieldName string) (*types.Attachment, error)
 		CreateNamespaceAttachment(ctx context.Context, name string, size int64, fh io.ReadSeeker) (*types.Attachment, error)
 		OpenOriginal(att *types.Attachment) (io.ReadSeekCloser, error)
@@ -282,20 +282,10 @@ func (svc attachment) CreatePageAttachment(ctx context.Context, namespaceID uint
 			var (
 				maxSize      = int64(systemService.CurrentSettings.Compose.Page.Attachments.MaxSize) * megabyte
 				allowedTypes = systemService.CurrentSettings.Compose.Page.Attachments.Mimetypes
-				mimeType     *mimetype.MIME
 			)
 
-			if maxSize > 0 && maxSize < size {
-				return AttachmentErrTooLarge().Apply(
-					errors.Meta("size", size),
-					errors.Meta("maxSize", maxSize),
-				)
-			}
-
-			if mimeType, err = svc.extractMimetype(fh); err != nil {
+			if err = svc.verifySizeAndMimetype(fh, size, maxSize, allowedTypes); err != nil {
 				return err
-			} else if !svc.checkMimeType(mimeType, allowedTypes...) {
-				return AttachmentErrNotAllowedToUploadThisType()
 			}
 		}
 
@@ -312,15 +302,12 @@ func (svc attachment) CreatePageAttachment(ctx context.Context, namespaceID uint
 
 }
 
-// todo: refactor & add handler to handle both page icon and attachments
-func (svc attachment) CreatePageIconAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker, pageID uint64) (att *types.Attachment, err error) {
+func (svc attachment) CreatePageIconAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker) (att *types.Attachment, err error) {
 	var (
 		ns *types.Namespace
-		p  *types.Page
 
 		aProps = &attachmentActionProps{
 			namespace: &types.Namespace{ID: namespaceID},
-			page:      &types.Page{ID: pageID},
 		}
 	)
 
@@ -329,40 +316,25 @@ func (svc attachment) CreatePageIconAttachment(ctx context.Context, namespaceID 
 			return AttachmentErrNotAllowedToCreateEmptyAttachment()
 		}
 
-		ns, p, err = loadPageCombo(ctx, s, namespaceID, pageID)
+		ns, err = loadNamespace(ctx, s, namespaceID)
 		if err != nil {
 			return err
 		}
 
 		aProps.setNamespace(ns)
-		aProps.setPage(p)
 
-		if !svc.ac.CanUpdatePage(ctx, p) {
-			return AttachmentErrNotAllowedToUpdatePage()
-		}
-
+		// add helper for below code block
 		{
 			// Verify size and type of the uploaded page attachment
 			// Max size & allowed mime-types are pulled from the current settings
-			// Todo: add settings for icons
 			var (
-			// maxSize      = int64(systemService.CurrentSettings.Compose.Page.Attachments.MaxSize) * megabyte
-			// allowedTypes = systemService.CurrentSettings.Compose.Page.Attachments.Mimetypes
-			// mimeType     *mimetype.MIME
+				maxSize      = int64(systemService.CurrentSettings.Compose.Page.Icons.MaxSize) * megabyte
+				allowedTypes = systemService.CurrentSettings.Compose.Page.Icons.Mimetypes
 			)
 
-			// if maxSize > 0 && maxSize < size {
-			// 	return AttachmentErrTooLarge().Apply(
-			// 		errors.Meta("size", size),
-			// 		errors.Meta("maxSize", maxSize),
-			// 	)
-			// }
-
-			// if mimeType, err = svc.extractMimetype(fh); err != nil {
-			// 	return err
-			// } else if !svc.checkMimeType(mimeType, allowedTypes...) {
-			// 	return AttachmentErrNotAllowedToUploadThisType()
-			// }
+			if err = svc.verifySizeAndMimetype(fh, size, maxSize, allowedTypes); err != nil {
+				return err
+			}
 		}
 
 		att = &types.Attachment{
@@ -375,6 +347,29 @@ func (svc attachment) CreatePageIconAttachment(ctx context.Context, namespaceID 
 	})
 
 	return att, svc.recordAction(ctx, aProps, AttachmentActionCreate, err)
+}
+
+func (svc attachment) verifySizeAndMimetype(fh io.ReadSeeker, size, maxSize int64, allowedTypes []string) (err error) {
+	// Verify size and type of the uploaded page attachment
+	// Max size & allowed mime-types are pulled from the current settings
+	var (
+		mimeType *mimetype.MIME
+	)
+
+	if maxSize > 0 && maxSize < size {
+		return AttachmentErrTooLarge().Apply(
+			errors.Meta("size", size),
+			errors.Meta("maxSize", maxSize),
+		)
+	}
+
+	if mimeType, err = svc.extractMimetype(fh); err != nil {
+		return err
+	} else if !svc.checkMimeType(mimeType, allowedTypes...) {
+		return AttachmentErrNotAllowedToUploadThisType()
+	}
+
+	return
 }
 
 func (svc attachment) CreateRecordAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker, moduleID, recordID uint64, fieldName string) (att *types.Attachment, err error) {
