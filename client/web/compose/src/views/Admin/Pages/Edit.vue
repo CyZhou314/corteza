@@ -321,7 +321,7 @@ export default {
     },
 
     endpoint () {
-      return this.$ComposeAPI.pageUploadEndpoint({
+      return this.$ComposeAPI.pageUploadIconEndpoint({
         namespaceID: this.namespaceID,
         pageID: this.pageID,
       })
@@ -378,7 +378,7 @@ export default {
     appendAttachment ({ attachmentID = {}, name = '' }) {
       this.attachments.unshift(attachmentID)
       
-      this.$ComposeAPI.pageUploadIcon({
+      this.$ComposeAPI.pageUpdateIcon({
         namespaceID: this.namespaceID,
         pageID: this.pageID,
         type: 'svg',
