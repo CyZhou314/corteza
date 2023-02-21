@@ -537,6 +537,25 @@ func UserActionDeleteAuthSessions(props ...*userActionProps) *userAction {
 	return a
 }
 
+// UserActionUploadAvatar returns "system:user.uploadAvatar" action
+//
+// This function is auto-generated.
+func UserActionUploadAvatar(props ...*userActionProps) *userAction {
+	a := &userAction{
+		timestamp: time.Now(),
+		resource:  "system:user",
+		action:    "uploadAvatar",
+		log:       "uploaded avatar of {{user}}",
+		severity:  actionlog.Notice,
+	}
+
+	if len(props) > 0 {
+		a.props = props[0]
+	}
+
+	return a
+}
+
 // UserActionDeleteAvatar returns "system:user.deleteAvatar" action
 //
 // This function is auto-generated.

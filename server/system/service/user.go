@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"io"
+	"mime/multipart"
 	"net/mail"
 	"regexp"
 	"strconv"
@@ -102,6 +103,7 @@ type (
 		DeleteAuthTokensByUserID(ctx context.Context, userID uint64) (err error)
 		DeleteAuthSessionsByUserID(ctx context.Context, userID uint64) (err error)
 
+		UploadAvatar(ctx context.Context, userID uint64, Upload *multipart.FileHeader) (err error)
 		DeleteAvatar(ctx context.Context, id uint64) error
 	}
 )
@@ -1041,6 +1043,49 @@ func toLabeledUsers(set []*types.User) []label.LabeledResource {
 	return ll
 }
 
+func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipart.FileHeader) (err error) {
+	var (
+		u       *types.User
+		uaProps = &userActionProps{user: &types.User{ID: userID}}
+	)
+
+	err = func() (err error) {
+		if u, err = loadUser(ctx, svc.store, userID); err != nil {
+			return
+		}
+		file, err := upload.Open()
+		if err != nil {
+			return
+		}
+
+		defer file.Close()
+
+		if u.Meta.AvatarID != 0 {
+			if err = svc.att.DeleteByID(ctx, u.Meta.AvatarID); err != nil {
+				return
+			}
+		}
+
+		att, err := svc.att.CreateAuthAttachment(
+			ctx,
+			upload.Filename,
+			upload.Size,
+			file,
+			map[string]string{"key": "profile-photo-avatar"},
+		)
+
+		u.Meta.AvatarID = att.ID
+
+		if err = store.UpdateUser(ctx, svc.store, u); err != nil {
+			return
+		}
+
+		return nil
+	}()
+
+	return svc.recordAction(ctx, uaProps, UserActionUploadAvatar, err)
+}
+
 // DeleteAvatar will delete user's avatar
 func (svc user) DeleteAvatar(ctx context.Context, userID uint64) (err error) {
 	var (
@@ -1054,11 +1099,11 @@ func (svc user) DeleteAvatar(ctx context.Context, userID uint64) (err error) {
 		}
 
 		if u.Kind == types.SystemUser {
-			return UserErrNotAllowedToDelete()
+			return UserErrNotAllowedToDeleteAvatar()
 		}
 
 		if !svc.ac.CanUpdateUser(ctx, u) {
-			return UserErrNotAllowedToDelete()
+			return UserErrNotAllowedToDeleteAvatar()
 		}
 
 		if err = svc.att.DeleteByID(ctx, u.Meta.AvatarID); err != nil {

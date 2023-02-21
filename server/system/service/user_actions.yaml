@@ -68,6 +68,9 @@ actions:
   - action: deleteAuthSessions
     log: "deleted auth sessions of {{user}}"
 
+  - action: uploadAvatar
+    log: "uploaded avatar of {{user}}"
+
   - action: deleteAvatar
     log: "deleted avatar of {{user}}"
 
