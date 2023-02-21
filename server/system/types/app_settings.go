@@ -77,10 +77,10 @@ type (
 
 				ProfilePhoto struct {
 					// Can users set their own profile photo
-					EnabledAvatar bool `json:"enabled-avatar"`
+					EnabledAvatar bool `kv:"enabled-avatar" json:"enabled-avatar"`
 
 					// Can users set their own profile Initials
-					EnabledInitials bool `json:"enabled-initials"`
+					EnabledInitials bool `kv:"enabled-initials" json:"enabled-initials"`
 				} `kv:"profile-photo" json:"profile-photo"`
 			} `json:"internal"`
 

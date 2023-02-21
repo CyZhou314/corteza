@@ -48,6 +48,8 @@ func (h *AuthHandlers) profileForm(req *request.AuthReq) (err error) {
 	}
 
 	req.Data["emailConfirmationRequired"] = !u.EmailConfirmed && h.Settings.EmailConfirmationRequired
+	req.Data["avatarEnabled"] = h.Settings.ProfilePhoto.EnabledAvatar
+	req.Data["initialsEnabled"] = h.Settings.ProfilePhoto.EnabledInitials
 	return nil
 }
 

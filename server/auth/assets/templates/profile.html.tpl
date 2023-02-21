@@ -20,6 +20,7 @@
 		</div>
 		{{ end }}
 
+        {{ if .avatarEnabled }}
         <div class="mb-3">
             <label for="profileFormHandle">{{ tr "profile.template.form.avatar.label" }}</label>
             <div class="d-block">
@@ -44,8 +45,10 @@
                 </div>
             </div>
         </div>
+        {{ end }}
 
 
+        {{ if .initialsEnabled }}
         <div class="mb-3">
             <label for="avatarInitials">{{ tr "profile.template.form.avatar-initial.label" }}</label>
             <div class="d-block">
@@ -75,6 +78,7 @@
             <label for="customColor">{{ tr "profile.template.form.avatar-initial.background-color" }}</label>
             <input type="color" id="customColor" class="col-6 form-control" value="{{ .form.initialBgColor }}" name="initial-bg">
         </div>
+        {{ end }}
 
         <div class="mb-3">
             <label for="profileFormEmail">{{ tr "profile.template.form.email.label" }}</label>
