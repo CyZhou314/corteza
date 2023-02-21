@@ -54,6 +54,32 @@
           <b-form-input v-model="recordAttachmentWhitelist" />
         </b-input-group>
       </b-form-group>
+
+      <hr>
+
+      <h5>{{ $t('attachments.icon') }}</h5>
+      <b-form-group
+        :label="$t('attachments.max-size')"
+        label-cols="2"
+      >
+        <b-input-group>
+          <b-form-input
+            v-model="basic['compose.icon.attachments.max-size']"
+            type="number"
+            number
+          />
+        </b-input-group>
+      </b-form-group>
+      <b-form-group
+        :label="$t('attachments.type.whitelist')"
+        :description="$t('attachments.type.description')"
+        label-cols="2"
+        class="mb-0"
+      >
+        <b-input-group class="m-0">
+          <b-form-input v-model="iconAttachmentWhitelist" />
+        </b-input-group>
+      </b-form-group>
     </b-form>
 
     <template #header>
@@ -129,6 +155,16 @@ export default {
 
       set (value) {
         this.basic['compose.record.attachments.mimetypes'] = this.convertToExternal(value)
+      },
+    },
+
+    iconAttachmentWhitelist: {
+      get () {
+        return (this.basic['compose.icon.attachments.mimetypes'] || []).join(',')
+      },
+
+      set (value) {
+        this.basic['compose.icon.attachments.mimetypes'] = this.convertToExternal(value)
       },
     },
   },
