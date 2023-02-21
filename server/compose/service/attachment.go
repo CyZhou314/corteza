@@ -327,14 +327,15 @@ func (svc attachment) CreatePageIconAttachment(ctx context.Context, namespaceID 
 		{
 			// Verify size and type of the uploaded page attachment
 			// Max size & allowed mime-types are pulled from the current settings
-			var (
-				maxSize      = int64(systemService.CurrentSettings.Compose.Page.Icons.MaxSize) * megabyte
-				allowedTypes = systemService.CurrentSettings.Compose.Page.Icons.Mimetypes
-			)
-
-			if err = svc.verifySizeAndMimetype(fh, size, maxSize, allowedTypes); err != nil {
-				return err
-			}
+			// @todo: add settings for page icon
+			// var (
+			// 	maxSize      = int64(systemService.CurrentSettings.Compose.Page.Icons.MaxSize) * megabyte
+			// 	allowedTypes = systemService.CurrentSettings.Compose.Page.Icons.Mimetypes
+			// )
+			//
+			// if err = svc.verifySizeAndMimetype(fh, size, maxSize, allowedTypes); err != nil {
+			// 	return err
+			// }
 		}
 
 		att = &types.Attachment{
