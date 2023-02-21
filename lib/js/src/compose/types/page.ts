@@ -22,6 +22,13 @@ interface PageConfig {
     clone: Button;
     back: Button;
   };
+  attachments: [];
+  navItem: {
+    icon: {
+      type: string;
+      src: string;
+    }
+  };
 }
 
 export class Page {
@@ -37,8 +44,6 @@ export class Page {
 
   public labels: object = {}
 
-  public pageIcons: string[] = [];
-
   public visible = false;
 
   public children?: Array<Page>
@@ -53,6 +58,13 @@ export class Page {
       edit: { enabled: true },
       clone: { enabled: true },
       back: { enabled: true },
+    },
+    attachments: [],
+    navItem: {
+      icon: {
+        type: '',
+        src: '',
+      }
     },
   }
 
@@ -100,10 +112,6 @@ export class Page {
 
     if (IsOf(i, 'labels')) {
       this.labels = { ...i.labels }
-    }
-
-    if (IsOf(i, 'pageIcons')) {
-      this.pageIcons = [ ...i.pageIcons ]
     }
 
     Apply(this, i, ISO8601Date, 'createdAt', 'updatedAt', 'deletedAt')

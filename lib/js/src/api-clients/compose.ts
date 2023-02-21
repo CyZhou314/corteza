@@ -919,6 +919,134 @@ export default class Compose {
     return `/namespace/${namespaceID}/page/${pageID}/translation`
   }
 
+  // List page icons
+  async pageListIcons (a: KV, extra: AxiosRequestConfig = {}): Promise<KV> {
+    const {
+      namespaceID,
+      pageID,
+      limit,
+      incTotal,
+      pageCursor,
+      sort,
+    } = (a as KV) || {}
+    if (!namespaceID) {
+      throw Error('field namespaceID is empty')
+    }
+    if (!pageID) {
+      throw Error('field pageID is empty')
+    }
+    const cfg: AxiosRequestConfig = {
+      ...extra,
+      method: 'get',
+      url: this.pageListIconsEndpoint({
+        namespaceID, pageID,
+      }),
+    }
+    cfg.params = {
+      limit,
+      incTotal,
+      pageCursor,
+      sort,
+    }
+
+    return this.api().request(cfg).then(result => stdResolve(result))
+  }
+
+  pageListIconsEndpoint (a: KV): string {
+    const {
+      namespaceID,
+      pageID,
+    } = a || {}
+    return `/namespace/${namespaceID}/page/${pageID}/icon`
+  }
+
+  // Upload icon for page
+  async pageUploadIcon (a: KV, extra: AxiosRequestConfig = {}): Promise<KV> {
+    const {
+      namespaceID,
+      pageID,
+      type,
+      name,
+      source,
+      icon,
+    } = (a as KV) || {}
+    if (!namespaceID) {
+      throw Error('field namespaceID is empty')
+    }
+    if (!pageID) {
+      throw Error('field pageID is empty')
+    }
+    if (!type) {
+      throw Error('field type is empty')
+    }
+    if (!name) {
+      throw Error('field name is empty')
+    }
+    const cfg: AxiosRequestConfig = {
+      ...extra,
+      method: 'post',
+      url: this.pageUploadIconEndpoint({
+        namespaceID, pageID,
+      }),
+    }
+    cfg.data = {
+      type,
+      name,
+      source,
+      icon,
+    }
+    return this.api().request(cfg).then(result => stdResolve(result))
+  }
+
+  pageUploadIconEndpoint (a: KV): string {
+    const {
+      namespaceID,
+      pageID,
+    } = a || {}
+    return `/namespace/${namespaceID}/page/${pageID}/icon`
+  }
+
+  // Update icon for page
+  async pageUpdateIcon (a: KV, extra: AxiosRequestConfig = {}): Promise<KV> {
+    const {
+      namespaceID,
+      pageID,
+      type,
+      source,
+      style,
+    } = (a as KV) || {}
+    if (!namespaceID) {
+      throw Error('field namespaceID is empty')
+    }
+    if (!pageID) {
+      throw Error('field pageID is empty')
+    }
+    if (!type) {
+      throw Error('field type is empty')
+    }
+    const cfg: AxiosRequestConfig = {
+      ...extra,
+      method: 'patch',
+      url: this.pageUpdateIconEndpoint({
+        namespaceID, pageID,
+      }),
+    }
+    cfg.data = {
+      type,
+      source,
+      style,
+    }
+    return this.api().request(cfg).then(result => stdResolve(result))
+  }
+
+  pageUpdateIconEndpoint (a: KV): string {
+    const {
+      namespaceID,
+      pageID,
+    } = a || {}
+    return `/namespace/${namespaceID}/page/${pageID}/icon`
+  }
+
   // List modules
   async moduleList (a: KV, extra: AxiosRequestConfig = {}): Promise<KV> {
     const {

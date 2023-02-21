@@ -123,7 +123,7 @@
                 </b-form-checkbox>
               </b-form-group>
 
-              <b-form-group
+              <!-- <b-form-group
                 data-test-id="checkbox-show-sub-pages-in-sidebar"
                 class="d-flex"
                 switch
@@ -133,7 +133,7 @@
                 >
                   {{ $t('showSubPages') }}
                 </b-form-checkbox>
-              </b-form-group>
+              </b-form-group> -->
 
               <b-button
                 variant="light"
@@ -153,33 +153,38 @@
                 ok-only
                 :title="$t('icon.configure')"
                 :ok-title="$t('label.saveAndClose')"
-                @ok="onModalSave"
+                @ok="showModal = false"
+                @show="onOpen"
               >
                 <b-form-group
                   :label="$t('icon.upload')"
                 >
                   <uploader
                     :endpoint="endpoint"
-                    :max-filesize="$s('compose.Page.Attachments.MaxSize', 100)"
-                    :accepted-files="$s('compose.Page.Attachments.Mimetypes', ['*/*'])"
+                    :accepted-files="['image/*']"
                     @uploaded="appendAttachment"
+                  />
+
+                  <list-loader
+                    kind="page"
+                    enable-delete
+                    :set.sync="attachments"
+                    :namespace="namespace"
+                    mode="list"
+                    class="h-100 mt-2"
                   />
                 </b-form-group>
 
                 <hr>
 
                 <!-- list of uploaded icons -->
-                <!-- <div
-                  class="p-2 h-100"
-                >
-                  <list-loader
-                    kind="page"
-                    :set="options.attachments"
-                    :namespace="namespace"
-                    :mode="options.mode"
-                    class="h-100"
-                  />
-                </div> -->
+                <list-loader
+                  kind="page"
+                  :set.sync="attachments"
+                  :namespace="namespace"
+                  mode="gallery"
+                  class="h-100"
+                />
               </b-modal>
             </b-form>
           </b-card>
@@ -270,6 +275,7 @@ export default {
       modulesList: [],
       page: new compose.Page(),
       showModal: false,
+      attachments: []
     }
   },
 
@@ -316,9 +322,13 @@ export default {
 
     endpoint () {
       return this.$ComposeAPI.pageUploadEndpoint({
-        namespaceID: this.namespace.namespaceID,
+        namespaceID: this.namespaceID,
         pageID: this.pageID,
       })
+    },
+
+    namespaceID () {
+      return this.namespace.namespaceID ? this.namespace.namespaceID : NoID
     },
   },
 
@@ -327,8 +337,7 @@ export default {
       immediate: true,
       handler (pageID) {
         if (pageID) {
-          const { namespaceID } = this.namespace
-          this.findPageByID({ namespaceID, pageID }).then((page) => {
+          this.findPageByID({ namespaceID: this.namespaceID, pageID }).then((page) => {
             this.page = page.clone()
           }).catch(this.toastErrorHandler(this.$t('notification:page.loadFailed')))
         }
@@ -351,8 +360,7 @@ export default {
        * instructs store layer to add content-language header to the API request
        */
       const resourceTranslationLanguage = this.currentLanguage
-      const { namespaceID } = this.namespace
-      this.updatePage({ namespaceID, ...this.page, resourceTranslationLanguage }).then((page) => {
+      this.updatePage({ namespaceID: this.namespaceID, ...this.page, resourceTranslationLanguage }).then((page) => {
         this.page = page.clone()
         this.toastSuccess(this.$t('notification:page.saved'))
         if (closeOnSuccess) {
@@ -367,14 +375,37 @@ export default {
       }).catch(this.toastErrorHandler(this.$t('notification:page.deleteFailed')))
     },
 
-    appendAttachment ({ attachmentID } = {}) {
-      this.page.pageIcons.push(attachmentID)
+    appendAttachment ({ attachmentID = {}, name = '' }) {
+      this.attachments.unshift(attachmentID)
+      
+      this.$ComposeAPI.pageUploadIcon({
+        namespaceID: this.namespaceID,
+        pageID: this.pageID,
+        type: 'svg',
+        name: name,
+      })
+
+      this.page.config.navItem = {
+      icon: {
+        src: attachmentID,
+      }
+    }
     },
 
-    onModalSave () {
-      // update icon
-      // update expand value
-      this.showModal = false
+    onOpen () {
+      this.$ComposeAPI.pageListIcons({
+        namespaceID: this.namespace.namespaceID,
+        pageID: this.pageID,
+      }).then(icons => {
+        // cannot upload svg to check if this works
+        debugger
+        if (icons) {
+          this.attachments = icons
+        } else {
+          this.attachments = []
+        }
+        return this.attachments
+      })
     },
   },
 }
