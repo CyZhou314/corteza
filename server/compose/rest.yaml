@@ -528,17 +528,6 @@ endpoints:
           required: true
           title: Page ID
       post:
-        - name: type
-          type: "types.PageIconType"
-          required: true
-          title: Icon type
-        - name: name
-          type: string
-          required: true
-          title: Icon name
-        - name: source
-          type: string
-          title: Icon source/library
         - name: icon
           type: "*multipart.FileHeader"
           title: Icon to upload
