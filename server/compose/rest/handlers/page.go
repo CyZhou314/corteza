@@ -297,8 +297,8 @@ func (h Page) MountRoutes(r chi.Router, middlewares ...func(http.Handler) http.H
 		r.Post("/namespace/{namespaceID}/page/{pageID}/trigger", h.TriggerScript)
 		r.Get("/namespace/{namespaceID}/page/{pageID}/translation", h.ListTranslations)
 		r.Patch("/namespace/{namespaceID}/page/{pageID}/translation", h.UpdateTranslations)
-		r.Get("/namespace/{namespaceID}/page/{pageID}/icon", h.ListIcons)
-		r.Post("/namespace/{namespaceID}/page/{pageID}/icon", h.UploadIcon)
+		r.Get("/namespace/{namespaceID}/page/icon", h.ListIcons)
+		r.Post("/namespace/{namespaceID}/page/icon", h.UploadIcon)
 		r.Patch("/namespace/{namespaceID}/page/{pageID}/icon", h.UpdateIcon)
 	})
 }

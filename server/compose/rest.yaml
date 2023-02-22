@@ -497,13 +497,8 @@ endpoints:
   - name: listIcons
     method: GET
     title: List page icons
-    path: "/{pageID}/icon"
+    path: "/icon"
     parameters:
-      path:
-        - type: uint64
-          name: pageID
-          required: true
-          title: ID
       get:
         - type: uint
           name: limit
@@ -518,15 +513,10 @@ endpoints:
           name: sort
           title: Sort items
   - name: uploadIcon
-    path: "/{pageID}/icon"
+    path: "/icon"
     method: POST
     title: Upload icon for page
     parameters:
-      path:
-        - type: uint64
-          name: pageID
-          required: true
-          title: Page ID
       post:
         - name: icon
           type: "*multipart.FileHeader"

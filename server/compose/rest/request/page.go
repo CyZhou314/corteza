@@ -330,11 +330,6 @@ type (
 		// Namespace ID
 		NamespaceID uint64 `json:",string"`
 
-		// PageID PATH parameter
-		//
-		// ID
-		PageID uint64 `json:",string"`
-
 		// Limit GET parameter
 		//
 		// Limit
@@ -361,26 +356,6 @@ type (
 		//
 		// Namespace ID
 		NamespaceID uint64 `json:",string"`
-
-		// PageID PATH parameter
-		//
-		// Page ID
-		PageID uint64 `json:",string"`
-
-		// Type POST parameter
-		//
-		// Icon type
-		Type types.PageIconType
-
-		// Name POST parameter
-		//
-		// Icon name
-		Name string
-
-		// Source POST parameter
-		//
-		// Icon source/library
-		Source string
 
 		// Icon POST parameter
 		//
@@ -1710,7 +1685,6 @@ func NewPageListIcons() *PageListIcons {
 func (r PageListIcons) Auditable() map[string]interface{} {
 	return map[string]interface{}{
 		"namespaceID": r.NamespaceID,
-		"pageID":      r.PageID,
 		"limit":       r.Limit,
 		"incTotal":    r.IncTotal,
 		"pageCursor":  r.PageCursor,
@@ -1721,11 +1695,6 @@ func (r PageListIcons) Auditable() map[string]interface{} {
 // Auditable returns all auditable/loggable parameters
 func (r PageListIcons) GetNamespaceID() uint64 {
 	return r.NamespaceID
-}
-
-// Auditable returns all auditable/loggable parameters
-func (r PageListIcons) GetPageID() uint64 {
-	return r.PageID
 }
 
 // Auditable returns all auditable/loggable parameters
@@ -1791,12 +1760,6 @@ func (r *PageListIcons) Fill(req *http.Request) (err error) {
 			return err
 		}
 
-		val = chi.URLParam(req, "pageID")
-		r.PageID, err = payload.ParseUint64(val), nil
-		if err != nil {
-			return err
-		}
-
 	}
 
 	return err
@@ -1811,10 +1774,6 @@ func NewPageUploadIcon() *PageUploadIcon {
 func (r PageUploadIcon) Auditable() map[string]interface{} {
 	return map[string]interface{}{
 		"namespaceID": r.NamespaceID,
-		"pageID":      r.PageID,
-		"type":        r.Type,
-		"name":        r.Name,
-		"source":      r.Source,
 		"icon":        r.Icon,
 	}
 }
@@ -1822,26 +1781,6 @@ func (r PageUploadIcon) Auditable() map[string]interface{} {
 // Auditable returns all auditable/loggable parameters
 func (r PageUploadIcon) GetNamespaceID() uint64 {
 	return r.NamespaceID
-}
-
-// Auditable returns all auditable/loggable parameters
-func (r PageUploadIcon) GetPageID() uint64 {
-	return r.PageID
-}
-
-// Auditable returns all auditable/loggable parameters
-func (r PageUploadIcon) GetType() types.PageIconType {
-	return r.Type
-}
-
-// Auditable returns all auditable/loggable parameters
-func (r PageUploadIcon) GetName() string {
-	return r.Name
-}
-
-// Auditable returns all auditable/loggable parameters
-func (r PageUploadIcon) GetSource() string {
-	return r.Source
 }
 
 // Auditable returns all auditable/loggable parameters
@@ -1870,27 +1809,6 @@ func (r *PageUploadIcon) Fill(req *http.Request) (err error) {
 		} else if err == nil {
 			// Multipart params
 
-			if val, ok := req.MultipartForm.Value["type"]; ok && len(val) > 0 {
-				r.Type, err = types.PageIconType(val[0]), nil
-				if err != nil {
-					return err
-				}
-			}
-
-			if val, ok := req.MultipartForm.Value["name"]; ok && len(val) > 0 {
-				r.Name, err = val[0], nil
-				if err != nil {
-					return err
-				}
-			}
-
-			if val, ok := req.MultipartForm.Value["source"]; ok && len(val) > 0 {
-				r.Source, err = val[0], nil
-				if err != nil {
-					return err
-				}
-			}
-
 			// Ignoring icon as its handled in the POST params section
 		}
 	}
@@ -1901,27 +1819,6 @@ func (r *PageUploadIcon) Fill(req *http.Request) (err error) {
 		}
 
 		// POST params
-
-		if val, ok := req.Form["type"]; ok && len(val) > 0 {
-			r.Type, err = types.PageIconType(val[0]), nil
-			if err != nil {
-				return err
-			}
-		}
-
-		if val, ok := req.Form["name"]; ok && len(val) > 0 {
-			r.Name, err = val[0], nil
-			if err != nil {
-				return err
-			}
-		}
-
-		if val, ok := req.Form["source"]; ok && len(val) > 0 {
-			r.Source, err = val[0], nil
-			if err != nil {
-				return err
-			}
-		}
 
 		if _, r.Icon, err = req.FormFile("icon"); err != nil {
 			return fmt.Errorf("error processing uploaded file: %w", err)
@@ -1935,12 +1832,6 @@ func (r *PageUploadIcon) Fill(req *http.Request) (err error) {
 
 		val = chi.URLParam(req, "namespaceID")
 		r.NamespaceID, err = payload.ParseUint64(val), nil
-		if err != nil {
-			return err
-		}
-
-		val = chi.URLParam(req, "pageID")
-		r.PageID, err = payload.ParseUint64(val), nil
 		if err != nil {
 			return err
 		}
