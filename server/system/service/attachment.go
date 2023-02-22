@@ -209,14 +209,12 @@ func (svc attachment) CreateAuthAttachment(ctx context.Context, name string, siz
 	// check the file type
 	ext := filepath.Ext(name)
 	if ext != ".jpg" && ext != ".jpeg" && ext != ".png" {
-		err = fmt.Errorf("invalid file type. only JPEG and PNG are allowed")
-		return
+		return nil, AttachmentErrInvalidAvatarFileType()
 	}
 
 	//check the file size
 	if size > 3000000 {
-		err = fmt.Errorf("file size is too large. Maximum file size is 3MB")
-		return
+		return nil, AttachmentErrInvalidAvatarFileSize()
 	}
 
 	err = func() (err error) {

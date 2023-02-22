@@ -112,6 +112,11 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 			)
 
 			if err != nil {
+				if service.AttachmentErrInvalidAvatarFileType().Is(err) || service.AttachmentErrInvalidAvatarFileSize().Is(err) {
+					req.SetKV(map[string]string{
+						"error": err.Error(),
+					})
+				}
 				return err
 			}
 

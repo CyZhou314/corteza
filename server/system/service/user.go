@@ -1074,6 +1074,10 @@ func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipa
 			map[string]string{"key": "profile-photo-avatar"},
 		)
 
+		if err != nil {
+			return err
+		}
+
 		u.Meta.AvatarID = att.ID
 
 		if err = store.UpdateUser(ctx, svc.store, u); err != nil {
