@@ -5,6 +5,6 @@ help:
   version: 'Version:'
 userSettings:
   changePassword: Change password
-  loggedInAs: Logged in as {{user}}
+  loggedInAs: Logged in as {{username}}
   logout: Logout
   profile: Profile

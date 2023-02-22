@@ -9,7 +9,7 @@
           helpDocumentation: $t('navigation:help.documentation'),
           helpFeedback: $t('navigation:help.feedback'),
           helpVersion: $t('navigation:help.version'),
-          userSettingsLoggedInAs: $t('userSettings.loggedInAs', { username }),
+          userSettingsLoggedInAs: $t('navigation:userSettings.loggedInAs', { username }),
           userSettingsProfile: $t('navigation:userSettings.profile'),
           userSettingsChangePassword: $t('navigation:userSettings.changePassword'),
           userSettingsLogout: $t('navigation:userSettings.logout'),
