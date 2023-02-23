@@ -357,10 +357,10 @@ type (
 		// Namespace ID
 		NamespaceID uint64 `json:",string"`
 
-		// Upload POST parameter
+		// Icon POST parameter
 		//
 		// Icon to upload
-		Upload *multipart.FileHeader
+		Icon *multipart.FileHeader
 	}
 
 	PageUpdateIcon struct {
@@ -1774,7 +1774,7 @@ func NewPageUploadIcon() *PageUploadIcon {
 func (r PageUploadIcon) Auditable() map[string]interface{} {
 	return map[string]interface{}{
 		"namespaceID": r.NamespaceID,
-		"upload":      r.Upload,
+		"icon":        r.Icon,
 	}
 }
 
@@ -1784,8 +1784,8 @@ func (r PageUploadIcon) GetNamespaceID() uint64 {
 }
 
 // Auditable returns all auditable/loggable parameters
-func (r PageUploadIcon) GetUpload() *multipart.FileHeader {
-	return r.Upload
+func (r PageUploadIcon) GetIcon() *multipart.FileHeader {
+	return r.Icon
 }
 
 // Fill processes request and fills internal variables
@@ -1809,7 +1809,7 @@ func (r *PageUploadIcon) Fill(req *http.Request) (err error) {
 		} else if err == nil {
 			// Multipart params
 
-			// Ignoring upload as its handled in the POST params section
+			// Ignoring icon as its handled in the POST params section
 		}
 	}
 
@@ -1820,7 +1820,7 @@ func (r *PageUploadIcon) Fill(req *http.Request) (err error) {
 
 		// POST params
 
-		if _, r.Upload, err = req.FormFile("upload"); err != nil {
+		if _, r.Icon, err = req.FormFile("icon"); err != nil {
 			return fmt.Errorf("error processing uploaded file: %w", err)
 		}
 

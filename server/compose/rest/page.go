@@ -268,7 +268,7 @@ func (ctrl *Page) ListIcons(ctx context.Context, r *request.PageListIcons) (inte
 }
 
 func (ctrl *Page) UploadIcon(ctx context.Context, r *request.PageUploadIcon) (interface{}, error) {
-	file, err := r.Upload.Open()
+	file, err := r.Icon.Open()
 	if err != nil {
 		return nil, err
 	}
@@ -283,8 +283,8 @@ func (ctrl *Page) UploadIcon(ctx context.Context, r *request.PageUploadIcon) (in
 	a, err := ctrl.attachment.CreatePageIconAttachment(
 		ctx,
 		r.NamespaceID,
-		r.Upload.Filename,
-		r.Upload.Size,
+		r.Icon.Filename,
+		r.Icon.Size,
 		file,
 	)
 

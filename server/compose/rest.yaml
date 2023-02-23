@@ -518,7 +518,7 @@ endpoints:
     title: Upload icon for page
     parameters:
       post:
-        - name: upload
+        - name: icon
           type: "*multipart.FileHeader"
           title: Icon to upload
   - name: updateIcon
