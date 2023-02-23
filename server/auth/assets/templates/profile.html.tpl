@@ -71,12 +71,12 @@
 
         <div class="mb-3">
             <label for="initialColor">{{ tr "profile.template.form.avatar-initial.color" }}</label>
-            <input type="color" id="initialColor" class="col-6 form-control" value="{{ .form.initialTextColor }}" name="initial-color">
+            <input type="color" id="initialColor" class="col-6 form-control input-color" value="{{ .form.initialTextColor }}" name="initial-color">
         </div>
 
         <div class="mb-3">    
             <label for="customColor">{{ tr "profile.template.form.avatar-initial.background-color" }}</label>
-            <input type="color" id="customColor" class="col-6 form-control" value="{{ .form.initialBgColor }}" name="initial-bg">
+            <input type="color" id="customColor" class="col-6 form-control input-color" value="{{ .form.initialBgColor }}" name="initial-bg">
         </div>
         {{ end }}
 
