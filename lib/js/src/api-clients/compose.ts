@@ -923,7 +923,6 @@ export default class Compose {
   async pageListIcons (a: KV, extra: AxiosRequestConfig = {}): Promise<KV> {
     const {
       namespaceID,
-      pageID,
       limit,
       incTotal,
       pageCursor,
@@ -932,14 +931,11 @@ export default class Compose {
     if (!namespaceID) {
       throw Error('field namespaceID is empty')
     }
-    if (!pageID) {
-      throw Error('field pageID is empty')
-    }
     const cfg: AxiosRequestConfig = {
       ...extra,
       method: 'get',
       url: this.pageListIconsEndpoint({
-        namespaceID, pageID,
+        namespaceID,
       }),
     }
     cfg.params = {
@@ -955,44 +951,27 @@ export default class Compose {
   pageListIconsEndpoint (a: KV): string {
     const {
       namespaceID,
-      pageID,
     } = a || {}
-    return `/namespace/${namespaceID}/page/${pageID}/icon`
+    return `/namespace/${namespaceID}/page/icon`
   }
 
   // Upload icon for page
   async pageUploadIcon (a: KV, extra: AxiosRequestConfig = {}): Promise<KV> {
     const {
       namespaceID,
-      pageID,
-      type,
-      name,
-      source,
       icon,
     } = (a as KV) || {}
     if (!namespaceID) {
       throw Error('field namespaceID is empty')
     }
-    if (!pageID) {
-      throw Error('field pageID is empty')
-    }
-    if (!type) {
-      throw Error('field type is empty')
-    }
-    if (!name) {
-      throw Error('field name is empty')
-    }
     const cfg: AxiosRequestConfig = {
       ...extra,
       method: 'post',
       url: this.pageUploadIconEndpoint({
-        namespaceID, pageID,
+        namespaceID,
       }),
     }
     cfg.data = {
-      type,
-      name,
-      source,
       icon,
     }
     return this.api().request(cfg).then(result => stdResolve(result))
@@ -1001,9 +980,8 @@ export default class Compose {
   pageUploadIconEndpoint (a: KV): string {
     const {
       namespaceID,
-      pageID,
     } = a || {}
-    return `/namespace/${namespaceID}/page/${pageID}/icon`
+    return `/namespace/${namespaceID}/page/icon`
   }
 
   // Update icon for page

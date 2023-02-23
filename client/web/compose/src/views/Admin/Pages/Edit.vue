@@ -153,26 +153,28 @@
                 ok-only
                 :title="$t('icon.configure')"
                 :ok-title="$t('label.saveAndClose')"
-                @ok="showModal = false"
+                @ok="setIcon"
                 @show="onOpen"
               >
                 <b-form-group
+                  class="mb-0"
                   :label="$t('icon.upload')"
                 >
                   <uploader
                     :endpoint="endpoint"
                     :accepted-files="['image/*']"
-                    @uploaded="appendAttachment"
+                    :form-data="uploaderFormData"
+                    @uploaded="uploadAttachment"
                   />
 
-                  <list-loader
-                    kind="page"
-                    enable-delete
-                    :set.sync="attachments"
-                    :namespace="namespace"
-                    mode="list"
-                    class="h-100 mt-2"
-                  />
+                  <b-form-group
+                    :label="$t('url.label')"
+                    class="mt-2"
+                  >
+                    <b-input
+                      v-model="iconUrl"
+                    />
+                  </b-form-group>
                 </b-form-group>
 
                 <hr>
@@ -275,7 +277,8 @@ export default {
       modulesList: [],
       page: new compose.Page(),
       showModal: false,
-      attachments: []
+      attachments: [],
+      isPageIcon: false,
     }
   },
 
@@ -323,13 +326,30 @@ export default {
     endpoint () {
       return this.$ComposeAPI.pageUploadIconEndpoint({
         namespaceID: this.namespaceID,
-        pageID: this.pageID,
       })
     },
 
     namespaceID () {
       return this.namespace.namespaceID ? this.namespace.namespaceID : NoID
     },
+
+
+    uploaderFormData () {
+      return {
+        upload: 'icon'
+      }
+    },
+
+    iconUrl: {
+      get () {
+        return this.page.config.navItem ? this.page.config.navItem.icon.src : ''
+      },
+
+      set (iconUrl) {
+        this.page.config.navItem.icon.src = iconUrl
+      },
+      
+    }
   },
 
   watch: {
@@ -375,36 +395,71 @@ export default {
       }).catch(this.toastErrorHandler(this.$t('notification:page.deleteFailed')))
     },
 
-    appendAttachment ({ attachmentID = {}, name = '' }) {
-      this.attachments.unshift(attachmentID)
-      
-      this.$ComposeAPI.pageUpdateIcon({
-        namespaceID: this.namespaceID,
-        pageID: this.pageID,
-        type: 'svg',
-        name: name,
+    uploadAttachment ({ attachmentID }) {
+      this.attachments.unshift({
+        attachmentID: attachmentID,
+        isPageIcon: this.isPageIcon
       })
-
-      this.page.config.navItem = {
-      icon: {
-        src: attachmentID,
-      }
-    }
+      // debugger
+      // still not working after temp fix was reverted
+      // this.$ComposeAPI.pageUploadIcon({
+      //   namespaceID: this.namespaceID,
+      //   icon: file
+      // }).then(res => {
+      //   debugger
+      //   // add icon to gallery of icons
+      //     this.attachments.unshift(attachmentID)
+      // })
     },
 
     onOpen () {
-      this.$ComposeAPI.pageListIcons({
-        namespaceID: this.namespace.namespaceID,
+      // this.$ComposeAPI.pageListIcons({
+      //   namespaceID: this.namespace.namespaceID,
+      //   pageID: this.pageID,
+      // }).then(icons => {
+      //   // not tested
+      //   debugger
+      //   if (icons) {
+      //     this.attachments = icons
+      //   } else {
+      //     this.attachments = []
+      //   }
+      //   return this.attachments
+      // })
+    },
+
+    setIcon () {
+      debugger
+      // handle link scenario
+      // handle attachment scenario
+      let attachmentType = 'link'
+      let attachmentSource = this.iconUrl
+
+      if (!this.iconUrl) {
+        attachmentType = 'attachment'
+        // get chosen icon source
+        attachmentSource = this.attachment.find(att => att.isPageIcon).attachmentID
+        attachmentSource = { attachmentSource }
+      }
+
+      this.$ComposeAPI.pageUpdateIcon({
+        namespaceID: this.namespaceID,
         pageID: this.pageID,
-      }).then(icons => {
-        // cannot upload svg to check if this works
-        debugger
-        if (icons) {
-          this.attachments = icons
-        } else {
-          this.attachments = []
+        type: attachmentType,
+        source: attachmentSource
+      }).then(i => {
+        this.page.config.navItem = {
+          icon: {
+            type: i.type,
+            src: i.src,
+          }
         }
-        return this.attachments
+        // this.page.config = {
+        //   icon: {
+        //     type: i.type,
+        //     src: i.src,
+        //   }
+        // }
       })
     },
   },
