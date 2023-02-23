@@ -439,7 +439,7 @@ func (h AuthHandlers) handleTokenRequest(req *request.AuthReq, client *types.Aut
 
 	response := h.OAuth2.GetTokenData(ti)
 
-	//
+	// include user's avatar info
 	response["profile"] = map[string]string{
 		"avatarID":                strconv.FormatUint(user.Meta.AvatarID, 10),
 		"avatarInitials":          user.Meta.AvatarInitials,

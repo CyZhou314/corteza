@@ -133,6 +133,24 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 		}
 	}
 
+	if req.Request.PostFormValue("avatar-initials") != "" {
+		for _, c := range req.Request.PostFormValue("avatar-initials") {
+			if c > 127 {
+				req.SetKV(map[string]string{
+					"error": service.UserErrInvalidInitialsCharacter().Error(),
+				})
+				return service.UserErrInvalidInitialsCharacter()
+			}
+		}
+
+		if len(req.Request.PostFormValue("avatar-initials")) > 3 {
+			req.SetKV(map[string]string{
+				"error": service.UserErrInvalidInitialsLength().Error(),
+			})
+			return service.UserErrInvalidInitialsLength()
+		}
+	}
+
 	// Assign initials
 	u.Meta.AvatarInitials = req.Request.PostFormValue("avatar-initials")
 	u.Meta.AvatarInitialsTextColor = req.Request.PostFormValue("initial-color")

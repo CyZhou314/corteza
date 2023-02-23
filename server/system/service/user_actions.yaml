@@ -157,6 +157,14 @@ errors:
     message: "you have reached your user limit, contact your Corteza  administrator"
     severity: warning
 
+  - error: invalidInitialsLength
+    message: "initials length should not exceed 3 characters"
+    severity: warning
+
+  - error: invalidInitialsCharacter
+    message: "invalid initials character"
+    severity: warning
+
   - error: notAllowedToDeleteAvatar
     message: "not allowed to delete avatar for this user"
     log: "failed to delete {{user.handle}}'s avatar; insufficient permissions"
