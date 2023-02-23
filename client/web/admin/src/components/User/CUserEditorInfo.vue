@@ -79,20 +79,20 @@
           <div class="col">
             <b-form-input
               v-model="user.meta.avatarInitials"
+              maxlength="3"
               data-test-id="input-handle"
             />
           </div>
           <div class="col">
             <div
+              v-if="user.meta.avatarInitials"
               :style="{
-                height: '4rem',
-                width: '4rem',
                 color: user.meta.avatarInitialsTextColor,
                 backgroundColor: user.meta.avatarInitialsBgColor
               }"
-              class="mr-3 d-flex justify-content-center align-items-center rounded-circle"
+              class="avatar-initial mr-3 d-flex justify-content-center align-items-center rounded-circle"
             >
-              <span style="font-size: 1.5rem; line-height: 2rem; letter-spacing: 0.05em;">{{ user.meta.avatarInitials }}</span>
+              <span class="initial-text">{{ user.meta.avatarInitials }}</span>
             </div>
           </div>
         </div>
@@ -350,15 +350,29 @@ export default {
     uploadedAvatar (name) {
       const attachmentID = this.user.meta.avatarID
 
-      return (
-        this.$SystemAPI.baseURL +
+      if (attachmentID !== '0') {
+        return (
+          this.$SystemAPI.baseURL +
             this.$SystemAPI.attachmentOriginalEndpoint({
               attachmentID,
               kind: 'avatar',
               name,
             })
-      )
+        )
+      }
     },
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.avatar-initial {
+  height: 4rem;
+  width: 4rem;
+  .initial-text {
+    font-size: 1.2rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+}
+</style>

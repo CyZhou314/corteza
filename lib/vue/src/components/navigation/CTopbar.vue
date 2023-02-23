@@ -113,7 +113,7 @@
       toggle-class="nav-icon text-decoration-none text-dark rounded-circle"
       :style="{
         'background-color': user.meta.avatarInitials && noAvatarID ? `${user.meta.avatarInitialsBgColor}` : 'transparent',
-        'background-image': user.meta.avatarID ? `url(${profileAvatarUrl})` : 'none',
+        'background-image': user.meta.avatarID && !noAvatarID  ? `url(${profileAvatarUrl})` : 'none',
         }"
       menu-class="topbar-dropdown-menu border-0 shadow-sm text-dark font-weight-bold mt-2"
       right
