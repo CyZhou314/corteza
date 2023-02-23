@@ -14,10 +14,15 @@ func (h *AuthHandlers) profileForm(req *request.AuthReq) (err error) {
 
 	var (
 		preferredLanguage string
-
-		u         = req.AuthUser.User
-		avatarUrl string
+		avatarUrl         string
 	)
+
+	u, err := h.UserService.FindByAny(req.Context(), req.AuthUser.User.ID)
+
+	if err != nil {
+		h.Log.Error("find user error", zap.Error(err))
+		return err
+	}
 
 	if langList := h.Locale.LocalizedList(req.Context()); len(langList) > 0 {
 		req.Data["languages"] = langList
@@ -87,6 +92,9 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 		// get the file from the form
 		file, header, err := req.Request.FormFile("avatar")
 		if err != nil && err != http.ErrMissingFile {
+			req.SetKV(map[string]string{
+				"error": err.Error(),
+			})
 			return err
 		}
 
@@ -99,6 +107,7 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 
 			if u.Meta.AvatarID != 0 {
 				if err = h.Attachment.DeleteByID(req.Context(), u.Meta.AvatarID); err != nil {
+					h.Log.Error("delete avatar error", zap.Error(err))
 					return err
 				}
 			}
