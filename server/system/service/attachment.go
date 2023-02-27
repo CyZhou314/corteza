@@ -224,14 +224,8 @@ func (svc attachment) CreateAuthAttachment(ctx context.Context, name string, siz
 	}
 
 	//check the file size
-	if svc.opt.AvatarMaxFileSize != 0 {
-		if size > svc.opt.AvatarMaxFileSize {
-			return nil, AttachmentErrInvalidAvatarFileSize()
-		}
-	} else {
-		if size > avatarMaxSize {
-			return nil, AttachmentErrInvalidAvatarFileSize()
-		}
+	if size > svc.opt.AvatarMaxFileSize {
+		return nil, AttachmentErrInvalidAvatarFileSize()
 	}
 
 	err = func() (err error) {

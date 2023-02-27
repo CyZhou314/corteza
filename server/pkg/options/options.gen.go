@@ -1074,6 +1074,7 @@ func Discovery() (o *DiscoveryOpt) {
 // This function is auto-generated
 func Attachment() (o *AttachmentOpt) {
 	o = &AttachmentOpt{
+		AvatarMaxFileSize:      3000000,
 		AvatarInitialsFontPath: "./auth/assets/public/fonts/poppins/Poppins-Regular.ttf",
 	}
 
