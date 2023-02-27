@@ -77,3 +77,11 @@ errors:
   - error: invalidAvatarFileSize
     message: "file size is too large maximum file size is 3MB"
     severity: warning
+
+  - error: invalidInitialsLength
+    message: "initials characters length should not exceed 3 characters"
+    severity: warning
+
+  - error: invalidInitialsCharacter
+    message: "invalid initials character"
+    severity: warning

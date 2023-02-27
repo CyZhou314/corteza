@@ -32,14 +32,15 @@ type (
 	}
 
 	Config struct {
-		ActionLog options.ActionLogOpt
-		Discovery options.DiscoveryOpt
-		Storage   options.ObjectStoreOpt
-		DB        options.DBOpt
-		Template  options.TemplateOpt
-		Auth      options.AuthOpt
-		RBAC      options.RbacOpt
-		Limit     options.LimitOpt
+		ActionLog  options.ActionLogOpt
+		Discovery  options.DiscoveryOpt
+		Storage    options.ObjectStoreOpt
+		DB         options.DBOpt
+		Template   options.TemplateOpt
+		Auth       options.AuthOpt
+		RBAC       options.RbacOpt
+		Limit      options.LimitOpt
+		Attachment options.AttachmentOpt
 	}
 
 	eventDispatcher interface {
@@ -204,7 +205,7 @@ func Initialize(ctx context.Context, log *zap.Logger, s store.Storer, ws websock
 	DefaultAuthNotification = AuthNotification(CurrentSettings, DefaultRenderer, c.Auth)
 	DefaultAuth = Auth(AuthOptions{LimitUsers: c.Limit.SystemUsers})
 	DefaultAuthClient = AuthClient(DefaultStore, DefaultAccessControl, DefaultActionlog, eventbus.Service(), c.Auth)
-	DefaultAttachment = Attachment(DefaultObjectStore)
+	DefaultAttachment = Attachment(DefaultObjectStore, c.Attachment)
 	DefaultUser = User(UserOptions{LimitUsers: c.Limit.SystemUsers})
 	DefaultCredentials = Credentials()
 	DefaultReport = Report(DefaultStore, DefaultAccessControl, DefaultActionlog, eventbus.Service())

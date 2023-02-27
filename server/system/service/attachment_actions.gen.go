@@ -673,6 +673,70 @@ func AttachmentErrInvalidAvatarFileSize(mm ...*attachmentActionProps) *errors.Er
 	return e
 }
 
+// AttachmentErrInvalidInitialsLength returns "system:attachment.invalidInitialsLength" as *errors.Error
+//
+// This function is auto-generated.
+func AttachmentErrInvalidInitialsLength(mm ...*attachmentActionProps) *errors.Error {
+	var p = &attachmentActionProps{}
+	if len(mm) > 0 {
+		p = mm[0]
+	}
+
+	var e = errors.New(
+		errors.KindInternal,
+
+		p.Format("initials characters length should not exceed 3 characters", nil),
+
+		errors.Meta("type", "invalidInitialsLength"),
+		errors.Meta("resource", "system:attachment"),
+
+		errors.Meta(attachmentPropsMetaKey{}, p),
+
+		// translation namespace & key
+		errors.Meta(locale.ErrorMetaNamespace{}, "system"),
+		errors.Meta(locale.ErrorMetaKey{}, "attachment.errors.invalidInitialsLength"),
+
+		errors.StackSkip(1),
+	)
+
+	if len(mm) > 0 {
+	}
+
+	return e
+}
+
+// AttachmentErrInvalidInitialsCharacter returns "system:attachment.invalidInitialsCharacter" as *errors.Error
+//
+// This function is auto-generated.
+func AttachmentErrInvalidInitialsCharacter(mm ...*attachmentActionProps) *errors.Error {
+	var p = &attachmentActionProps{}
+	if len(mm) > 0 {
+		p = mm[0]
+	}
+
+	var e = errors.New(
+		errors.KindInternal,
+
+		p.Format("invalid initials character", nil),
+
+		errors.Meta("type", "invalidInitialsCharacter"),
+		errors.Meta("resource", "system:attachment"),
+
+		errors.Meta(attachmentPropsMetaKey{}, p),
+
+		// translation namespace & key
+		errors.Meta(locale.ErrorMetaNamespace{}, "system"),
+		errors.Meta(locale.ErrorMetaKey{}, "attachment.errors.invalidInitialsCharacter"),
+
+		errors.StackSkip(1),
+	)
+
+	if len(mm) > 0 {
+	}
+
+	return e
+}
+
 // *********************************************************************************************************************
 // *********************************************************************************************************************
 

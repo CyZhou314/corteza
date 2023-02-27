@@ -442,6 +442,20 @@ func (svc user) Update(ctx context.Context, upd *types.User) (u *types.User, err
 		u.UpdatedAt = now()
 
 		if upd.Meta != nil {
+			if upd.Meta.AvatarInitials != "" {
+				if u.Meta.AvatarInitialsID != 0 {
+					if err = svc.att.DeleteByID(ctx, u.Meta.AvatarInitialsID); err != nil {
+						return
+					}
+				}
+
+				att, err := svc.att.CreateAvatarInitialsAttachment(ctx, upd.Meta.AvatarInitials, upd.Meta.AvatarInitialsBgColor, upd.Meta.AvatarInitialsTextColor)
+				if err != nil {
+					return err
+				}
+
+				upd.Meta.AvatarInitialsID = att.ID
+			}
 			// Only update meta when set
 			u.Meta = upd.Meta
 		}
@@ -1071,7 +1085,7 @@ func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipa
 			upload.Filename,
 			upload.Size,
 			file,
-			map[string]string{"key": "profile-photo-avatar"},
+			map[string]string{"key": types.AttachmentKindAvatar},
 		)
 
 		if err != nil {

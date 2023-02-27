@@ -57,14 +57,11 @@
                         <input class="col-10 form-control" type="text" id="avatarInitials" name="avatar-initials" value="{{ .form.avatarInitial }}">
                     </div>
 
+                    {{ if .form.avatarInitialsUrl}}
                     <div>
-                        <div
-                            style="height: 4rem; width: 4rem; color: {{ .form.initialTextColor }}; background-color: {{ .form.initialBgColor }} ;" 
-                            class="d-flex justify-content-center align-items-center rounded-circle"
-                        >
-                            <span style="font-size: 1.5rem; line-height: 2rem; letter-spacing: 0.05em;">{{ .form.avatarInitial }}</span>
-                        </div>
+                        <img style="height: 4rem; width: 4rem;" class="rounded-circle" src="{{ .form.avatarInitialsUrl }}" alt="Avatar initials">
                     </div>
+                    {{ end }}
                 </div>
             </div>
         </div>

@@ -146,20 +146,6 @@ func (ctrl User) Create(ctx context.Context, r *request.UserCreate) (interface{}
 }
 
 func (ctrl User) Update(ctx context.Context, r *request.UserUpdate) (interface{}, error) {
-	if r.Meta.AvatarInitials != "" {
-		// Check for avatar initials ASCII characters
-		for _, c := range r.Meta.AvatarInitials {
-			if c > 127 {
-				return nil, service.UserErrInvalidInitialsCharacter()
-			}
-		}
-
-		// Check for avatar initials character length
-		if len(r.Meta.AvatarInitials) > 3 {
-			return nil, service.UserErrInvalidInitialsLength()
-		}
-	}
-
 	user := &types.User{
 		ID:     r.UserID,
 		Email:  r.Email,

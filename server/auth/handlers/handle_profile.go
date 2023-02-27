@@ -34,8 +34,10 @@ func (h *AuthHandlers) profileForm(req *request.AuthReq) (err error) {
 	}
 
 	if u.Meta.AvatarID != 0 {
-		avatarUrl = fmt.Sprintf("/api/system/attachment/avatar/%d/original/profile-photo-avatar", u.Meta.AvatarID)
+		avatarUrl = fmt.Sprintf("/api/system/attachment/avatar/%d/original/%s", u.Meta.AvatarID, types.AttachmentKindAvatar)
 	}
+
+	avatarInitialsUrl := fmt.Sprintf("/api/system/attachment/avatar/%d/original/%s", u.Meta.AvatarInitialsID, types.AttachmentKindAvatarInitials)
 
 	if form := req.PopKV(); len(form) > 0 {
 		req.Data["form"] = form
@@ -46,6 +48,7 @@ func (h *AuthHandlers) profileForm(req *request.AuthReq) (err error) {
 			"name":              u.Name,
 			"preferredLanguage": preferredLanguage,
 			"avatarUrl":         avatarUrl,
+			"avatarInitialsUrl": avatarInitialsUrl,
 			"avatarInitial":     u.Meta.AvatarInitials,
 			"initialTextColor":  u.Meta.AvatarInitialsTextColor,
 			"initialBgColor":    u.Meta.AvatarInitialsBgColor,
@@ -79,10 +82,6 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 	}
 
 	if req.Request.PostFormValue("avatar-delete") == "avatar-delete" {
-		var (
-			u = req.AuthUser.User
-		)
-
 		if err := h.Attachment.DeleteByID(req.Context(), u.Meta.AvatarID); err != nil {
 			return err
 		}
@@ -133,24 +132,6 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 		}
 	}
 
-	if req.Request.PostFormValue("avatar-initials") != "" {
-		for _, c := range req.Request.PostFormValue("avatar-initials") {
-			if c > 127 {
-				req.SetKV(map[string]string{
-					"error": service.UserErrInvalidInitialsCharacter().Error(),
-				})
-				return service.UserErrInvalidInitialsCharacter()
-			}
-		}
-
-		if len(req.Request.PostFormValue("avatar-initials")) > 3 {
-			req.SetKV(map[string]string{
-				"error": service.UserErrInvalidInitialsLength().Error(),
-			})
-			return service.UserErrInvalidInitialsLength()
-		}
-	}
-
 	// Assign initials
 	u.Meta.AvatarInitials = req.Request.PostFormValue("avatar-initials")
 	u.Meta.AvatarInitialsTextColor = req.Request.PostFormValue("initial-color")
@@ -184,7 +165,9 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 		service.UserErrInvalidHandle().Is(err),
 		service.UserErrInvalidEmail().Is(err),
 		service.UserErrHandleNotUnique().Is(err),
-		service.UserErrNotAllowedToUpdate().Is(err):
+		service.UserErrNotAllowedToUpdate().Is(err),
+		service.AttachmentErrInvalidInitialsLength().Is(err),
+		service.AttachmentErrInvalidInitialsCharacter().Is(err):
 		req.SetKV(map[string]string{
 			"error":  err.Error(),
 			"email":  u.Email,

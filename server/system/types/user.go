@@ -40,6 +40,8 @@ type (
 		// User's profile avatar photo attachment ID
 		AvatarID uint64 `json:"avatarID,string"`
 
+		// User's profile avatar initials attachment ID
+		AvatarInitialsID uint64 `json:"AvatarInitialsID,string"`
 		// User's profile avatar custom initials
 		AvatarInitials string `json:"avatarInitials,omitempty"`
 		// User's profile Initial background and text color
