@@ -184,8 +184,10 @@
                   kind="page"
                   :set.sync="attachments"
                   :namespace="namespace"
+                  enable-icon-select
                   mode="gallery"
                   class="h-100"
+                  @select-attachment="selectAttachment"
                 />
               </b-modal>
             </b-form>
@@ -342,7 +344,7 @@ export default {
 
     iconUrl: {
       get () {
-        return this.page.config.navItem ? this.page.config.navItem.icon.src : ''
+        return this.page.config.navItem.icon ? this.page.config.navItem.icon.src : ''
       },
 
       set (iconUrl) {
@@ -396,6 +398,8 @@ export default {
     },
 
     uploadAttachment ({ attachmentID }) {
+      // should I check if Icon was already added?
+        // I can check by url
       this.attachments.unshift({
         attachmentID: attachmentID,
         isPageIcon: this.isPageIcon
@@ -413,18 +417,24 @@ export default {
     },
 
     onOpen () {
-      // this.$ComposeAPI.pageListIcons({
-      //   namespaceID: this.namespace.namespaceID,
-      //   pageID: this.pageID,
-      // }).then(icons => {
+      this.$ComposeAPI.pageListIcons({
+        namespaceID: this.namespace.namespaceID,
+        pageID: this.pageID,
+      })
+      // .then(icons => {
       //   // not tested
       //   debugger
       //   if (icons) {
-      //     this.attachments = icons
+          // icons.forEach(a => {
+            // if (a.src === this.page.config.navItem.icon.src) {
+              // this.attachments.push({ attachmentID: a.attachmentID, isPageIcon: true })
+            //} else {
+              // this.attachments.push(a)
+            // }
+          // })
       //   } else {
       //     this.attachments = []
       //   }
-      //   return this.attachments
       // })
     },
 
@@ -462,6 +472,36 @@ export default {
         // }
       })
     },
+
+    // set isPageIcon of selected att to true
+    selectAttachment ({ attachmentID = '', src = '' }) {
+      // test this!
+      this.attachments.forEach(a => {
+        if (!!a.isPageIcon && !a.attachmentID === attachmentID) {
+          a.isPageIcon = false
+        } else {
+          a.isPageIcon = true
+        }
+      })
+      // let currPageIcon = this.attachments.find(a => a.isPageIcon)
+      // currPageIcon.isPageIcon = false
+      // let selectedAttachment = this.attachment.find(att => att.attachmentID === attachmentID)
+      // selectedAttachment.isPageIcon = true
+    },
+
+      // set isPageIcon of selected att to true
+      unselectAttachment (attachmentID) {
+      // test this!
+      this.attachments.forEach(a => {
+        if (!!a.isPageIcon && a.attachmentID === attachmentID) {
+          a.isPageIcon = false
+        }
+      })
+      // let currPageIcon = this.attachments.find(a => a.isPageIcon)
+      // currPageIcon.isPageIcon = false
+      // let selectedAttachment = this.attachment.find(att => att.attachmentID === attachmentID)
+      // selectedAttachment.isPageIcon = true
+    }
   },
 }
 </script>

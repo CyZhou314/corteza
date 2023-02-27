@@ -115,6 +115,29 @@
           @openPreview="openLightbox({ ...a, ...$event })"
         />
 
+        <!-- style="display: flex; flex-wrap: wrap; justify-content: center;" -->
+        <div
+          v-if="mode === 'gallery'"
+        >
+          <b-button
+            v-if="enableIconSelect"
+            variant="link"
+            class="px-0"
+            style=""
+            @click="selectAttachment(a)"
+          >
+            <font-awesome-icon
+              :icon="['fa', 'check']"
+            />
+          </b-button>
+          <a
+            :href="a.download"
+            class="px-0 btn"
+          >
+            <font-awesome-icon :icon="['fas', 'download']" />
+          </a>
+        </div>
+
         <div v-else>
           <font-awesome-icon
             :icon="['far', 'file-'+ext(a)]"
@@ -159,6 +182,10 @@ export default {
       type: Boolean,
     },
 
+    enableIconSelect: {
+      type: Boolean,
+    },
+
     enableOrder: {
       type: Boolean,
       default: false,
@@ -200,6 +227,7 @@ export default {
       processing: false,
 
       attachments: [],
+      isSelected: false,
     }
   },
 
@@ -293,6 +321,11 @@ export default {
     deleteAttachment (index) {
       this.attachments.splice(index, 1)
       this.$emit('update:set', this.attachments.map(a => a.attachmentID))
+    },
+
+    selectAttachment (attachment) {
+      debugger
+      this.$emit('select-attachment', attachment.attachmentID)
     },
 
     ext (a) {
