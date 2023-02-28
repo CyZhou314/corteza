@@ -268,6 +268,16 @@ func (svc attachment) CreateAvatarInitialsAttachment(ctx context.Context, initia
 		return nil, AttachmentErrInvalidInitialsLength()
 	}
 
+	initials = strings.ToUpper(initials)
+
+	if bgColor == "" {
+		bgColor = svc.opt.AvatarInitialsBackgroundColor
+	}
+
+	if textColor == "" {
+		textColor = svc.opt.AvatarInitialsColor
+	}
+
 	// Set initials image background color and
 	// draw the initials text in the center of the image
 	dc := gg.NewContext(avatarWidth, avatarHeight)

@@ -376,6 +376,15 @@ func (svc user) Create(ctx context.Context, new *types.User) (u *types.User, err
 			return
 		}
 
+		// Process avatar initials Image
+		initials := processAvatarInitials(new)
+		att, err := svc.att.CreateAvatarInitialsAttachment(ctx, initials, "", "")
+		if err != nil {
+			return err
+		}
+		new.Meta = &types.UserMeta{}
+		new.Meta.AvatarID = att.ID
+
 		new.ID = nextID()
 		new.CreatedAt = *now()
 
@@ -1140,4 +1149,24 @@ func (svc user) DeleteAvatar(ctx context.Context, userID uint64) (err error) {
 	}()
 
 	return svc.recordAction(ctx, uaProps, UserActionDeleteAvatar, err)
+}
+
+func processAvatarInitials(u *types.User) (initials string) {
+	if u.Name != "" {
+		parts := strings.Fields(u.Name)
+		if len(parts) > 1 {
+			initials = string(parts[0][0] + parts[1][0])
+		} else {
+			initials = string(parts[0][0])
+		}
+	} else {
+		if strings.ContainsAny(u.Handle, "._-") {
+			parts := strings.Split(u.Handle, "._-")
+			initials = string(parts[0][0] + parts[1][0])
+		} else {
+			initials = string(u.Handle[0])
+		}
+	}
+
+	return initials
 }

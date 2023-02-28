@@ -263,8 +263,10 @@ type (
 	}
 
 	AttachmentOpt struct {
-		AvatarMaxFileSize      int64  `env:"ATTACHMENT_AVATAR_MAX_FILE_SIZE"`
-		AvatarInitialsFontPath string `env:"AVATAR_INITIALS_FONT_PATH"`
+		AvatarMaxFileSize             int64  `env:"ATTACHMENT_AVATAR_MAX_FILE_SIZE"`
+		AvatarInitialsFontPath        string `env:"AVATAR_INITIALS_FONT_PATH"`
+		AvatarInitialsBackgroundColor string `env:"AVATAR_INITIALS_BACKGROUND_COLOR"`
+		AvatarInitialsColor           string `env:"AVATAR_INITIALS_COLOR"`
 	}
 )
 
@@ -1074,8 +1076,10 @@ func Discovery() (o *DiscoveryOpt) {
 // This function is auto-generated
 func Attachment() (o *AttachmentOpt) {
 	o = &AttachmentOpt{
-		AvatarMaxFileSize:      3000000,
-		AvatarInitialsFontPath: "./auth/assets/public/fonts/poppins/Poppins-Regular.ttf",
+		AvatarMaxFileSize:             3000000,
+		AvatarInitialsFontPath:        "./auth/assets/public/fonts/poppins/Poppins-Regular.ttf",
+		AvatarInitialsBackgroundColor: "#000000",
+		AvatarInitialsColor:           "#ffffff",
 	}
 
 	// Custom defaults
