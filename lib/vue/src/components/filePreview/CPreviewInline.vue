@@ -4,6 +4,7 @@
       <component
         :is="previewType"
         v-bind="$attrs"
+        :disable-preview="disablePreview"
         :max-pages="1"
         :inline="inline"
         :initial-scale="1.5"

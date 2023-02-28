@@ -6,11 +6,11 @@
       :src="src"
       :title="title"
       :alt="alt"
+      :style="{'cursor': disablePreview ? 'default' : 'zoom-in'}"
       :class="getClass"
-      :style="previewStyle"
       :width="getWidth"
       :height="getHeight"
-      @click="$emit('openPreview', {})"
+      @click="openPreview"
       @error.once="reloadBrokenImage"
       @load="loaded=true"
     >
@@ -29,10 +29,15 @@ export default {
       type: String,
       default: null,
     },
+
     title: {
       required: false,
       type: String,
       default: null,
+    },
+
+    disablePreview: {
+      type: Boolean,
     },
   },
 
@@ -74,6 +79,12 @@ export default {
         }, 500)
       }
     },
+
+    openPreview () {
+      if (!this.disablePreview) {
+        this.$emit('openPreview', {})
+      }
+    },
   },
 }
 </script>
@@ -86,11 +97,6 @@ div {
       width: auto;
       height: auto;
       display: block;
-    }
-  }
-  &.inline {
-    img {
-      cursor: zoom-in;
     }
   }
 }

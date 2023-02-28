@@ -185,6 +185,7 @@
                   :set.sync="attachments"
                   :namespace="namespace"
                   enable-icon-select
+                  disable-preview
                   mode="gallery"
                   class="h-100"
                   @select-attachment="selectAttachment"

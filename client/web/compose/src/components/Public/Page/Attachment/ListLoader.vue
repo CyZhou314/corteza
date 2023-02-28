@@ -97,45 +97,69 @@
     <div
       v-else
       class="single gallery"
-    >
+      :class="{ 'd-flex flex-wrap justify-content-between': iconsInline }"
+      >
       <div
         v-for="(a) in files"
         :key="a.attachmentID"
         class="my-2"
       >
-        <c-preview-inline
-          v-if="canPreview(a)"
-          class="ml-0"
-          :src="inlineUrl(a)"
-          :meta="a.meta"
-          :name="a.name"
-          :alt="a.name"
-          :preview-style="{ width: 'unset', ...inlineCustomStyles(a) }"
-          :labels="previewLabels"
-          @openPreview="openLightbox({ ...a, ...$event })"
-        />
-
-        <!-- style="display: flex; flex-wrap: wrap; justify-content: center;" -->
         <div
-          v-if="mode === 'gallery'"
+          v-if="canPreview(a)"
+          class="position-relative"
+          @mouseover="hoveredItem = a.attachmentID"
+          @mouseleave="hoveredItem = ''"
         >
-          <b-button
-            v-if="enableIconSelect"
-            variant="link"
-            class="px-0"
-            style=""
-            @click="selectAttachment(a)"
+          <c-preview-inline
+            class="ml-0"
+            :class="{'blurBg' : hoveredItem && disablePreview}"
+            :disable-preview="disablePreview"
+            :src="inlineUrl(a)"
+            :meta="a.meta"
+            :name="a.name"
+            :alt="a.name"
+            :preview-style="{ width: 'unset', ...inlineCustomStyles(a) }"
+            :labels="previewLabels"
+            @openPreview="openLightbox({ ...a, ...$event })"
+          />
+
+          <div 
+            v-if="mode === 'gallery' && disablePreview && hoveredItem === a.attachmentID"
+            :class="{
+              'iconClass': hoveredItem,
+              'd-none': !hoveredItem,
+              'iconHover': hoveredItem,
+            }"
           >
-            <font-awesome-icon
-              :icon="['fa', 'check']"
-            />
-          </b-button>
-          <a
-            :href="a.download"
-            class="px-0 btn"
-          >
-            <font-awesome-icon :icon="['fas', 'download']" />
-          </a>
+            <b-button
+              class="my-2 mr-2 px-1 text-primary bg-white border-0"
+              size="sm"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'search']"
+                @click="openLightbox({ ...a, ...$event })"
+              />
+            </b-button>
+            <b-button
+              v-if="enableIconSelect"
+              variant="link"
+              class="mr-2 px-1 text-primary bg-white"
+              size="sm"
+              @click="selectAttachment(a)"
+            >
+              <font-awesome-icon
+                :icon="['fa', 'check']"
+              />
+            </b-button>
+            <a
+              :href="a.download"
+              class="px-1 btn btn-sm text-primary bg-white"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'download']"
+              />
+            </a>
+          </div>
         </div>
 
         <div v-else>
@@ -220,6 +244,14 @@ export default {
       type: Object,
       default: () => ({}),
     },
+
+    iconsInline: {
+      type: Boolean,
+    },
+
+    disablePreview: {
+      type: Boolean,
+    },
   },
 
   data () {
@@ -228,6 +260,8 @@ export default {
 
       attachments: [],
       isSelected: false,
+      showIconButton: false,
+      hoveredItem: '',
     }
   },
 
@@ -398,6 +432,25 @@ export default {
 }
 
 .single {
+  .blurBg {
+    :hover {
+      filter: blur(3px);
+    }
+  }
+  button.bg-white:hover,
+  a.bg-white:hover {
+    background: $white !important;
+    color: $black !important;
+  }
+
+  .iconClass {
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 48%;
+    transform: translate(-50%, -50%);
+  }
+
   .svg-inline--fa {
     font-size: 40px;
   }
