@@ -153,7 +153,7 @@ func (ctrl User) Update(ctx context.Context, r *request.UserUpdate) (interface{}
 		Handle:             r.Handle,
 		Kind:               r.Kind,
 		Labels:             r.Labels,
-		AvatarInitialsMeta: r.AvatarInitialMeta,
+		AvatarInitialsMeta: r.AvatarInitialsMeta,
 	}
 
 	res, err := ctrl.user.Update(ctx, user)
