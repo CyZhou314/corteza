@@ -165,10 +165,10 @@ type (
 		// Handle
 		Handle string
 
-		// Meta POST parameter
+		// AvatarInitialMeta POST parameter
 		//
-		// User Meta
-		Meta *types.UserMeta
+		// User avatar initials meta
+		AvatarInitialMeta *types.UserAvatarInitialsMeta
 
 		// Kind POST parameter
 		//
@@ -756,13 +756,13 @@ func NewUserUpdate() *UserUpdate {
 // Auditable returns all auditable/loggable parameters
 func (r UserUpdate) Auditable() map[string]interface{} {
 	return map[string]interface{}{
-		"userID": r.UserID,
-		"email":  r.Email,
-		"name":   r.Name,
-		"handle": r.Handle,
-		"meta":   r.Meta,
-		"kind":   r.Kind,
-		"labels": r.Labels,
+		"userID":            r.UserID,
+		"email":             r.Email,
+		"name":              r.Name,
+		"handle":            r.Handle,
+		"avatarInitialMeta": r.AvatarInitialMeta,
+		"kind":              r.Kind,
+		"labels":            r.Labels,
 	}
 }
 
@@ -787,8 +787,8 @@ func (r UserUpdate) GetHandle() string {
 }
 
 // Auditable returns all auditable/loggable parameters
-func (r UserUpdate) GetMeta() *types.UserMeta {
-	return r.Meta
+func (r UserUpdate) GetAvatarInitialMeta() *types.UserAvatarInitialsMeta {
+	return r.AvatarInitialMeta
 }
 
 // Auditable returns all auditable/loggable parameters
@@ -843,13 +843,13 @@ func (r *UserUpdate) Fill(req *http.Request) (err error) {
 				}
 			}
 
-			if val, ok := req.MultipartForm.Value["meta[]"]; ok {
-				r.Meta, err = types.ParseUserMeta(val)
+			if val, ok := req.MultipartForm.Value["avatarInitialMeta[]"]; ok {
+				r.AvatarInitialMeta, err = types.ParseUserAvatarInitialsMeta(val)
 				if err != nil {
 					return err
 				}
-			} else if val, ok := req.MultipartForm.Value["meta"]; ok {
-				r.Meta, err = types.ParseUserMeta(val)
+			} else if val, ok := req.MultipartForm.Value["avatarInitialMeta"]; ok {
+				r.AvatarInitialMeta, err = types.ParseUserAvatarInitialsMeta(val)
 				if err != nil {
 					return err
 				}
@@ -904,13 +904,13 @@ func (r *UserUpdate) Fill(req *http.Request) (err error) {
 			}
 		}
 
-		if val, ok := req.Form["meta[]"]; ok {
-			r.Meta, err = types.ParseUserMeta(val)
+		if val, ok := req.Form["avatarInitialMeta[]"]; ok {
+			r.AvatarInitialMeta, err = types.ParseUserAvatarInitialsMeta(val)
 			if err != nil {
 				return err
 			}
-		} else if val, ok := req.Form["meta"]; ok {
-			r.Meta, err = types.ParseUserMeta(val)
+		} else if val, ok := req.Form["avatarInitialMeta"]; ok {
+			r.AvatarInitialMeta, err = types.ParseUserAvatarInitialsMeta(val)
 			if err != nil {
 				return err
 			}

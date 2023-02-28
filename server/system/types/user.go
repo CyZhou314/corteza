@@ -30,6 +30,8 @@ type (
 		SuspendedAt *time.Time `json:"suspendedAt,omitempty"`
 		DeletedAt   *time.Time `json:"deletedAt,omitempty"`
 
+		AvatarInitialsMeta *UserAvatarInitialsMeta `json:"avatarInitialsMeta"`
+
 		// Hold list of roles this user is member of.
 		// we're using this for auth/identifier purposes, to support Roles() func
 		// that satisfies Identifiable interface
@@ -39,14 +41,6 @@ type (
 	UserMeta struct {
 		// User's profile avatar photo attachment ID
 		AvatarID uint64 `json:"avatarID,string"`
-
-		// User's profile avatar initials attachment ID
-		AvatarInitialsID uint64 `json:"AvatarInitialsID,string"`
-		// User's profile avatar custom initials
-		AvatarInitials string `json:"avatarInitials,omitempty"`
-		// User's profile Initial background and text color
-		AvatarInitialsTextColor string `json:"avatarInitialsTextColor,omitempty"`
-		AvatarInitialsBgColor   string `json:"avatarInitialsBgColor,omitempty"`
 
 		PreferredLanguage string `json:"preferredLanguage"`
 
@@ -67,6 +61,13 @@ type (
 				//StrictTOTP bool `json:"strictTOTP"`
 			} `json:"mfa"`
 		} `json:"securityPolicy"`
+	}
+
+	// UserAvatarInitialsMeta profile avatar custom initials
+	UserAvatarInitialsMeta struct {
+		Initials  string `json:"initials,omitempty"`
+		TextColor string `json:"textColor,omitempty"`
+		BgColor   string `json:"bgColor,omitempty"`
 	}
 
 	UserFilter struct {
@@ -166,8 +167,8 @@ func (u *User) Clone() *User {
 func (meta *UserMeta) Scan(src any) error           { return sql.ParseJSON(src, meta) }
 func (meta *UserMeta) Value() (driver.Value, error) { return json.Marshal(meta) }
 
-func ParseUserMeta(ss []string) (p *UserMeta, err error) {
-	p = &UserMeta{}
+func ParseUserAvatarInitialsMeta(ss []string) (p *UserAvatarInitialsMeta, err error) {
+	p = &UserAvatarInitialsMeta{}
 
 	if len(ss) == 0 {
 		return

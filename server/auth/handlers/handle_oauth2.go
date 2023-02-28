@@ -439,15 +439,9 @@ func (h AuthHandlers) handleTokenRequest(req *request.AuthReq, client *types.Aut
 
 	response := h.OAuth2.GetTokenData(ti)
 
-	// include user's avatar info
+	// include user's avatarID
 	if user.Meta.AvatarID != 0 {
-		response["profile"] = map[string]string{
-			"avatarID": strconv.FormatUint(user.Meta.AvatarID, 10),
-		}
-	} else if user.Meta.AvatarInitialsID != 0 {
-		response["profile"] = map[string]string{
-			"avatarID": strconv.FormatUint(user.Meta.AvatarInitialsID, 10),
-		}
+		response["avatarID"] = strconv.FormatUint(user.Meta.AvatarID, 10)
 	}
 
 	// in case client is configured with "openid" scope,

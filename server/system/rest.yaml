@@ -561,11 +561,11 @@ endpoints:
         type: string
         required: false
         title: Handle
-      - name: meta
-        type: "*types.UserMeta"
-        parser: "types.ParseUserMeta"
+      - name: avatarInitialMeta
+        type: "*types.UserAvatarInitialsMeta"
+        parser: "types.ParseUserAvatarInitialsMeta"
         required: false
-        title: User Meta
+        title: User avatar initials meta
       - name: kind
         type: types.UserKind
         required: false

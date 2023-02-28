@@ -442,22 +442,24 @@ func (svc user) Update(ctx context.Context, upd *types.User) (u *types.User, err
 		u.UpdatedAt = now()
 
 		if upd.Meta != nil {
-			if upd.Meta.AvatarInitials != "" {
-				if u.Meta.AvatarInitialsID != 0 {
-					if err = svc.att.DeleteByID(ctx, u.Meta.AvatarInitialsID); err != nil {
-						return
-					}
-				}
-
-				att, err := svc.att.CreateAvatarInitialsAttachment(ctx, upd.Meta.AvatarInitials, upd.Meta.AvatarInitialsBgColor, upd.Meta.AvatarInitialsTextColor)
-				if err != nil {
-					return err
-				}
-
-				upd.Meta.AvatarInitialsID = att.ID
-			}
 			// Only update meta when set
 			u.Meta = upd.Meta
+		}
+
+		// process avatar initial image
+		if upd.AvatarInitialsMeta != nil {
+			if u.Meta.AvatarID != 0 {
+				if err = svc.att.DeleteByID(ctx, u.Meta.AvatarID); err != nil {
+					return
+				}
+			}
+
+			att, err := svc.att.CreateAvatarInitialsAttachment(ctx, upd.AvatarInitialsMeta.Initials, upd.AvatarInitialsMeta.BgColor, upd.AvatarInitialsMeta.TextColor)
+			if err != nil {
+				return err
+			}
+
+			u.Meta.AvatarID = att.ID
 		}
 
 		if err = svc.eventbus.WaitFor(ctx, event.UserBeforeUpdate(upd, u)); err != nil {

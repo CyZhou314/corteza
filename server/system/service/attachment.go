@@ -29,7 +29,6 @@ import (
 const (
 	attachmentPreviewMaxWidth  = 320
 	attachmentPreviewMaxHeight = 180
-	avatarMaxSize              = 3000000
 	avatarWidth                = 300
 	avatarHeight               = 300
 )
@@ -314,9 +313,27 @@ func (svc attachment) CreateAvatarInitialsAttachment(ctx context.Context, initia
 
 		aaProps.setAttachment(att)
 
+		// Create a PNG encoder with custom options.
+		initialsMetaData := map[string]string{
+			"Initials":  initials,
+			"BgColor":   bgColor,
+			"TextColor": textColor,
+		}
+
 		var buf = &bytes.Buffer{}
 		if err = imaging.Encode(buf, dc.Image(), imaging.PNG); err != nil {
 			return err
+		}
+
+		// Add initials metadata tEXt chunks to the PNG metadata.
+		for key, value := range initialsMetaData {
+			if _, err := buf.Write([]byte("tEXt")); err != nil {
+				return err
+			}
+
+			if _, err := buf.Write([]byte(key + "\x00" + value)); err != nil {
+				return err
+			}
 		}
 
 		if err = svc.files.Save(att.Url, buf); err != nil {

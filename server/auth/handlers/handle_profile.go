@@ -37,8 +37,6 @@ func (h *AuthHandlers) profileForm(req *request.AuthReq) (err error) {
 		avatarUrl = fmt.Sprintf("/api/system/attachment/avatar/%d/original/%s", u.Meta.AvatarID, types.AttachmentKindAvatar)
 	}
 
-	avatarInitialsUrl := fmt.Sprintf("/api/system/attachment/avatar/%d/original/%s", u.Meta.AvatarInitialsID, types.AttachmentKindAvatarInitials)
-
 	if form := req.PopKV(); len(form) > 0 {
 		req.Data["form"] = form
 	} else {
@@ -48,10 +46,9 @@ func (h *AuthHandlers) profileForm(req *request.AuthReq) (err error) {
 			"name":              u.Name,
 			"preferredLanguage": preferredLanguage,
 			"avatarUrl":         avatarUrl,
-			"avatarInitialsUrl": avatarInitialsUrl,
-			"avatarInitial":     u.Meta.AvatarInitials,
-			"initialTextColor":  u.Meta.AvatarInitialsTextColor,
-			"initialBgColor":    u.Meta.AvatarInitialsBgColor,
+			//"avatarInitial":     u.Meta.AvatarInitials,
+			//"initialTextColor":  u.Meta.AvatarInitialsTextColor,
+			//"initialBgColor":    u.Meta.AvatarInitialsBgColor,
 		}
 	}
 
@@ -132,10 +129,13 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 		}
 	}
 
-	// Assign initials
-	u.Meta.AvatarInitials = req.Request.PostFormValue("avatar-initials")
-	u.Meta.AvatarInitialsTextColor = req.Request.PostFormValue("initial-color")
-	u.Meta.AvatarInitialsBgColor = req.Request.PostFormValue("initial-bg")
+	if req.Request.PostFormValue("avatar-initials") != "" {
+		u.AvatarInitialsMeta = &types.UserAvatarInitialsMeta{}
+
+		u.AvatarInitialsMeta.Initials = req.Request.PostFormValue("avatar-initials")
+		u.AvatarInitialsMeta.TextColor = req.Request.PostFormValue("initial-color")
+		u.AvatarInitialsMeta.BgColor = req.Request.PostFormValue("initial-bg")
+	}
 
 	// a little workaround to inject current user as authenticated identity into context
 	// this way user service will pass us through.
