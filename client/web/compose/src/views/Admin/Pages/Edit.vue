@@ -173,6 +173,8 @@
                   >
                     <b-input
                       v-model="iconUrl"
+                      :disabled="isIconSet"
+                      :style="{'cursor': isIconSet ? 'not-allowed' : 'default'}"
                     />
                   </b-form-group>
                 </b-form-group>
@@ -184,11 +186,13 @@
                   kind="page"
                   :set.sync="attachments"
                   :namespace="namespace"
+                  :disabled="iconUrl"
+                  :style="{'cursor': isIconSet ? 'not-allowed' : 'default'}"
                   enable-icon-select
                   disable-preview
                   mode="gallery"
                   class="h-100"
-                  @select-attachment="selectAttachment"
+                  @toggle-selected-icon="toggleSelectedIcon"
                 />
               </b-modal>
             </b-form>
@@ -351,7 +355,10 @@ export default {
       set (iconUrl) {
         this.page.config.navItem.icon.src = iconUrl
       },
-      
+    },
+
+    isIconSet () {
+      this.attachments.find(a => a.isPageIcon)
     }
   },
 
@@ -427,6 +434,7 @@ export default {
       //   debugger
       //   if (icons) {
           // icons.forEach(a => {
+            // check curr selected icon
             // if (a.src === this.page.config.navItem.icon.src) {
               // this.attachments.push({ attachmentID: a.attachmentID, isPageIcon: true })
             //} else {
@@ -474,35 +482,19 @@ export default {
       })
     },
 
-    // set isPageIcon of selected att to true
-    selectAttachment ({ attachmentID = '', src = '' }) {
+    toggleSelectedIcon ({ attachmentID = '' }) {
+      debugger
       // test this!
-      this.attachments.forEach(a => {
-        if (!!a.isPageIcon && !a.attachmentID === attachmentID) {
+      this.attachments = this.attachments.map(a => {
+        if (a.isPageIcon && !a.attachmentID === attachmentID) {
           a.isPageIcon = false
         } else {
           a.isPageIcon = true
         }
-      })
-      // let currPageIcon = this.attachments.find(a => a.isPageIcon)
-      // currPageIcon.isPageIcon = false
-      // let selectedAttachment = this.attachment.find(att => att.attachmentID === attachmentID)
-      // selectedAttachment.isPageIcon = true
-    },
 
-      // set isPageIcon of selected att to true
-      unselectAttachment (attachmentID) {
-      // test this!
-      this.attachments.forEach(a => {
-        if (!!a.isPageIcon && a.attachmentID === attachmentID) {
-          a.isPageIcon = false
-        }
+        return a
       })
-      // let currPageIcon = this.attachments.find(a => a.isPageIcon)
-      // currPageIcon.isPageIcon = false
-      // let selectedAttachment = this.attachment.find(att => att.attachmentID === attachmentID)
-      // selectedAttachment.isPageIcon = true
-    }
+    },
   },
 }
 </script>

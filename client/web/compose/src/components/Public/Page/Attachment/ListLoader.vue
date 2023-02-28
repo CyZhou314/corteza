@@ -123,44 +123,67 @@
             @openPreview="openLightbox({ ...a, ...$event })"
           />
 
-          <div 
-            v-if="mode === 'gallery' && disablePreview && hoveredItem === a.attachmentID"
-            :class="{
-              'iconClass': hoveredItem,
-              'd-none': !hoveredItem,
-              'iconHover': hoveredItem,
-            }"
+          <div
+            v-if="mode === 'gallery' && disablePreview "
           >
-            <b-button
-              class="my-2 mr-2 px-1 text-primary bg-white border-0"
-              size="sm"
+            <div
+              v-if="a.isPageIcon"
+              class="iconClass"
             >
-              <font-awesome-icon
-                :icon="['fas', 'search']"
-                @click="openLightbox({ ...a, ...$event })"
-              />
-            </b-button>
-            <b-button
-              v-if="enableIconSelect"
-              variant="link"
-              class="mr-2 px-1 text-primary bg-white"
-              size="sm"
-              @click="selectAttachment(a)"
+              <b-button
+                v-if="enableIconSelect"
+                variant="link"
+                class="mr-2 px-1 bg-white d-inline-block text-success selectedIcon"
+                size="sm"
+                @click="toggleSelectedIcon(a, 'unselect')"
+              >
+                <font-awesome-icon
+                  :icon="['fa', 'check']"
+                />
+              </b-button>
+            </div>
+            <div 
+              v-else-if="hoveredItem === a.attachmentID && !a.isPageIcon"
+              :class="{
+                'iconClass': hoveredItem,
+                'd-none': !hoveredItem && a.isPageIcon,
+                'd-inline-block': isPageIcon
+              }"
             >
-              <font-awesome-icon
-                :icon="['fa', 'check']"
-              />
-            </b-button>
-            <a
-              :href="a.download"
-              class="px-1 btn btn-sm text-primary bg-white"
-            >
-              <font-awesome-icon
-                :icon="['fas', 'download']"
-              />
-            </a>
+              <b-button
+                class="my-2 mr-2 px-1 text-primary bg-white border-0"
+                size="sm"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'search']"
+                  @click="openLightbox({ ...a, ...$event })"
+                />
+              </b-button>
+              <b-button
+                v-if="enableIconSelect"
+                variant="link"
+                class="mr-2 px-1 bg-white"
+                size="sm"
+                :class="[
+                  a.isPageIcon ? 'd-inline-block text-success selectedIcon' : 'text-primary'
+                ]"
+                @click="toggleSelectedIcon(a)"
+              >
+                <font-awesome-icon
+                  :icon="['fa', 'check']"
+                />
+              </b-button>
+              <a
+                :href="a.download"
+                class="px-1 btn btn-sm text-primary bg-white"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'download']"
+                />
+              </a>
+            </div> 
+            </div>
           </div>
-        </div>
 
         <div v-else>
           <font-awesome-icon
@@ -259,7 +282,7 @@ export default {
       processing: false,
 
       attachments: [],
-      isSelected: false,
+      isPageIcon: false,
       showIconButton: false,
       hoveredItem: '',
     }
@@ -357,9 +380,29 @@ export default {
       this.$emit('update:set', this.attachments.map(a => a.attachmentID))
     },
 
-    selectAttachment (attachment) {
-      debugger
-      this.$emit('select-attachment', attachment.attachmentID)
+    toggleSelectedIcon (attachment, action = 'select') {
+      if (action === 'unselect') {
+        this.isPageIcon = false
+      } else {
+        this.isPageIcon = true
+      }
+
+      this.attachments = this.attachments.map(a => {
+        if (a.isPageIcon) {
+          a.isPageIcon = false
+        }
+        if (a.attachmentID === attachment.attachmentID) {
+          a = {
+            ...a,
+            isPageIcon: this.isPageIcon
+          }
+        }
+
+        return a
+      })
+      // debugger
+
+      this.$emit('toggle-selected-icon', attachment.attachmentID)
     },
 
     ext (a) {
@@ -437,10 +480,20 @@ export default {
       filter: blur(3px);
     }
   }
+
   button.bg-white:hover,
   a.bg-white:hover {
     background: $white !important;
-    color: $black !important;
+  }
+
+  a.bg-white:hover {
+    color: $primary !important;
+  }
+
+  .selectedIcon {
+    :hover {
+      color: $success !important;
+    }
   }
 
   .iconClass {
