@@ -53,21 +53,21 @@
         label-cols="2"
       >
         <b-button
-          v-if="uploadedAvatar('profile-photo-avatar')"
+          v-if="uploadedAvatar('avatar')"
           variant="link"
           class="d-flex align-items-top text-dark p-1"
-          @click="$emit('resetAttachment', 'profile-photo-avatar')"
+          @click="$emit('resetAttachment', 'avatar')"
         >
           <font-awesome-icon :icon="['far', 'trash-alt']" />
         </b-button>
 
         <c-uploader-with-preview
-          :value="uploadedAvatar('profile-photo-avatar')"
+          :value="uploadedAvatar('avatar')"
           :endpoint="`/users/${user.userID}/avatar`"
           :labels="$t('avatar.uploader', { returnObjects: true })"
           class="w-50"
           @upload="$emit('onUpload')"
-          @clear="$emit('resetAttachment', 'profile-photo-avatar')"
+          @clear="$emit('resetAttachment', 'avatar')"
         />
       </b-form-group>
 
@@ -75,27 +75,12 @@
         :label="$t('avatarInitial.title')"
         label-cols="2"
       >
-        <div class="row justify-content-center">
-          <div class="col">
-            <b-form-input
-              v-model="user.meta.avatarInitials"
-              maxlength="3"
-              data-test-id="input-handle"
-            />
-          </div>
-          <div class="col">
-            <div
-              v-if="user.meta.avatarInitials"
-              :style="{
-                color: user.meta.avatarInitialsTextColor,
-                backgroundColor: user.meta.avatarInitialsBgColor
-              }"
-              class="avatar-initial mr-3 d-flex justify-content-center align-items-center rounded-circle"
-            >
-              <span class="initial-text">{{ user.meta.avatarInitials }}</span>
-            </div>
-          </div>
-        </div>
+        <b-form-input
+          v-model="user.avatarInitialsMeta.initials"
+          maxlength="3"
+          class="col-6"
+          data-test-id="input-handle"
+        />
 
         <b-form-invalid-feedback :state="handleState">
           {{ $t('invalid-handle-characters') }}
@@ -108,7 +93,7 @@
         class="mt-3"
       >
         <b-form-input
-          v-model="user.meta.avatarInitialsTextColor"
+          v-model="user.avatarInitialsMeta.textColor"
           type="color"
           class="col-6"
           data-test-id="input-handle"
@@ -121,7 +106,7 @@
         class="mt-3"
       >
         <b-form-input
-          v-model="user.meta.avatarInitialsBgColor"
+          v-model="user.avatarInitialsMeta.bgColor"
           type="color"
           class="col-6"
           data-test-id="input-handle"
@@ -364,15 +349,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss" scoped>
-.avatar-initial {
-  height: 4rem;
-  width: 4rem;
-  .initial-text {
-    font-size: 1.2rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-}
-</style>

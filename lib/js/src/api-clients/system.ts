@@ -1052,7 +1052,7 @@ export default class System {
       email,
       name,
       handle,
-      meta,
+      avatarInitialsMeta,
       kind,
       labels,
     } = (a as KV) || {}
@@ -1076,7 +1076,7 @@ export default class System {
       email,
       name,
       handle,
-      meta,
+      avatarInitialsMeta,
       kind,
       labels,
     }

@@ -107,25 +107,19 @@
       data-test-id="dropdown-profile"
       data-v-onboarding="profile"
       size="lg"
-      :variant="user.meta.avatarInitials  || !noAvatarID ? 'light-outline' : 'outline-light'"
-      :class="{ 'avatar': user.meta.avatarInitials || !noAvatarID }"
+      :variant="avatarExists ? 'light-outline' : 'outline-light'"
+      :class="{ 'avatar': avatarExists }"
       class="nav-user-icon"
       toggle-class="nav-icon text-decoration-none text-dark rounded-circle"
       :style="{
-        'background-color': user.meta.avatarInitials && noAvatarID ? `${user.meta.avatarInitialsBgColor}` : 'transparent',
-        'background-image': user.meta.avatarID && !noAvatarID  ? `url(${profileAvatarUrl})` : 'none',
+        'background-image': avatarExists  ? `url(${profileAvatarUrl})` : 'none',
         }"
       menu-class="topbar-dropdown-menu border-0 shadow-sm text-dark font-weight-bold mt-2"
       right
       no-caret
     >
       <template #button-content>
-        <div v-if="!noAvatarID"></div>
-        <div v-else-if="user.meta.avatarInitials" :style="{
-          color: user.meta.avatarInitialsTextColor,
-        }">
-          <span class="avatar-initial">{{ user.meta.avatarInitials }}</span>
-        </div>
+        <div v-if="avatarExists"></div>
         <div
           v-else
           class="d-flex align-items-center justify-content-center"
@@ -261,8 +255,8 @@ export default {
       return `${this.$SystemAPI.baseURL}/attachment/avatar/${this.user.meta.avatarID}/original/profile-photo-avatar`
     },
 
-    noAvatarID () {
-      return this.user.meta.avatarID === "0"
+    avatarExists () {
+      return this.user.meta.avatarID !== "0" && this.user.meta.avatarID
     },
   }
 }
@@ -303,18 +297,10 @@ $nav-user-icon-size: 50px;
 }
 
 .avatar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   border-radius: 50%;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-}
-
-.avatar-initial {
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
 }
 
 .spacer {

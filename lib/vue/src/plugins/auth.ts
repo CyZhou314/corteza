@@ -45,14 +45,7 @@ interface OAuth2TokenResponse {
   handle?: string;
   email?: string;
   preferred_language?: string;
-  profile: ProfileAvatar
-}
-
-interface ProfileAvatar {
   avatarID?: string;
-  avatarInitials?: string;
-  avatarInitialsTextColor?: string;
-  avatarInitialsBgColor?: string;
 }
 
 interface PluginOpts {
@@ -586,10 +579,7 @@ export class Auth {
       u.meta.preferredLanguage = oa2tkn.preferred_language
     }
 
-    u.meta.avatarID = oa2tkn.profile.avatarID
-    u.meta.avatarInitials = oa2tkn.profile.avatarInitials
-    u.meta.avatarInitialsTextColor = oa2tkn.profile.avatarInitialsTextColor
-    u.meta.avatarInitialsBgColor = oa2tkn.profile.avatarInitialsBgColor
+    u.meta.avatarID = oa2tkn.avatarID
 
     this[accessToken] = oa2tkn.access_token
     this[user] = u
