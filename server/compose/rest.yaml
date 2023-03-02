@@ -494,33 +494,6 @@ endpoints:
           type: locale.ResourceTranslationSet
           title: Resource translation to upsert
           required: true
-  - name: listIcons
-    method: GET
-    title: List page icons
-    path: "/icon"
-    parameters:
-      get:
-        - type: uint
-          name: limit
-          title: Limit
-        - type: bool
-          name: incTotal
-          title: Include total counter
-        - type: string
-          name: pageCursor
-          title: Page cursor
-        - type: string
-          name: sort
-          title: Sort items
-  - name: uploadIcon
-    path: "/icon"
-    method: POST
-    title: Upload icon for page
-    parameters:
-      post:
-        - name: icon
-          type: "*multipart.FileHeader"
-          title: Icon to upload
   - name: updateIcon
     path: "/{pageID}/icon"
     method: PATCH
@@ -543,6 +516,40 @@ endpoints:
           type: map[string]string
           title: Icon style
           parser: label.ParseStrings
+
+- title: PageIcons
+  description: Compose page icons
+  entrypoint: pageIcon
+  path: "/page/icon"
+  apis:
+  - name: list
+    method: GET
+    title: List page icons
+    path: "/"
+    parameters:
+      get:
+        - type: uint
+          name: limit
+          title: Limit
+        - type: bool
+          name: incTotal
+          title: Include total counter
+        - type: string
+          name: pageCursor
+          title: Page cursor
+        - type: string
+          name: sort
+          title: Sort items
+  - name: upload
+    path: "/"
+    method: POST
+    title: Upload icon for page
+    parameters:
+      post:
+        - name: icon
+          type: "*multipart.FileHeader"
+          title: Icon to upload
+
 - title: Modules
   description: Compose module definitions
   entrypoint: module

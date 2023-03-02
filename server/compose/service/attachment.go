@@ -59,7 +59,7 @@ type (
 		FindByID(ctx context.Context, namespaceID, attachmentID uint64) (*types.Attachment, error)
 		Find(ctx context.Context, filter types.AttachmentFilter) (types.AttachmentSet, types.AttachmentFilter, error)
 		CreatePageAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker, pageID uint64) (*types.Attachment, error)
-		CreatePageIconAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker) (*types.Attachment, error)
+		CreatePageIconAttachment(ctx context.Context, name string, size int64, fh io.ReadSeeker) (*types.Attachment, error)
 		CreateRecordAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker, moduleID, recordID uint64, fieldName string) (*types.Attachment, error)
 		CreateNamespaceAttachment(ctx context.Context, name string, size int64, fh io.ReadSeeker) (*types.Attachment, error)
 		OpenOriginal(att *types.Attachment) (io.ReadSeekCloser, error)
@@ -302,26 +302,15 @@ func (svc attachment) CreatePageAttachment(ctx context.Context, namespaceID uint
 
 }
 
-func (svc attachment) CreatePageIconAttachment(ctx context.Context, namespaceID uint64, name string, size int64, fh io.ReadSeeker) (att *types.Attachment, err error) {
+func (svc attachment) CreatePageIconAttachment(ctx context.Context, name string, size int64, fh io.ReadSeeker) (att *types.Attachment, err error) {
 	var (
-		ns *types.Namespace
-
-		aProps = &attachmentActionProps{
-			namespace: &types.Namespace{ID: namespaceID},
-		}
+		aProps = &attachmentActionProps{}
 	)
 
 	err = store.Tx(ctx, svc.store, func(ctx context.Context, s store.Storer) (err error) {
 		if size == 0 {
 			return AttachmentErrNotAllowedToCreateEmptyAttachment()
 		}
-
-		ns, err = loadNamespace(ctx, s, namespaceID)
-		if err != nil {
-			return err
-		}
-
-		aProps.setNamespace(ns)
 
 		// add helper for below code block
 		{
@@ -339,9 +328,8 @@ func (svc attachment) CreatePageIconAttachment(ctx context.Context, namespaceID 
 		}
 
 		att = &types.Attachment{
-			NamespaceID: namespaceID,
-			Name:        strings.TrimSpace(name),
-			Kind:        types.PageIconAttachment,
+			Name: strings.TrimSpace(name),
+			Kind: types.PageIconAttachment,
 		}
 
 		return svc.create(ctx, s, name, size, fh, att)

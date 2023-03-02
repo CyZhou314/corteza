@@ -2,8 +2,6 @@ package rest
 
 import (
 	"context"
-	"mime/multipart"
-
 	"github.com/cortezaproject/corteza/server/compose/rest/request"
 	"github.com/cortezaproject/corteza/server/compose/service"
 	"github.com/cortezaproject/corteza/server/compose/service/event"
@@ -246,51 +244,6 @@ func (ctrl *Page) TriggerScript(ctx context.Context, r *request.PageTriggerScrip
 	return ctrl.makePayload(ctx, page, err)
 }
 
-func (ctrl *Page) ListIcons(ctx context.Context, r *request.PageListIcons) (interface{}, error) {
-	var (
-		err error
-		f   = types.AttachmentFilter{
-			NamespaceID: r.NamespaceID,
-			Kind:        types.PageIconAttachment,
-		}
-	)
-
-	if f.Paging, err = filter.NewPaging(r.Limit, r.PageCursor); err != nil {
-		return nil, err
-	}
-
-	if f.Sorting, err = filter.NewSorting(r.Sort); err != nil {
-		return nil, err
-	}
-
-	set, f, err := ctrl.attachment.Find(ctx, f)
-	return ctrl.makeIconFilterPayload(ctx, set, f, err)
-}
-
-func (ctrl *Page) UploadIcon(ctx context.Context, r *request.PageUploadIcon) (interface{}, error) {
-	file, err := r.Icon.Open()
-	if err != nil {
-		return nil, err
-	}
-
-	defer func(file multipart.File) {
-		err = file.Close()
-		if err != nil {
-			return
-		}
-	}(file)
-
-	a, err := ctrl.attachment.CreatePageIconAttachment(
-		ctx,
-		r.NamespaceID,
-		r.Icon.Filename,
-		r.Icon.Size,
-		file,
-	)
-
-	return makeAttachmentPayload(ctx, a, err)
-}
-
 func (ctrl *Page) UpdateIcon(ctx context.Context, r *request.PageUpdateIcon) (interface{}, error) {
 	var (
 		err  error
@@ -363,20 +316,6 @@ func (ctrl Page) makeFilterPayload(ctx context.Context, nn types.PageSet, f type
 
 	for i := range nn {
 		modp.Set[i], _ = ctrl.makePayload(ctx, nn[i], nil)
-	}
-
-	return modp, nil
-}
-
-func (ctrl Page) makeIconFilterPayload(ctx context.Context, nn types.AttachmentSet, f types.AttachmentFilter, err error) (*attachmentSetPayload, error) {
-	if err != nil {
-		return nil, err
-	}
-
-	modp := &attachmentSetPayload{Filter: f, Set: make([]*attachmentPayload, len(nn))}
-
-	for i := range nn {
-		modp.Set[i], _ = makeAttachmentPayload(ctx, nn[i], nil)
 	}
 
 	return modp, nil
