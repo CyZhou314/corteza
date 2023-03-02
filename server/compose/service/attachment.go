@@ -83,7 +83,7 @@ func (svc attachment) Find(ctx context.Context, filter types.AttachmentFilter) (
 	)
 
 	err = func() error {
-		if filter.NamespaceID == 0 {
+		if filter.NamespaceID == 0 && filter.Kind != types.PageIconAttachment {
 			return AttachmentErrInvalidNamespaceID()
 		}
 
