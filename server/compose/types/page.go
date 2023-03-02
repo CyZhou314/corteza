@@ -189,7 +189,7 @@ const (
 	PageIconTypeLibrary PageIconType = "library" // type, library(font-awesome), icon name
 	// PageIconTypeSvg "svg"
 	// SRC contains raw SVG document
-	PageIconTypeSvg PageIconType = "svg" // source
+	PageIconTypeInlineSvg PageIconType = "inline-svg" // source
 	// PageIconTypeAttachment "attachment"
 	// Reference (ID) to an existing attachment in local Corteza instance is expected
 	// This type and reference must be validated by the backend.
