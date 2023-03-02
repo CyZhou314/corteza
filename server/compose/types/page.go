@@ -93,7 +93,9 @@ type (
 	PageConfig struct {
 		// How page is presented in the navigation
 		NavItem struct {
-			Icon *PageConfigIcon `json:"icon,omitempty"`
+			// Expanded menu
+			Expanded bool            `json:"expanded"`
+			Icon     *PageConfigIcon `json:"icon,omitempty"`
 		} `json:"navItem"`
 
 		Buttons *PageButtonConfig `json:"buttons,omitempty"`
