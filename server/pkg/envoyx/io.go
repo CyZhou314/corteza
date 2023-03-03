@@ -57,6 +57,11 @@ func (svc *Service) decodeUri(ctx context.Context, p DecodeParams) (nodes NodeSe
 func (nvyx *Service) encodeIo(ctx context.Context, dg *DepGraph, p EncodeParams) (err error) {
 	for rt, nn := range NodesByResourceType(dg.Roots()...) {
 		for _, se := range nvyx.encoders[EncodeTypeIo] {
+			nn = OmitPlaceholderNodes(nn...)
+			if len(nn) == 0 {
+				continue
+			}
+
 			err = se.Encode(ctx, p, rt, OmitPlaceholderNodes(nn...), dg)
 			if err != nil {
 				return

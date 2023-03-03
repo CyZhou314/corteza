@@ -144,6 +144,10 @@ func Global() *Service {
 	return global
 }
 
+func Initialized() bool {
+	return global != nil
+}
+
 // Decode returns a set of envoy Nodes based on the given decode params
 func (svc *Service) Decode(ctx context.Context, p DecodeParams) (nodes NodeSet, providers []Provider, err error) {
 	err = p.validate()

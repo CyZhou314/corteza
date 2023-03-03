@@ -10,6 +10,8 @@ import (
 	"github.com/cortezaproject/corteza/server/pkg/actionlog"
 	"github.com/cortezaproject/corteza/server/pkg/api/server"
 	"github.com/cortezaproject/corteza/server/pkg/cli"
+	"github.com/cortezaproject/corteza/server/pkg/dal"
+	"github.com/cortezaproject/corteza/server/pkg/envoyx"
 	"github.com/cortezaproject/corteza/server/pkg/options"
 	fakerCommands "github.com/cortezaproject/corteza/server/pkg/seeder/commands"
 	"github.com/cortezaproject/corteza/server/store"
@@ -117,6 +119,16 @@ func (app *CortezaApp) InitCLI() {
 		return app.Store, err
 	}
 
+	dalInit := func(ctx context.Context) (dal.FullService, error) {
+		err := app.initDAL(ctx, app.Log)
+		return dal.Service(), err
+	}
+
+	envoyInit := func(ctx context.Context) (svc *envoyx.Service, err error) {
+		err = app.initEnvoy(ctx, app.Log)
+		return envoyx.Global(), err
+	}
+
 	app.Command.AddCommand(
 		systemCommands.Users(ctx, app),
 		systemCommands.Roles(ctx, app),
@@ -124,7 +136,7 @@ func (app *CortezaApp) InitCLI() {
 		systemCommands.Sink(ctx, app),
 		systemCommands.Settings(ctx, app),
 		systemCommands.Import(ctx, storeInit),
-		systemCommands.Export(ctx, storeInit),
+		systemCommands.Export(ctx, storeInit, dalInit, envoyInit),
 		serveCmd,
 		upgradeCmd,
 		provisionCmd,
