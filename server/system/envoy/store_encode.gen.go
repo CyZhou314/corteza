@@ -188,7 +188,7 @@ func (e StoreEncoder) prepareApplication(ctx context.Context, p envoyx.EncodePar
 			// In the future, we can pass down the tree and re-do the deps like that
 			switch n.Config.MergeAlg {
 			case envoyx.OnConflictPanic:
-				err = fmt.Errorf("resource %v already exists, n.Identifiers.Slice")
+				err = fmt.Errorf("resource %v already exists", n.Identifiers.Slice)
 				return
 
 			case envoyx.OnConflictReplace:
@@ -390,7 +390,7 @@ func (e StoreEncoder) prepareApigwRoute(ctx context.Context, p envoyx.EncodePara
 			// In the future, we can pass down the tree and re-do the deps like that
 			switch n.Config.MergeAlg {
 			case envoyx.OnConflictPanic:
-				err = fmt.Errorf("resource %v already exists, n.Identifiers.Slice")
+				err = fmt.Errorf("resource %v already exists", n.Identifiers.Slice)
 				return
 
 			case envoyx.OnConflictReplace:
@@ -592,7 +592,7 @@ func (e StoreEncoder) prepareApigwFilter(ctx context.Context, p envoyx.EncodePar
 			// In the future, we can pass down the tree and re-do the deps like that
 			switch n.Config.MergeAlg {
 			case envoyx.OnConflictPanic:
-				err = fmt.Errorf("resource %v already exists, n.Identifiers.Slice")
+				err = fmt.Errorf("resource %v already exists", n.Identifiers.Slice)
 				return
 
 			case envoyx.OnConflictReplace:
@@ -794,7 +794,7 @@ func (e StoreEncoder) prepareAuthClient(ctx context.Context, p envoyx.EncodePara
 			// In the future, we can pass down the tree and re-do the deps like that
 			switch n.Config.MergeAlg {
 			case envoyx.OnConflictPanic:
-				err = fmt.Errorf("resource %v already exists, n.Identifiers.Slice")
+				err = fmt.Errorf("resource %v already exists", n.Identifiers.Slice)
 				return
 
 			case envoyx.OnConflictReplace:
@@ -997,7 +997,7 @@ func (e StoreEncoder) prepareQueue(ctx context.Context, p envoyx.EncodeParams, s
 			// In the future, we can pass down the tree and re-do the deps like that
 			switch n.Config.MergeAlg {
 			case envoyx.OnConflictPanic:
-				err = fmt.Errorf("resource %v already exists, n.Identifiers.Slice")
+				err = fmt.Errorf("resource %v already exists", n.Identifiers.Slice)
 				return
 
 			case envoyx.OnConflictReplace:
@@ -1200,7 +1200,7 @@ func (e StoreEncoder) prepareReport(ctx context.Context, p envoyx.EncodeParams, 
 			// In the future, we can pass down the tree and re-do the deps like that
 			switch n.Config.MergeAlg {
 			case envoyx.OnConflictPanic:
-				err = fmt.Errorf("resource %v already exists, n.Identifiers.Slice")
+				err = fmt.Errorf("resource %v already exists", n.Identifiers.Slice)
 				return
 
 			case envoyx.OnConflictReplace:
@@ -1403,7 +1403,7 @@ func (e StoreEncoder) prepareRole(ctx context.Context, p envoyx.EncodeParams, s 
 			// In the future, we can pass down the tree and re-do the deps like that
 			switch n.Config.MergeAlg {
 			case envoyx.OnConflictPanic:
-				err = fmt.Errorf("resource %v already exists, n.Identifiers.Slice")
+				err = fmt.Errorf("resource %v already exists", n.Identifiers.Slice)
 				return
 
 			case envoyx.OnConflictReplace:
@@ -1606,7 +1606,7 @@ func (e StoreEncoder) prepareTemplate(ctx context.Context, p envoyx.EncodeParams
 			// In the future, we can pass down the tree and re-do the deps like that
 			switch n.Config.MergeAlg {
 			case envoyx.OnConflictPanic:
-				err = fmt.Errorf("resource %v already exists, n.Identifiers.Slice")
+				err = fmt.Errorf("resource %v already exists", n.Identifiers.Slice)
 				return
 
 			case envoyx.OnConflictReplace:
@@ -1809,7 +1809,7 @@ func (e StoreEncoder) prepareUser(ctx context.Context, p envoyx.EncodeParams, s 
 			// In the future, we can pass down the tree and re-do the deps like that
 			switch n.Config.MergeAlg {
 			case envoyx.OnConflictPanic:
-				err = fmt.Errorf("resource %v already exists, n.Identifiers.Slice")
+				err = fmt.Errorf("resource %v already exists", n.Identifiers.Slice)
 				return
 
 			case envoyx.OnConflictReplace:
@@ -2012,7 +2012,7 @@ func (e StoreEncoder) prepareDalConnection(ctx context.Context, p envoyx.EncodeP
 			// In the future, we can pass down the tree and re-do the deps like that
 			switch n.Config.MergeAlg {
 			case envoyx.OnConflictPanic:
-				err = fmt.Errorf("resource %v already exists, n.Identifiers.Slice")
+				err = fmt.Errorf("resource %v already exists", n.Identifiers.Slice)
 				return
 
 			case envoyx.OnConflictReplace:
@@ -2215,7 +2215,7 @@ func (e StoreEncoder) prepareDalSensitivityLevel(ctx context.Context, p envoyx.E
 			// In the future, we can pass down the tree and re-do the deps like that
 			switch n.Config.MergeAlg {
 			case envoyx.OnConflictPanic:
-				err = fmt.Errorf("resource %v already exists, n.Identifiers.Slice")
+				err = fmt.Errorf("resource %v already exists", n.Identifiers.Slice)
 				return
 
 			case envoyx.OnConflictReplace:

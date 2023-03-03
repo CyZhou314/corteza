@@ -2,28 +2,18 @@ package commands
 
 import (
 	"context"
-	"os"
 
 	"github.com/spf13/cobra"
 
-	"github.com/cortezaproject/corteza/server/compose/service"
 	"github.com/cortezaproject/corteza/server/pkg/cli"
-	"github.com/cortezaproject/corteza/server/pkg/dal"
-	"github.com/cortezaproject/corteza/server/pkg/envoy"
-	"github.com/cortezaproject/corteza/server/pkg/envoy/csv"
-	"github.com/cortezaproject/corteza/server/pkg/envoy/directory"
-	"github.com/cortezaproject/corteza/server/pkg/envoy/resource"
-	es "github.com/cortezaproject/corteza/server/pkg/envoy/store"
-	"github.com/cortezaproject/corteza/server/pkg/envoy/yaml"
-	"github.com/cortezaproject/corteza/server/store"
+	"github.com/cortezaproject/corteza/server/pkg/envoyx"
 )
 
-func Import(ctx context.Context, storeInit func(ctx context.Context) (store.Storer, error)) *cobra.Command {
+func Import(ctx context.Context, storeInit storeInitFnc, dalInit dalInitFnc, envoyInit envoyInitFnc) *cobra.Command {
 	var (
-		replaceOnExisting    bool
-		mergeLeftOnExisting  bool
-		mergeRightOnExisting bool
-		defaultResTr         bool
+		replaceOnConflict bool
+		skipOnConflict    bool
+		panicOnConflict   bool
 	)
 
 	cmd := &cobra.Command{
@@ -31,106 +21,93 @@ func Import(ctx context.Context, storeInit func(ctx context.Context) (store.Stor
 		Short: "Import data from yaml sources.",
 
 		Run: func(cmd *cobra.Command, args []string) {
+			// Init all of the sub services
 			s, err := storeInit(ctx)
 			cli.HandleError(err)
 
-			err = service.DalModelReload(ctx, s, dal.Service())
+			dalSvc, err := dalInit(ctx)
 			cli.HandleError(err)
 
-			yd := yaml.Decoder()
-			cd := csv.Decoder()
-			nn := make([]resource.Interface, 0, 200)
-
-			if len(args) > 0 {
-				for _, fn := range args {
-					mm, err := directory.Decode(ctx, fn, yd, cd)
-					cli.HandleError(err)
-					nn = append(nn, mm...)
-				}
-			} else {
-				do := &envoy.DecoderOpts{
-					Name: "stdin.yaml",
-					Path: "",
-				}
-				mm, err := yd.Decode(ctx, os.Stdin, do)
-				cli.HandleError(err)
-				nn = append(nn, mm...)
-			}
-
-			if !defaultResTr {
-				nn = pruneResTr(nn)
-			}
-
-			nn, err = resource.Shape(nn, resource.ComposeRecordShaper())
-			if err != nil {
-				cli.HandleError(err)
-				return
-			}
-
-			opt := &es.EncoderConfig{
-				OnExisting: resource.Skip,
-			}
-
-			if replaceOnExisting {
-				opt.OnExisting = resource.Replace
-			}
-			if mergeLeftOnExisting {
-				opt.OnExisting = resource.MergeLeft
-			}
-			if mergeRightOnExisting {
-				opt.OnExisting = resource.MergeRight
-			}
-
-			se := es.NewStoreEncoder(s, dal.Service(), opt)
-			bld := envoy.NewBuilder(se)
-			g, err := bld.Build(ctx, nn...)
+			envoySvc, err := envoyInit(ctx)
 			cli.HandleError(err)
 
-			cli.HandleError(envoy.Encode(ctx, g, se))
+			var (
+				nodes     envoyx.NodeSet
+				providers []envoyx.Provider
+
+				auxNodes     envoyx.NodeSet
+				auxProviders []envoyx.Provider
+			)
+
+			// @todo import from stdin (need to implement io decoder)
+			for _, a := range args {
+				auxNodes, auxProviders, err = envoySvc.Decode(ctx, envoyx.DecodeParams{
+					Type: envoyx.DecodeTypeURI,
+					Params: map[string]any{
+						"uri": "file://" + a,
+					},
+				})
+				cli.HandleError(err)
+
+				nodes = append(nodes, auxNodes...)
+				providers = append(providers, auxProviders...)
+			}
+
+			ep := envoyx.EncodeParams{
+				Type: envoyx.EncodeTypeStore,
+				Params: map[string]any{
+					"storer": s,
+					"dal":    dalSvc,
+				},
+			}
+
+			if replaceOnConflict {
+				ep.Envoy.MergeAlg = envoyx.OnConflictReplace
+			}
+			if skipOnConflict {
+				ep.Envoy.MergeAlg = envoyx.OnConflictSkip
+			}
+			if panicOnConflict {
+				ep.Envoy.MergeAlg = envoyx.OnConflictPanic
+			}
+
+			gg, err := envoySvc.Bake(ctx, ep,
+				providers,
+				nodes...,
+			)
+			cli.HandleError(err)
+
+			err = envoySvc.Encode(ctx, envoyx.EncodeParams{
+				Type: envoyx.EncodeTypeStore,
+				Params: map[string]any{
+					"storer": s,
+					"dal":    dalSvc,
+				},
+			}, gg)
+			cli.HandleError(err)
 		},
 	}
 
 	cmd.Flags().BoolVar(
-		&replaceOnExisting,
+		&replaceOnConflict,
 		"replace-existing",
 		false,
-		"Replace any existing values. Default skips.",
+		"replaceOnConflict existing resources. Default skips",
 	)
+
 	cmd.Flags().BoolVar(
-		&mergeLeftOnExisting,
-		"merge-left-existing",
+		&skipOnConflict,
+		"skip-existing",
 		false,
-		"Update any existing values; existing data takes priority. Default skips.",
+		"skipOnConflict existing resources. Default skips",
 	)
+
 	cmd.Flags().BoolVar(
-		&mergeRightOnExisting,
-		"merge-right-existing",
+		&panicOnConflict,
+		"panic-existing",
 		false,
-		"Update any existing values; new data takes priority. Default skips.",
-	)
-	cmd.Flags().BoolVar(
-		&defaultResTr,
-		"resource-translationsDefaults",
-		false,
-		"Automatically extract and determine resource translations for the provided resources.",
+		"panicOnConflict existing resources. Default skips",
 	)
 
 	return cmd
-}
-
-func pruneResTr(nn []resource.Interface) (mm []resource.Interface) {
-	mm = make([]resource.Interface, 0, len(nn))
-	for _, n := range nn {
-		if n.ResourceType() != resource.ResourceTranslationType {
-			mm = append(mm, n)
-			continue
-		}
-
-		r := n.(*resource.ResourceTranslation)
-		if !r.IsDefault() {
-			mm = append(mm, n)
-			continue
-		}
-	}
-	return mm
 }

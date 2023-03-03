@@ -140,7 +140,7 @@ func (e StoreEncoder) prepareWorkflow(ctx context.Context, p envoyx.EncodeParams
 			// In the future, we can pass down the tree and re-do the deps like that
 			switch n.Config.MergeAlg {
 			case envoyx.OnConflictPanic:
-				err = fmt.Errorf("resource %v already exists, n.Identifiers.Slice")
+				err = fmt.Errorf("resource %v already exists", n.Identifiers.Slice)
 				return
 
 			case envoyx.OnConflictReplace:
@@ -343,7 +343,7 @@ func (e StoreEncoder) prepareTrigger(ctx context.Context, p envoyx.EncodeParams,
 			// In the future, we can pass down the tree and re-do the deps like that
 			switch n.Config.MergeAlg {
 			case envoyx.OnConflictPanic:
-				err = fmt.Errorf("resource %v already exists, n.Identifiers.Slice")
+				err = fmt.Errorf("resource %v already exists", n.Identifiers.Slice)
 				return
 
 			case envoyx.OnConflictReplace:

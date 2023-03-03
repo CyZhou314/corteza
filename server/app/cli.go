@@ -135,7 +135,7 @@ func (app *CortezaApp) InitCLI() {
 		systemCommands.RBAC(ctx, storeInit),
 		systemCommands.Sink(ctx, app),
 		systemCommands.Settings(ctx, app),
-		systemCommands.Import(ctx, storeInit),
+		systemCommands.Import(ctx, storeInit, dalInit, envoyInit),
 		systemCommands.Export(ctx, storeInit, dalInit, envoyInit),
 		serveCmd,
 		upgradeCmd,
