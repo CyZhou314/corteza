@@ -123,32 +123,28 @@
                 </b-form-checkbox>
               </b-form-group>
 
-              <!-- <b-form-group
+              <b-form-group
                 data-test-id="checkbox-show-sub-pages-in-sidebar"
                 class="d-flex"
-                switch
               >
                 <b-form-checkbox
-                  v-model="a"
+                  v-model="page.config.navItem.expanded"
+                  switch
                 >
                   {{ $t('showSubPages') }}
                 </b-form-checkbox>
-              </b-form-group> -->
+              </b-form-group>
 
               <b-button
                 variant="light"
                 size="lg"
                 class="text-dark"
-                @click="showModal = true"
+                @click="showIconModal = true"
               >
-                <!-- <font-awesome-icon
-                  :icon="['fas', 'plus']"
-                  class="mr-2"
-                /> -->
                 {{ $t('icon.set') }}
               </b-button>
               <b-modal
-                v-model="showModal"
+                v-model="showIconModal"
                 size="lg"
                 ok-only
                 :title="$t('icon.configure')"
@@ -169,14 +165,23 @@
 
                   <b-form-group
                     :label="$t('url.label')"
-                    class="mt-2"
+                    class="my-2"
                   >
                     <b-input
-                      v-model="iconUrl"
+                      v-model="icon.src"
                       :disabled="isIconSet"
                       :style="{'cursor': isIconSet ? 'not-allowed' : 'default'}"
                     />
                   </b-form-group>
+
+                  <b-button
+                    v-b-modal.logo
+                    rounded
+                    class="btn-light"
+                    :disabled="!icon && icon.src.length === 0"
+                  >
+                    {{ $t('edit.preview-link') }}
+                  </b-button>
                 </b-form-group>
 
                 <hr>
@@ -186,13 +191,26 @@
                   kind="page"
                   :set.sync="attachments"
                   :namespace="namespace"
-                  :disabled="iconUrl"
+                  :disabled="icon.src"
                   :style="{'cursor': isIconSet ? 'not-allowed' : 'default'}"
                   enable-icon-select
                   disable-preview
                   mode="gallery"
                   class="h-100"
                   @toggle-selected-icon="toggleSelectedIcon"
+                />
+              </b-modal>
+
+              <b-modal
+                id="logo"
+                hide-header
+                hide-footer
+                centered
+                body-class="p-1"
+              >
+                <b-img
+                  :src="icon.src"
+                  fluid-grow
                 />
               </b-modal>
             </b-form>
@@ -283,7 +301,7 @@ export default {
     return {
       modulesList: [],
       page: new compose.Page(),
-      showModal: false,
+      showIconModal: false,
       attachments: [],
       isPageIcon: false,
     }
@@ -331,7 +349,7 @@ export default {
     },
 
     endpoint () {
-      return this.$ComposeAPI.pageUploadIconEndpoint({
+      return this.$ComposeAPI.pageIconUploadEndpoint({
         namespaceID: this.namespaceID,
       })
     },
@@ -340,26 +358,25 @@ export default {
       return this.namespace.namespaceID ? this.namespace.namespaceID : NoID
     },
 
-
     uploaderFormData () {
       return {
-        upload: 'icon'
+        upload: 'icon',
       }
     },
 
-    iconUrl: {
+    icon: {
       get () {
-        return this.page.config.navItem.icon ? this.page.config.navItem.icon.src : ''
+        return this.page.config.navItem.icon ? this.page.config.navItem.icon : {}
       },
 
-      set (iconUrl) {
-        this.page.config.navItem.icon.src = iconUrl
+      set (i) {
+        this.page.config.navItem = { icon: i }
       },
     },
 
     isIconSet () {
-      this.attachments.find(a => a.isPageIcon)
-    }
+      return this.attachments.find(a => a.isPageIcon)
+    },
   },
 
   watch: {
@@ -407,40 +424,37 @@ export default {
 
     uploadAttachment ({ attachmentID }) {
       // should I check if Icon was already added?
-        // I can check by url
+      // I can check by url
       this.attachments.unshift({
         attachmentID: attachmentID,
-        isPageIcon: this.isPageIcon
+        isPageIcon: this.isPageIcon,
       })
-      // debugger
-      // still not working after temp fix was reverted
-      // this.$ComposeAPI.pageUploadIcon({
+      // this.$ComposeAPI.pageIconUpload({
       //   namespaceID: this.namespaceID,
       //   icon: file
       // }).then(res => {
-      //   debugger
       //   // add icon to gallery of icons
       //     this.attachments.unshift(attachmentID)
       // })
     },
 
     onOpen () {
-      this.$ComposeAPI.pageListIcons({
-        namespaceID: this.namespace.namespaceID,
-        pageID: this.pageID,
-      })
+      this.$ComposeAPI.pageIconList()
+        .then(imgs => {
+          debugger
+          console.log(imgs)
+        })
       // .then(icons => {
       //   // not tested
-      //   debugger
       //   if (icons) {
-          // icons.forEach(a => {
-            // check curr selected icon
-            // if (a.src === this.page.config.navItem.icon.src) {
-              // this.attachments.push({ attachmentID: a.attachmentID, isPageIcon: true })
-            //} else {
-              // this.attachments.push(a)
-            // }
-          // })
+      // icons.forEach(a => {
+      // check curr selected icon
+      // if (a.src === this.page.config.navItem.icon.src) {
+      // this.attachments.push({ attachmentID: a.attachmentID, isPageIcon: true })
+      // } else {
+      // this.attachments.push(a)
+      // }
+      // })
       //   } else {
       //     this.attachments = []
       //   }
@@ -448,38 +462,32 @@ export default {
     },
 
     setIcon () {
-      debugger
       // handle link scenario
       // handle attachment scenario
       let attachmentType = 'link'
-      let attachmentSource = this.iconUrl
+      let attachmentSource = this.icon.src
 
-      if (!this.iconUrl) {
+      if (!this.icon.src && this.attachments.length !== 0) {
         attachmentType = 'attachment'
-        // get chosen icon source
-        attachmentSource = this.attachment.find(att => att.isPageIcon).attachmentID
+        attachmentSource = this.attachments.find(att => att.isPageIcon).attachmentID
         attachmentSource = { attachmentSource }
       }
 
-      this.$ComposeAPI.pageUpdateIcon({
-        namespaceID: this.namespaceID,
-        pageID: this.pageID,
-        type: attachmentType,
-        source: attachmentSource
-      }).then(i => {
-        this.page.config.navItem = {
-          icon: {
-            type: i.type,
-            src: i.src,
+      if (attachmentType && attachmentSource) {
+        this.$ComposeAPI.pageUpdateIcon({
+          namespaceID: this.namespaceID,
+          pageID: this.pageID,
+          type: attachmentType,
+          source: attachmentSource,
+        }).then(i => {
+          this.page.config.navItem = {
+            icon: {
+              type: i.type,
+              src: i.src,
+            },
           }
-        }
-        // this.page.config = {
-        //   icon: {
-        //     type: i.type,
-        //     src: i.src,
-        //   }
-        // }
-      })
+        })
+      }
     },
 
     toggleSelectedIcon ({ attachmentID = '' }) {

@@ -919,71 +919,6 @@ export default class Compose {
     return `/namespace/${namespaceID}/page/${pageID}/translation`
   }
 
-  // List page icons
-  async pageListIcons (a: KV, extra: AxiosRequestConfig = {}): Promise<KV> {
-    const {
-      namespaceID,
-      limit,
-      incTotal,
-      pageCursor,
-      sort,
-    } = (a as KV) || {}
-    if (!namespaceID) {
-      throw Error('field namespaceID is empty')
-    }
-    const cfg: AxiosRequestConfig = {
-      ...extra,
-      method: 'get',
-      url: this.pageListIconsEndpoint({
-        namespaceID,
-      }),
-    }
-    cfg.params = {
-      limit,
-      incTotal,
-      pageCursor,
-      sort,
-    }
-
-    return this.api().request(cfg).then(result => stdResolve(result))
-  }
-
-  pageListIconsEndpoint (a: KV): string {
-    const {
-      namespaceID,
-    } = a || {}
-    return `/namespace/${namespaceID}/page/icon`
-  }
-
-  // Upload icon for page
-  async pageUploadIcon (a: KV, extra: AxiosRequestConfig = {}): Promise<KV> {
-    const {
-      namespaceID,
-      icon,
-    } = (a as KV) || {}
-    if (!namespaceID) {
-      throw Error('field namespaceID is empty')
-    }
-    const cfg: AxiosRequestConfig = {
-      ...extra,
-      method: 'post',
-      url: this.pageUploadIconEndpoint({
-        namespaceID,
-      }),
-    }
-    cfg.data = {
-      icon,
-    }
-    return this.api().request(cfg).then(result => stdResolve(result))
-  }
-
-  pageUploadIconEndpoint (a: KV): string {
-    const {
-      namespaceID,
-    } = a || {}
-    return `/namespace/${namespaceID}/page/icon`
-  }
-
   // Update icon for page
   async pageUpdateIcon (a: KV, extra: AxiosRequestConfig = {}): Promise<KV> {
     const {
@@ -1023,6 +958,53 @@ export default class Compose {
       pageID,
     } = a || {}
     return `/namespace/${namespaceID}/page/${pageID}/icon`
+  }
+
+  // List page icons
+  async pageIconList (a: KV, extra: AxiosRequestConfig = {}): Promise<KV> {
+    const {
+      limit,
+      incTotal,
+      pageCursor,
+      sort,
+    } = (a as KV) || {}
+    const cfg: AxiosRequestConfig = {
+      ...extra,
+      method: 'get',
+      url: this.pageIconListEndpoint(),
+    }
+    cfg.params = {
+      limit,
+      incTotal,
+      pageCursor,
+      sort,
+    }
+
+    return this.api().request(cfg).then(result => stdResolve(result))
+  }
+
+  pageIconListEndpoint (): string {
+    return '/page/icon/'
+  }
+
+  // Upload icon for page
+  async pageIconUpload (a: KV, extra: AxiosRequestConfig = {}): Promise<KV> {
+    const {
+      icon,
+    } = (a as KV) || {}
+    const cfg: AxiosRequestConfig = {
+      ...extra,
+      method: 'post',
+      url: this.pageIconUploadEndpoint(),
+    }
+    cfg.data = {
+      icon,
+    }
+    return this.api().request(cfg).then(result => stdResolve(result))
+  }
+
+  pageIconUploadEndpoint (): string {
+    return '/page/icon/'
   }
 
   // List modules

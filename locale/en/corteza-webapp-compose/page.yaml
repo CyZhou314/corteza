@@ -23,6 +23,7 @@ edit:
   edit: Edit page
   pageDescription: Page description
   visible: Page visibility
+  preview-link: Preview link
 icon:
   configure: Configure page icon
   set: Set icon

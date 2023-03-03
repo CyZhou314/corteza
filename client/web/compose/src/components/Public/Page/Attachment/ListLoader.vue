@@ -98,7 +98,7 @@
       v-else
       class="single gallery"
       :class="{ 'd-flex flex-wrap justify-content-between': iconsInline }"
-      >
+    >
       <div
         v-for="(a) in files"
         :key="a.attachmentID"
@@ -142,7 +142,7 @@
                 />
               </b-button>
             </div>
-            <div 
+            <div
               v-else-if="hoveredItem === a.attachmentID && !a.isPageIcon"
               :class="{
                 'iconClass': hoveredItem,
@@ -181,9 +181,9 @@
                   :icon="['fas', 'download']"
                 />
               </a>
-            </div> 
             </div>
           </div>
+        </div>
 
         <div v-else>
           <font-awesome-icon
@@ -394,7 +394,7 @@ export default {
         if (a.attachmentID === attachment.attachmentID) {
           a = {
             ...a,
-            isPageIcon: this.isPageIcon
+            isPageIcon: this.isPageIcon,
           }
         }
 

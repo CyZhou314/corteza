@@ -28,10 +28,7 @@ interface PageConfig {
       type: string;
       src: string;
     };
-  };
-  icon: {
-    type: string;
-    src: string;
+    expanded: string;
   };
 }
 
@@ -69,10 +66,7 @@ export class Page {
         type: '',
         src: '',
       },
-    },
-    icon: {
-      type: '',
-      src: '',
+      expanded: '',
     },
   }
 
