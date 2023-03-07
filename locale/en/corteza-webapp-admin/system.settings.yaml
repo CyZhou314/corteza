@@ -27,9 +27,8 @@ editor:
         split-credentials-check:
           description: 'Split login into two steps: collect the email input first and show the input for the password on the 2nd screen. Automatically forward user to external identity provider when user does not have his password set and there is only one IdP present'
           label: Enable split-credentials check
-      profile-photo:
-        enabled-avatar: Profile photo avatar enabled
-        enabled-initials: Profile photo initials enabled
+      profile-avatar:
+        enabled: Profile avatar enabled
     mail:
       title: Authentication email sender mail
       from-address: Sender's address

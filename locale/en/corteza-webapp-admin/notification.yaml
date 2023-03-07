@@ -43,6 +43,9 @@ user:
     error: User suspension failed
   import:
     success: Users imported successfully
+  avatarUpload:
+    success: Avatar uploaded
+    error: Avatar upload failed
   avatarDelete:
     success: Avatar deleted
     error: Avatar delete failed

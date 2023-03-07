@@ -20,15 +20,17 @@ editor:
     undelete: Undelete
     unsuspend: Unsuspend
     updatedAt: Updated at
-    avatar:
-      title: Avatar
+  avatar:
+      title: Profile avatar
+      preview:
+        label: Avatar
+        title: Avatar
+      initial:
+        color: Initial Color
+        backgroundColor: Background color
       uploader:
         instructions: 'Click or drop user avatar here to upload'
         uploading: 'Uploading user avatar'
-    avatarInitial:
-      title: Avatar initial
-      color: Initial color
-      backgroundColor: Initial background color
   mfa:
     TOTP:
       disabled:

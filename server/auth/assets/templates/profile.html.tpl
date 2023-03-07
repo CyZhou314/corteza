@@ -111,6 +111,7 @@
                         </label>
                         <input id="avatar" name="avatar" type="file" class="sr-only" accept="image/*">
                     
+                        {{  if .form.avatarUrl }}
                         <button
                             name="avatar-delete"
                             value="avatar-delete"
@@ -118,6 +119,7 @@
                         >
                         {{ tr "profile.template.form.avatar.delete" }}
                         </button>
+                        {{ end }}
                     </div>
                 </div>
             </div>

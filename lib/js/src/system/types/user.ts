@@ -12,12 +12,8 @@ interface UserMeta {
   preferredLanguage?: string;
   securityPolicy?: SecurityPolicy;
   avatarID?: string;
-}
-
-interface UserAvatarInitialsMeta {
-  initials?: string;
-  textColor?: string;
-  bgColor?: string;
+  avatarColor?: string;
+  avatarBgColor?: string;
 }
 
 interface SecurityPolicy {
@@ -46,12 +42,8 @@ export class User {
       },
     },
     avatarID: NoID,
-  }
-
-  public avatarInitialsMeta: UserAvatarInitialsMeta = {
-    initials: '',
-    textColor: '',
-    bgColor: '',
+    avatarColor: '',
+    avatarBgColor: '',
   }
 
   public canGrant = false

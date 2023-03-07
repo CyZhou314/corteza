@@ -1052,7 +1052,6 @@ export default class System {
       email,
       name,
       handle,
-      avatarInitialsMeta,
       kind,
       labels,
     } = (a as KV) || {}
@@ -1076,7 +1075,6 @@ export default class System {
       email,
       name,
       handle,
-      avatarInitialsMeta,
       kind,
       labels,
     }
@@ -1511,6 +1509,37 @@ export default class System {
       userID,
     } = a || {}
     return `/users/${userID}/avatar`
+  }
+
+  // User profile avatar initial
+  async userProfileAvatarInitial (a: KV, extra: AxiosRequestConfig = {}): Promise<KV> {
+    const {
+      userID,
+      avatarColor,
+      avatarBgColor,
+    } = (a as KV) || {}
+    if (!userID) {
+      throw Error('field userID is empty')
+    }
+    const cfg: AxiosRequestConfig = {
+      ...extra,
+      method: 'post',
+      url: this.userProfileAvatarInitialEndpoint({
+        userID,
+      }),
+    }
+    cfg.data = {
+      avatarColor,
+      avatarBgColor,
+    }
+    return this.api().request(cfg).then(result => stdResolve(result))
+  }
+
+  userProfileAvatarInitialEndpoint (a: KV): string {
+    const {
+      userID,
+    } = a || {}
+    return `/users/${userID}/avatar-initial`
   }
 
   // delete user&#x27;s profile avatar
@@ -2651,6 +2680,13 @@ export default class System {
     return this.api().request(cfg).then(result => stdResolve(result))
   }
 
+  reminderDismissEndpoint (a: KV): string {
+    const {
+      reminderID,
+    } = a || {}
+    return `/reminder/${reminderID}/dismiss`
+  }
+
   // Undismiss reminder
   async reminderUndismiss (a: KV, extra: AxiosRequestConfig = {}): Promise<KV> {
     const {
@@ -2668,13 +2704,6 @@ export default class System {
     }
 
     return this.api().request(cfg).then(result => stdResolve(result))
-  }
-
-  reminderDismissEndpoint (a: KV): string {
-    const {
-      reminderID,
-    } = a || {}
-    return `/reminder/${reminderID}/dismiss`
   }
 
   reminderUndismissEndpoint (a: KV): string {
