@@ -103,7 +103,7 @@ type (
 		DeleteAuthTokensByUserID(ctx context.Context, userID uint64) (err error)
 		DeleteAuthSessionsByUserID(ctx context.Context, userID uint64) (err error)
 
-		UploadAvatar(ctx context.Context, userID uint64, Upload *multipart.FileHeader, initialColor string, bgColor string) (err error)
+		UploadAvatar(ctx context.Context, userID uint64, Upload *multipart.FileHeader, initialColor ...string) (err error)
 		DeleteAvatar(ctx context.Context, id uint64) error
 	}
 )
@@ -1052,7 +1052,7 @@ func toLabeledUsers(set []*types.User) []label.LabeledResource {
 	return ll
 }
 
-func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipart.FileHeader, initialColor string, bgColor string) (err error) {
+func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipart.FileHeader, initialColor ...string) (err error) {
 	var (
 		u       *types.User
 		att     *types.Attachment
@@ -1091,13 +1091,13 @@ func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipa
 			}
 		} else {
 			initial := processAvatarInitials(u)
-			att, err = svc.att.CreateAvatarInitialsAttachment(ctx, initial, bgColor, initialColor)
+			att, err = svc.att.CreateAvatarInitialsAttachment(ctx, initial, initialColor[0], initialColor[1])
 			if err != nil {
 				return err
 			}
 
-			u.Meta.AvatarColor = initialColor
-			u.Meta.AvatarBgColor = bgColor
+			u.Meta.AvatarBgColor = initialColor[0]
+			u.Meta.AvatarColor = initialColor[1]
 		}
 
 		u.Meta.AvatarID = att.ID

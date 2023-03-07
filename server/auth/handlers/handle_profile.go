@@ -94,8 +94,8 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 			req.Context(),
 			u.ID,
 			header,
-			initialColor,
 			bgColor,
+			initialColor,
 		)
 
 		if err != nil {

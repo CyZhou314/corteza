@@ -65,7 +65,7 @@ type (
 	userService interface {
 		FindByAny(ctx context.Context, identifier interface{}) (*types.User, error)
 		Update(context.Context, *types.User) (*types.User, error)
-		UploadAvatar(ctx context.Context, userID uint64, upload *multipart.FileHeader, initialColor string, bgColor string) (err error)
+		UploadAvatar(ctx context.Context, userID uint64, upload *multipart.FileHeader, initialColor ...string) (err error)
 		DeleteAvatar(ctx context.Context, userID uint64) (err error)
 	}
 
