@@ -31,11 +31,11 @@
         <b-button
           variant="link"
           class="p-0 float-right"
-          :disabled="showChildren({ params, children })"
+          :disabled="showChildren({ params, children }) || expandPage({ page, children })"
           @click.self.stop.prevent="toggle(page)"
         >
           <font-awesome-icon
-            v-if="!collapses[pageIndex(page)]"
+            v-if="!expandPage({ page, children }) || !collapses[pageIndex(page)]"
             class="pointer-none"
             :icon="['fas', 'chevron-down']"
           />
@@ -47,7 +47,7 @@
         </b-button>
 
         <b-collapse
-          :visible="collapses[pageIndex(page)] || showChildren({ params, children })"
+          :visible="expandPage({ page, children }) || (collapses[pageIndex(page)] || showChildren({ params, children }))"
           @click.stop.prevent
         >
           <c-sidebar-nav-items
@@ -137,6 +137,10 @@ export default {
       }
 
       return children.map(c => this.showChildren(c)).some(isOpen => isOpen)
+    },
+
+    expandPage ({ page = {} }) {
+      return page.expanded
     },
   },
 }

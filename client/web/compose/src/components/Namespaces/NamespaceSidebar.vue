@@ -102,13 +102,14 @@ import { Portal } from 'portal-vue'
 import { VueSelect } from 'vue-select'
 const { CSidebarNavItems, CInputSearch } = components
 
-const publicPageWrap = ({ pageID, selfID, title, visible }) => ({
+const publicPageWrap = ({ pageID, selfID, title, visible, config = {} }) => ({
   page: {
     // name omitted as default is provided
     pageID,
     selfID,
     title,
     visible,
+    expanded: config.navItem.expanded,
   },
   children: [],
   params: {
@@ -125,6 +126,7 @@ const adminPageWrap = (page) => {
       rootSelfID: 'pages',
       title: page.title || page.handle,
       visible: true,
+      expanded: page.config.navItem.expanded,
     },
     children: [],
     params: {
