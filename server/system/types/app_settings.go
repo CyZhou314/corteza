@@ -75,13 +75,7 @@ type (
 
 				PasswordConstraints PasswordConstraints `kv:"password-constraints" json:"passwordConstraints"`
 
-				ProfilePhoto struct {
-					// Can users set their own profile photo
-					EnabledAvatar bool `kv:"enabled-avatar" json:"enabled-avatar"`
-
-					// Can users set their own profile Initials
-					EnabledInitials bool `kv:"enabled-initials" json:"enabled-initials"`
-				} `kv:"profile-photo" json:"profile-photo"`
+				ProfileAvatar struct { Enabled bool } `kv:"profile-avatar" json:"profile-avatar"`
 			} `json:"internal"`
 
 			External struct {

@@ -4,13 +4,15 @@ import (
 	"context"
 	"encoding/gob"
 	"fmt"
-	"github.com/cortezaproject/corteza/server/system/service"
 	"html/template"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/cortezaproject/corteza/server/system/service"
 
 	"github.com/cortezaproject/corteza/server/auth/external"
 	"github.com/cortezaproject/corteza/server/auth/request"
@@ -63,6 +65,8 @@ type (
 	userService interface {
 		FindByAny(ctx context.Context, identifier interface{}) (*types.User, error)
 		Update(context.Context, *types.User) (*types.User, error)
+		UploadAvatar(ctx context.Context, userID uint64, upload *multipart.FileHeader, initialColor string, bgColor string) (err error)
+		DeleteAvatar(ctx context.Context, userID uint64) (err error)
 	}
 
 	clientService interface {

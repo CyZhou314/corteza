@@ -623,6 +623,7 @@ func updateAuthSettings(svc authServicer, current *types.AppSettings) {
 		PasswordCreateEnabled:     current.Auth.Internal.PasswordCreate.Enabled,
 		SplitCredentialsCheck:     current.Auth.Internal.SplitCredentialsCheck,
 		ExternalEnabled:           current.Auth.External.Enabled,
+		ProfileAvatarEnabled:      current.Auth.Internal.ProfileAvatar.Enabled,
 		MultiFactor: authSettings.MultiFactor{
 			TOTP: authSettings.TOTP{
 				Enabled:  current.Auth.MultiFactor.TOTP.Enabled,
@@ -637,10 +638,6 @@ func updateAuthSettings(svc authServicer, current *types.AppSettings) {
 		BackgroundUI: authSettings.BackgroundUI{
 			BackgroundImageSrcUrl: setAuthBgImageSrcUrl(current.Auth.UI.BackgroundImageSrc),
 			Styles:                setAuthBgStyles(current.Auth.UI.Styles),
-		},
-		ProfilePhoto: authSettings.ProfilePhoto{
-			EnabledAvatar:   current.Auth.Internal.ProfilePhoto.EnabledAvatar,
-			EnabledInitials: current.Auth.Internal.ProfilePhoto.EnabledInitials,
 		},
 	}
 

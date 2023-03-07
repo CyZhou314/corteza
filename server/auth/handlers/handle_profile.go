@@ -6,7 +6,6 @@ import (
 	"github.com/cortezaproject/corteza/server/system/service"
 	"github.com/cortezaproject/corteza/server/system/types"
 	"go.uber.org/zap"
-	"net/http"
 )
 
 func (h *AuthHandlers) profileForm(req *request.AuthReq) (err error) {
@@ -46,15 +45,13 @@ func (h *AuthHandlers) profileForm(req *request.AuthReq) (err error) {
 			"name":              u.Name,
 			"preferredLanguage": preferredLanguage,
 			"avatarUrl":         avatarUrl,
-			//"avatarInitial":     u.Meta.AvatarInitials,
-			//"initialTextColor":  u.Meta.AvatarInitialsTextColor,
-			//"initialBgColor":    u.Meta.AvatarInitialsBgColor,
+			"initialTextColor":  u.Meta.AvatarColor,
+			"initialBgColor":    u.Meta.AvatarBgColor,
 		}
 	}
 
 	req.Data["emailConfirmationRequired"] = !u.EmailConfirmed && h.Settings.EmailConfirmationRequired
-	req.Data["avatarEnabled"] = h.Settings.ProfilePhoto.EnabledAvatar
-	req.Data["initialsEnabled"] = h.Settings.ProfilePhoto.EnabledInitials
+	req.Data["avatarEnabled"] = h.Settings.ProfileAvatarEnabled
 	return nil
 }
 
@@ -63,8 +60,8 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 	req.SetKV(nil)
 
 	var (
-		u   = req.AuthUser.User
-		att *types.Attachment
+		u = req.AuthUser.User
+		t = translator(req, "auth")
 	)
 
 	u.Handle = req.Request.PostFormValue("handle")
@@ -78,68 +75,49 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 		u.Meta.PreferredLanguage = pl
 	}
 
-	if req.Request.PostFormValue("avatar-delete") == "avatar-delete" {
-		if err := h.Attachment.DeleteByID(req.Context(), u.Meta.AvatarID); err != nil {
-			return err
-		}
-
-		u.Meta.AvatarID = 0
-	} else {
-		// get the file from the form
-		file, header, err := req.Request.FormFile("avatar")
-		if err != nil && err != http.ErrMissingFile {
-			req.SetKV(map[string]string{
-				"error": err.Error(),
-			})
-			return err
-		}
-
-		if file != nil {
-			defer file.Close()
-
-			labels := map[string]string{
-				"key": "profile-photo-avatar",
-			}
-
-			if u.Meta.AvatarID != 0 {
-				if err = h.Attachment.DeleteByID(req.Context(), u.Meta.AvatarID); err != nil {
-					h.Log.Error("delete avatar error", zap.Error(err))
-					return err
-				}
-			}
-
-			att, err = h.Attachment.CreateAuthAttachment(
-				req.Context(),
-				header.Filename,
-				header.Size,
-				file,
-				labels,
-			)
-
-			if err != nil {
-				if service.AttachmentErrInvalidAvatarFileType().Is(err) || service.AttachmentErrInvalidAvatarFileSize().Is(err) {
-					req.SetKV(map[string]string{
-						"error": err.Error(),
-					})
-				}
-				return err
-			}
-
-			u.Meta.AvatarID = att.ID
-		}
-	}
-
-	if req.Request.PostFormValue("avatar-initials") != "" {
-		u.AvatarInitialsMeta = &types.UserAvatarInitialsMeta{}
-
-		u.AvatarInitialsMeta.Initials = req.Request.PostFormValue("avatar-initials")
-		u.AvatarInitialsMeta.TextColor = req.Request.PostFormValue("initial-color")
-		u.AvatarInitialsMeta.BgColor = req.Request.PostFormValue("initial-bg")
-	}
-
 	// a little workaround to inject current user as authenticated identity into context
 	// this way user service will pass us through.
 	user, err := h.UserService.Update(req.Context(), u)
+
+	bgColor := req.Request.PostFormValue("initial-bg")
+	initialColor := req.Request.PostFormValue("initial-color")
+	// get the file from the form
+	_, header, err := req.Request.FormFile("avatar")
+
+	// Process avatar upload, generation and delete
+	if req.Request.PostFormValue("avatar-delete") == "avatar-delete" {
+		if err = h.UserService.DeleteAvatar(req.Context(), u.ID); err != nil {
+			return err
+		}
+	} else {
+		err = h.UserService.UploadAvatar(
+			req.Context(),
+			u.ID,
+			header,
+			initialColor,
+			bgColor,
+		)
+
+		if err != nil {
+			switch {
+			case
+				service.AttachmentErrInvalidAvatarFileType().Is(err),
+				service.AttachmentErrInvalidAvatarFileSize().Is(err),
+				service.AttachmentErrInvalidInitialsLength().Is(err),
+				service.AttachmentErrInvalidInitialsCharacter().Is(err):
+				req.SetKV(map[string]string{
+					"error": err.Error(),
+				})
+
+				h.Log.Warn("handled error", zap.Error(err))
+				return nil
+
+			default:
+				h.Log.Error("unhandled error", zap.Error(err))
+				return err
+			}
+		}
+	}
 
 	if err == nil {
 		err = h.AuthService.LoadRoleMemberships(req.Context(), user)
@@ -149,7 +127,6 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 		req.AuthUser.User = user
 		req.AuthUser.Save(req.Session)
 
-		t := translator(req, "auth")
 		req.NewAlerts = append(req.NewAlerts, request.Alert{
 			Type: "primary",
 			Text: t("profile.alerts.profile-updated"),
@@ -165,9 +142,7 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 		service.UserErrInvalidHandle().Is(err),
 		service.UserErrInvalidEmail().Is(err),
 		service.UserErrHandleNotUnique().Is(err),
-		service.UserErrNotAllowedToUpdate().Is(err),
-		service.AttachmentErrInvalidInitialsLength().Is(err),
-		service.AttachmentErrInvalidInitialsCharacter().Is(err):
+		service.UserErrNotAllowedToUpdate().Is(err):
 		req.SetKV(map[string]string{
 			"error":  err.Error(),
 			"email":  u.Email,

@@ -561,11 +561,6 @@ endpoints:
         type: string
         required: false
         title: Handle
-      - name: avatarInitialsMeta
-        type: "*types.UserAvatarInitialsMeta"
-        parser: "types.ParseUserAvatarInitialsMeta"
-        required: false
-        title: User avatar initials meta
       - name: kind
         type: types.UserKind
         required: false
@@ -750,6 +745,15 @@ endpoints:
         - name: upload
           type: "*multipart.FileHeader"
           title: Avatar to upload
+          required: false
+        - name: avatarColor
+          type: string
+          title: Avatar initial color
+          required: false
+        - name: avatarBgColor
+          type: string
+          title: Avatar initial background color
+          required: false
         - name: width
           type: uint
           title: Avatar width dimension

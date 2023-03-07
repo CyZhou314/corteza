@@ -103,7 +103,7 @@ type (
 		DeleteAuthTokensByUserID(ctx context.Context, userID uint64) (err error)
 		DeleteAuthSessionsByUserID(ctx context.Context, userID uint64) (err error)
 
-		UploadAvatar(ctx context.Context, userID uint64, Upload *multipart.FileHeader) (err error)
+		UploadAvatar(ctx context.Context, userID uint64, Upload *multipart.FileHeader, initialColor string, bgColor string) (err error)
 		DeleteAvatar(ctx context.Context, id uint64) error
 	}
 )
@@ -453,22 +453,6 @@ func (svc user) Update(ctx context.Context, upd *types.User) (u *types.User, err
 		if upd.Meta != nil {
 			// Only update meta when set
 			u.Meta = upd.Meta
-		}
-
-		// process avatar initial image
-		if upd.AvatarInitialsMeta != nil {
-			if u.Meta.AvatarID != 0 {
-				if err = svc.att.DeleteByID(ctx, u.Meta.AvatarID); err != nil {
-					return
-				}
-			}
-
-			att, err := svc.att.CreateAvatarInitialsAttachment(ctx, upd.AvatarInitialsMeta.Initials, upd.AvatarInitialsMeta.BgColor, upd.AvatarInitialsMeta.TextColor)
-			if err != nil {
-				return err
-			}
-
-			u.Meta.AvatarID = att.ID
 		}
 
 		if err = svc.eventbus.WaitFor(ctx, event.UserBeforeUpdate(upd, u)); err != nil {
@@ -1068,9 +1052,10 @@ func toLabeledUsers(set []*types.User) []label.LabeledResource {
 	return ll
 }
 
-func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipart.FileHeader) (err error) {
+func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipart.FileHeader, initialColor string, bgColor string) (err error) {
 	var (
 		u       *types.User
+		att     *types.Attachment
 		uaProps = &userActionProps{user: &types.User{ID: userID}}
 	)
 
@@ -1078,12 +1063,6 @@ func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipa
 		if u, err = loadUser(ctx, svc.store, userID); err != nil {
 			return
 		}
-		file, err := upload.Open()
-		if err != nil {
-			return
-		}
-
-		defer file.Close()
 
 		if u.Meta.AvatarID != 0 {
 			if err = svc.att.DeleteByID(ctx, u.Meta.AvatarID); err != nil {
@@ -1091,16 +1070,34 @@ func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipa
 			}
 		}
 
-		att, err := svc.att.CreateAuthAttachment(
-			ctx,
-			upload.Filename,
-			upload.Size,
-			file,
-			map[string]string{"key": types.AttachmentKindAvatar},
-		)
+		if upload != nil {
+			file, err := upload.Open()
+			if err != nil {
+				return err
+			}
 
-		if err != nil {
-			return err
+			defer file.Close()
+
+			att, err = svc.att.CreateAuthAttachment(
+				ctx,
+				upload.Filename,
+				upload.Size,
+				file,
+				map[string]string{"key": types.AttachmentKindAvatar},
+			)
+
+			if err != nil {
+				return err
+			}
+		} else {
+			initial := processAvatarInitials(u)
+			att, err = svc.att.CreateAvatarInitialsAttachment(ctx, initial, bgColor, initialColor)
+			if err != nil {
+				return err
+			}
+
+			u.Meta.AvatarColor = initialColor
+			u.Meta.AvatarBgColor = bgColor
 		}
 
 		u.Meta.AvatarID = att.ID
@@ -1151,22 +1148,22 @@ func (svc user) DeleteAvatar(ctx context.Context, userID uint64) (err error) {
 	return svc.recordAction(ctx, uaProps, UserActionDeleteAvatar, err)
 }
 
-func processAvatarInitials(u *types.User) (initials string) {
+func processAvatarInitials(u *types.User) (initial string) {
 	if u.Name != "" {
 		parts := strings.Fields(u.Name)
 		if len(parts) > 1 {
-			initials = string(parts[0][0] + parts[1][0])
+			initial = string(parts[0][0]) + string(parts[1][0])
 		} else {
-			initials = string(parts[0][0])
+			initial = string(parts[0][0])
 		}
 	} else {
 		if strings.ContainsAny(u.Handle, "._-") {
 			parts := strings.Split(u.Handle, "._-")
-			initials = string(parts[0][0] + parts[1][0])
+			initial = string(parts[0][0]) + string(parts[1][0])
 		} else {
-			initials = string(u.Handle[0])
+			initial = string(u.Handle[0])
 		}
 	}
 
-	return initials
+	return initial
 }

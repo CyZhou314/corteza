@@ -165,11 +165,6 @@ type (
 		// Handle
 		Handle string
 
-		// AvatarInitialsMeta POST parameter
-		//
-		// User avatar initials meta
-		AvatarInitialsMeta *types.UserAvatarInitialsMeta
-
 		// Kind POST parameter
 		//
 		// Kind (normal, bot)
@@ -319,6 +314,16 @@ type (
 		//
 		// Avatar to upload
 		Upload *multipart.FileHeader
+
+		// AvatarColor POST parameter
+		//
+		// Avatar initial color
+		AvatarColor string
+
+		// AvatarBgColor POST parameter
+		//
+		// Avatar initial background color
+		AvatarBgColor string
 
 		// Width POST parameter
 		//
@@ -756,13 +761,12 @@ func NewUserUpdate() *UserUpdate {
 // Auditable returns all auditable/loggable parameters
 func (r UserUpdate) Auditable() map[string]interface{} {
 	return map[string]interface{}{
-		"userID":             r.UserID,
-		"email":              r.Email,
-		"name":               r.Name,
-		"handle":             r.Handle,
-		"avatarInitialsMeta": r.AvatarInitialsMeta,
-		"kind":               r.Kind,
-		"labels":             r.Labels,
+		"userID": r.UserID,
+		"email":  r.Email,
+		"name":   r.Name,
+		"handle": r.Handle,
+		"kind":   r.Kind,
+		"labels": r.Labels,
 	}
 }
 
@@ -784,11 +788,6 @@ func (r UserUpdate) GetName() string {
 // Auditable returns all auditable/loggable parameters
 func (r UserUpdate) GetHandle() string {
 	return r.Handle
-}
-
-// Auditable returns all auditable/loggable parameters
-func (r UserUpdate) GetAvatarInitialsMeta() *types.UserAvatarInitialsMeta {
-	return r.AvatarInitialsMeta
 }
 
 // Auditable returns all auditable/loggable parameters
@@ -843,18 +842,6 @@ func (r *UserUpdate) Fill(req *http.Request) (err error) {
 				}
 			}
 
-			if val, ok := req.MultipartForm.Value["avatarInitialsMeta[]"]; ok {
-				r.AvatarInitialsMeta, err = types.ParseUserAvatarInitialsMeta(val)
-				if err != nil {
-					return err
-				}
-			} else if val, ok := req.MultipartForm.Value["avatarInitialsMeta"]; ok {
-				r.AvatarInitialsMeta, err = types.ParseUserAvatarInitialsMeta(val)
-				if err != nil {
-					return err
-				}
-			}
-
 			if val, ok := req.MultipartForm.Value["kind"]; ok && len(val) > 0 {
 				r.Kind, err = types.UserKind(val[0]), nil
 				if err != nil {
@@ -899,18 +886,6 @@ func (r *UserUpdate) Fill(req *http.Request) (err error) {
 
 		if val, ok := req.Form["handle"]; ok && len(val) > 0 {
 			r.Handle, err = val[0], nil
-			if err != nil {
-				return err
-			}
-		}
-
-		if val, ok := req.Form["avatarInitialsMeta[]"]; ok {
-			r.AvatarInitialsMeta, err = types.ParseUserAvatarInitialsMeta(val)
-			if err != nil {
-				return err
-			}
-		} else if val, ok := req.Form["avatarInitialsMeta"]; ok {
-			r.AvatarInitialsMeta, err = types.ParseUserAvatarInitialsMeta(val)
 			if err != nil {
 				return err
 			}
@@ -1610,10 +1585,12 @@ func NewUserProfileAvatar() *UserProfileAvatar {
 // Auditable returns all auditable/loggable parameters
 func (r UserProfileAvatar) Auditable() map[string]interface{} {
 	return map[string]interface{}{
-		"userID": r.UserID,
-		"upload": r.Upload,
-		"width":  r.Width,
-		"height": r.Height,
+		"userID":        r.UserID,
+		"upload":        r.Upload,
+		"avatarColor":   r.AvatarColor,
+		"avatarBgColor": r.AvatarBgColor,
+		"width":         r.Width,
+		"height":        r.Height,
 	}
 }
 
@@ -1625,6 +1602,16 @@ func (r UserProfileAvatar) GetUserID() uint64 {
 // Auditable returns all auditable/loggable parameters
 func (r UserProfileAvatar) GetUpload() *multipart.FileHeader {
 	return r.Upload
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r UserProfileAvatar) GetAvatarColor() string {
+	return r.AvatarColor
+}
+
+// Auditable returns all auditable/loggable parameters
+func (r UserProfileAvatar) GetAvatarBgColor() string {
+	return r.AvatarBgColor
 }
 
 // Auditable returns all auditable/loggable parameters
@@ -1660,6 +1647,20 @@ func (r *UserProfileAvatar) Fill(req *http.Request) (err error) {
 
 			// Ignoring upload as its handled in the POST params section
 
+			if val, ok := req.MultipartForm.Value["avatarColor"]; ok && len(val) > 0 {
+				r.AvatarColor, err = val[0], nil
+				if err != nil {
+					return err
+				}
+			}
+
+			if val, ok := req.MultipartForm.Value["avatarBgColor"]; ok && len(val) > 0 {
+				r.AvatarBgColor, err = val[0], nil
+				if err != nil {
+					return err
+				}
+			}
+
 			if val, ok := req.MultipartForm.Value["width"]; ok && len(val) > 0 {
 				r.Width, err = payload.ParseUint(val[0]), nil
 				if err != nil {
@@ -1685,6 +1686,20 @@ func (r *UserProfileAvatar) Fill(req *http.Request) (err error) {
 
 		if _, r.Upload, err = req.FormFile("upload"); err != nil {
 			return fmt.Errorf("error processing uploaded file: %w", err)
+		}
+
+		if val, ok := req.Form["avatarColor"]; ok && len(val) > 0 {
+			r.AvatarColor, err = val[0], nil
+			if err != nil {
+				return err
+			}
+		}
+
+		if val, ok := req.Form["avatarBgColor"]; ok && len(val) > 0 {
+			r.AvatarBgColor, err = val[0], nil
+			if err != nil {
+				return err
+			}
 		}
 
 		if val, ok := req.Form["width"]; ok && len(val) > 0 {

@@ -147,13 +147,12 @@ func (ctrl User) Create(ctx context.Context, r *request.UserCreate) (interface{}
 
 func (ctrl User) Update(ctx context.Context, r *request.UserUpdate) (interface{}, error) {
 	user := &types.User{
-		ID:                 r.UserID,
-		Email:              r.Email,
-		Name:               r.Name,
-		Handle:             r.Handle,
-		Kind:               r.Kind,
-		Labels:             r.Labels,
-		AvatarInitialsMeta: r.AvatarInitialsMeta,
+		ID:     r.UserID,
+		Email:  r.Email,
+		Name:   r.Name,
+		Handle: r.Handle,
+		Kind:   r.Kind,
+		Labels: r.Labels,
 	}
 
 	res, err := ctrl.user.Update(ctx, user)
@@ -161,7 +160,7 @@ func (ctrl User) Update(ctx context.Context, r *request.UserUpdate) (interface{}
 }
 
 func (ctrl User) ProfileAvatar(ctx context.Context, r *request.UserProfileAvatar) (interface{}, error) {
-	return api.OK(), ctrl.user.UploadAvatar(ctx, r.UserID, r.Upload)
+	return api.OK(), ctrl.user.UploadAvatar(ctx, r.UserID, r.Upload, r.AvatarColor, r.AvatarBgColor)
 }
 
 func (ctrl User) DeleteAvatar(ctx context.Context, r *request.UserDeleteAvatar) (interface{}, error) {
