@@ -384,6 +384,8 @@ func (svc user) Create(ctx context.Context, new *types.User) (u *types.User, err
 		}
 		new.Meta = &types.UserMeta{}
 		new.Meta.AvatarID = att.ID
+		new.Meta.AvatarColor = att.Meta.Original.Image.InitialColor
+		new.Meta.AvatarBgColor = att.Meta.Original.Image.BackgroundColor
 
 		new.ID = nextID()
 		new.CreatedAt = *now()
@@ -1096,8 +1098,8 @@ func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipa
 				return err
 			}
 
-			u.Meta.AvatarBgColor = initialColor[0]
-			u.Meta.AvatarColor = initialColor[1]
+			u.Meta.AvatarBgColor = att.Meta.Original.Image.BackgroundColor
+			u.Meta.AvatarColor = att.Meta.Original.Image.InitialColor
 		}
 
 		u.Meta.AvatarID = att.ID

@@ -318,6 +318,14 @@ func (svc attachment) CreateAvatarInitialsAttachment(ctx context.Context, initia
 		att.Meta.Original.Extension = "png"
 		att.Meta.Labels = map[string]string{"key": types.AttachmentKindAvatarInitials}
 
+		if att.Meta.Original.Image == nil {
+			att.Meta.Original.Image = &types.AttachmentImageMeta{}
+		}
+
+		att.Meta.Original.Image.Initial = initials
+		att.Meta.Original.Image.InitialColor = textColor
+		att.Meta.Original.Image.BackgroundColor = bgColor
+
 		att.Url = svc.files.Original(att.ID, att.Meta.Original.Extension)
 		aaProps.setUrl(att.Url)
 

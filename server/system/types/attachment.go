@@ -41,9 +41,12 @@ type (
 	}
 
 	AttachmentImageMeta struct {
-		Width    int  `json:"width,omitempty"`
-		Height   int  `json:"height,omitempty"`
-		Animated bool `json:"animated"`
+		Width           int    `json:"width,omitempty"`
+		Height          int    `json:"height,omitempty"`
+		Animated        bool   `json:"animated"`
+		Initial         string `json:"initial,omitempty"`
+		InitialColor    string `json:"initial-color,omitempty"`
+		BackgroundColor string `json:"background-color,omitempty"`
 	}
 
 	AttachmentFileMeta struct {
