@@ -32,9 +32,7 @@ func (h *AuthHandlers) profileForm(req *request.AuthReq) (err error) {
 		}
 	}
 
-	if u.Meta.AvatarID != 0 {
-		avatarUrl = fmt.Sprintf("/api/system/attachment/avatar/%d/original/%s", u.Meta.AvatarID, types.AttachmentKindAvatar)
-	}
+	avatarUrl = fmt.Sprintf("/api/system/attachment/avatar/%d/original/%s", u.Meta.AvatarID, types.AttachmentKindAvatar)
 
 	if form := req.PopKV(); len(form) > 0 {
 		req.Data["form"] = form
@@ -52,6 +50,12 @@ func (h *AuthHandlers) profileForm(req *request.AuthReq) (err error) {
 
 	req.Data["emailConfirmationRequired"] = !u.EmailConfirmed && h.Settings.EmailConfirmationRequired
 	req.Data["avatarEnabled"] = h.Settings.ProfileAvatarEnabled
+	req.Data["isAvatar"] = true
+
+	if u.Meta.AvatarColor != "" {
+		req.Data["isAvatar"] = false
+	}
+
 	return nil
 }
 
@@ -90,7 +94,9 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 	_, header, err := req.Request.FormFile("avatar")
 
 	// process avatar upload and generation
-	if header != nil || u.Meta.AvatarID == 0 {
+	initialColorLogic := u.Meta.AvatarColor != "" && initialColor != u.Meta.AvatarColor
+	bgColorLogic := u.Meta.AvatarBgColor != "" && bgColor != u.Meta.AvatarBgColor
+	if header != nil || initialColorLogic || bgColorLogic {
 		err = h.UserService.UploadAvatar(
 			req.Context(),
 			u.ID,

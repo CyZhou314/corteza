@@ -1093,6 +1093,9 @@ func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipa
 			if err != nil {
 				return err
 			}
+
+			u.Meta.AvatarBgColor = ""
+			u.Meta.AvatarColor = ""
 		} else {
 			initial := processAvatarInitials(u)
 			att, err = svc.att.CreateAvatarInitialsAttachment(ctx, initial, initialColor[0], initialColor[1])
@@ -1140,7 +1143,10 @@ func (svc user) DeleteAvatar(ctx context.Context, userID uint64) (err error) {
 			return err
 		}
 
-		u.Meta.AvatarID = 0
+		// When an uploaded avatar is deleted, generate avatar initial
+		if err = svc.generateUserAvatarInitial(ctx, u); err != nil {
+			return err
+		}
 
 		if err = store.UpdateUser(ctx, svc.store, u); err != nil {
 			return
