@@ -55,6 +55,9 @@ interface Options {
 
   // Ordered list of buttons to display in the block
   selectionButtons: Array<Button>;
+
+  recordLists: Array<Record<string, any>>
+  recordListFilters: Array<Record<string, any>>
 }
 
 const defaults: Readonly<Options> = Object.freeze({
@@ -101,6 +104,9 @@ const defaults: Readonly<Options> = Object.freeze({
   selectionButtons: [],
   refreshRate: 0,
   showRefresh: false,
+
+  recordLists: [],
+  recordListFilters: []
 })
 
 export class PageBlockRecordList extends PageBlock {
@@ -122,6 +128,14 @@ export class PageBlockRecordList extends PageBlock {
 
     if (o.fields) {
       this.options.fields = o.fields
+    }
+
+    if (o.recordLists) {
+      this.options.recordLists = o.recordLists
+    }
+
+    if (o.recordListFilters) {
+      this.options.recordListFilters = o.recordListFilters
     }
 
     if (o.editFields) {

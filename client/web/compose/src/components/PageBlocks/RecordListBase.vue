@@ -252,6 +252,7 @@
                       :record-list-filter="recordListFilter"
                       @filter="onFilter"
                     />
+
                     <b-button
                       v-if="field.sortable"
                       variant="link p-0 ml-1"

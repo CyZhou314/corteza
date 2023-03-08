@@ -316,6 +316,75 @@
           {{ $t('recordList.hideRecordPermissionsButton') }}
         </b-form-checkbox>
       </b-form-group>
+
+      <b-form-group
+        horizontal
+        :label-cols="3"
+        breakpoint="md"
+        label="Record List"
+      >
+        <b-form-row
+          v-for="(recordList, index) in options.recordLists"
+          :key="index"
+          class="mb-2 justify-content-between"
+        >
+          <b-col
+            cols="12"
+            sm="6"
+          >
+            <b-form-input
+              v-model="recordList.title"
+              placeholder="Title"
+              type="text"
+              number
+            />
+          </b-col>
+
+          <b-col
+            cols="12"
+            sm="2"
+            class="d-flex align-items-center"
+          >
+            <record-list-filter
+              class="d-print-none w-fit mx-auto"
+              :target="`rlf-${index}`"
+              :namespace="namespace"
+              :module="recordListModule"
+              :selected-field="recordList.field"
+              :record-list-filter="options.recordListFilters[index]"
+              @filter="(filter) => onFilter(filter, index)"
+            />
+          </b-col>
+          <b-col
+            cols="12"
+            sm="2"
+            class="d-flex justify-content-center align-items-center"
+          >
+            <c-input-confirm
+              button-class="text-right"
+              @confirmed="options.recordLists.splice(index, 1)"
+            />
+          </b-col>
+        </b-form-row>
+
+        <hr
+          v-if="options.recordLists.length"
+          class="my-3"
+        >
+
+        <b-button
+          variant="link"
+          class="d-flex align-items-center px-0 text-decoration-none"
+          @click="addNewRecordListFilter"
+        >
+          <font-awesome-icon
+            :icon="['fas', 'plus']"
+            size="sm"
+            class="mr-1"
+          />
+          Add
+        </b-button>
+      </b-form-group>
     </b-tab>
 
     <automation-tab
@@ -331,6 +400,7 @@ import { NoID } from '@cortezaproject/corteza-js'
 import base from './base'
 import AutomationTab from './Shared/AutomationTab'
 import FieldPicker from 'corteza-webapp-compose/src/components/Common/FieldPicker'
+import RecordListFilter from 'corteza-webapp-compose/src/components/Common/RecordListFilter'
 import { components } from '@cortezaproject/corteza-vue'
 const { CInputPresort } = components
 
@@ -345,6 +415,7 @@ export default {
     AutomationTab,
     FieldPicker,
     CInputPresort,
+    RecordListFilter,
   },
 
   extends: base,
@@ -486,5 +557,28 @@ export default {
       this.options.editFields = this.options.editFields.filter(a => fields.some(b => a.name === b.name))
     },
   },
+
+  methods: {
+    onFilter (filter = [], index) {
+      console.log(filter)
+      this.options.recordListFilters[index] = filter
+    },
+
+    addNewRecordListFilter () {
+      console.log(this.recordListModule.fields[0])
+
+      this.options.recordListFilters[this.options.recordLists.length] = []
+
+      this.options.recordLists.push({
+        field: this.recordListModule.fields[0],
+      })
+    },
+  },
 }
 </script>
+
+<style>
+.w-fit {
+  width: fit-content;
+}
+</style>
