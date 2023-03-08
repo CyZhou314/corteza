@@ -139,6 +139,14 @@ func (svc user) FindByID(ctx context.Context, userID uint64) (u *types.User, err
 
 		uaProps.setUser(u)
 
+		// If profile avatar settings is enabled and a user doesn't have an avatar image,
+		// generate one automatically when fetching their user information.
+		if svc.settings.Auth.Internal.ProfileAvatar.Enabled && u.Meta.AvatarID == 0 && u.Meta.AvatarColor == "" {
+			if err = svc.generateUserAvatarInitial(ctx, u); err != nil {
+				return err
+			}
+		}
+
 		if !svc.ac.CanReadUser(ctx, u) {
 			return UserErrNotAllowedToRead()
 		}
@@ -377,15 +385,9 @@ func (svc user) Create(ctx context.Context, new *types.User) (u *types.User, err
 		}
 
 		// Process avatar initials Image
-		initials := processAvatarInitials(new)
-		att, err := svc.att.CreateAvatarInitialsAttachment(ctx, initials, "", "")
-		if err != nil {
-			return err
+		if err = svc.generateUserAvatarInitial(ctx, new); err != nil {
+			return
 		}
-		new.Meta = &types.UserMeta{}
-		new.Meta.AvatarID = att.ID
-		new.Meta.AvatarColor = att.Meta.Original.Image.InitialColor
-		new.Meta.AvatarBgColor = att.Meta.Original.Image.BackgroundColor
 
 		new.ID = nextID()
 		new.CreatedAt = *now()
@@ -1168,4 +1170,22 @@ func processAvatarInitials(u *types.User) (initial string) {
 	}
 
 	return initial
+}
+
+func (svc user) generateUserAvatarInitial(ctx context.Context, u *types.User) error {
+	initials := processAvatarInitials(u)
+	att, err := svc.att.CreateAvatarInitialsAttachment(ctx, initials, "", "")
+	if err != nil {
+		return err
+	}
+
+	if u.Meta == nil {
+		u.Meta = &types.UserMeta{}
+	}
+
+	u.Meta.AvatarID = att.ID
+	u.Meta.AvatarColor = att.Meta.Original.Image.InitialColor
+	u.Meta.AvatarBgColor = att.Meta.Original.Image.BackgroundColor
+
+	return nil
 }

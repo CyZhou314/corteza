@@ -60,9 +60,14 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 	req.SetKV(nil)
 
 	var (
-		u = req.AuthUser.User
 		t = translator(req, "auth")
 	)
+
+	u, err := h.UserService.FindByAny(req.Context(), req.AuthUser.User.ID)
+	if err != nil {
+		h.Log.Error("find user error", zap.Error(err))
+		return err
+	}
 
 	u.Handle = req.Request.PostFormValue("handle")
 	u.Name = req.Request.PostFormValue("name")
@@ -84,12 +89,8 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 	// get the file from the form
 	_, header, err := req.Request.FormFile("avatar")
 
-	// Process avatar upload, generation and delete
-	if req.Request.PostFormValue("avatar-delete") == "avatar-delete" {
-		if err = h.UserService.DeleteAvatar(req.Context(), u.ID); err != nil {
-			return err
-		}
-	} else {
+	// process avatar upload and generation
+	if header != nil || u.Meta.AvatarID == 0 {
 		err = h.UserService.UploadAvatar(
 			req.Context(),
 			u.ID,
@@ -116,6 +117,13 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 				h.Log.Error("unhandled error", zap.Error(err))
 				return err
 			}
+		}
+	}
+
+	// Process avatar and delete
+	if req.Request.PostFormValue("avatar-delete") == "avatar-delete" {
+		if err = h.UserService.DeleteAvatar(req.Context(), u.ID); err != nil {
+			return err
 		}
 	}
 
