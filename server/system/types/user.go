@@ -38,7 +38,8 @@ type (
 
 	UserMeta struct {
 		// User's profile avatar photo attachment ID
-		AvatarID uint64 `json:"avatarID,string"`
+		AvatarID   uint64 `json:"avatarID,string"`
+		AvatarKind string `json:"avatarKind,omitempty"`
 
 		// User's avatar initial text and background color
 		AvatarColor   string `json:"avatarColor,omitempty"`

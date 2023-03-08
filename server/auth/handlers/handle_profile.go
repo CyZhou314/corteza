@@ -52,15 +52,9 @@ func (h *AuthHandlers) profileForm(req *request.AuthReq) (err error) {
 	req.Data["avatarEnabled"] = h.Settings.ProfileAvatarEnabled
 
 	if h.Settings.ProfileAvatarEnabled {
-		// check avatar type
-		att, err := h.Attachment.FindByID(req.Context(), u.Meta.AvatarID)
-		if err != nil {
-			return err
-		}
-
 		req.Data["isAvatar"] = false
 
-		if att.Meta.Labels["key"] == types.AttachmentKindAvatar {
+		if u.Meta.AvatarKind == types.AttachmentKindAvatar {
 			req.Data["isAvatar"] = true
 		}
 	}

@@ -29,8 +29,8 @@ editor:
         color: Initial Color
         backgroundColor: Background color
       uploader:
-        instructions: 'Click or drop user avatar here to upload'
-        uploading: 'Uploading user avatar'
+        instructions: Click or drop user avatar here to upload
+        uploading: Uploading user avatar
   mfa:
     TOTP:
       disabled:

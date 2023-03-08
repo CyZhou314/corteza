@@ -24,7 +24,7 @@
             {{ $t("preview.title") }}
           </h6>
           <b-button
-            v-if="uploadedAvatar('avatar')"
+            v-if="uploadedAvatar('avatar') && isKindAvatar"
             variant="link"
             class="d-flex align-items-top text-dark p-1"
             @click="$emit('resetAttachment', 'avatar')"
@@ -83,6 +83,7 @@
 </template>
 
 <script>
+import { NoID } from '@cortezaproject/corteza-js'
 import CSubmitButton from 'corteza-webapp-admin/src/components/CSubmitButton'
 import CUploaderWithPreview from 'corteza-webapp-admin/src/components/CUploaderWithPreview'
 
@@ -103,6 +104,39 @@ export default {
     user: {
       type: Object,
       required: true,
+    },
+
+    processing: {
+      type: Boolean,
+      value: false,
+    },
+
+    success: {
+      type: Boolean,
+      value: false,
+    },
+
+    canCreate: {
+      type: Boolean,
+      required: true,
+    },
+  },
+
+  computed: {
+    fresh () {
+      return !this.user.userID || this.user.userID === NoID
+    },
+
+    editable () {
+      return this.fresh ? this.canCreate : this.user.canUpdateUser
+    },
+
+    saveDisabled () {
+      return !this.editable
+    },
+
+    isKindAvatar () {
+      return this.user.meta.avatarKind === 'avatar'
     },
   },
 

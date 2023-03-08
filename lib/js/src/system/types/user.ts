@@ -12,6 +12,7 @@ interface UserMeta {
   preferredLanguage?: string;
   securityPolicy?: SecurityPolicy;
   avatarID?: string;
+  avatarKind?: string;
   avatarColor?: string;
   avatarBgColor?: string;
 }
@@ -42,6 +43,7 @@ export class User {
       },
     },
     avatarID: NoID,
+    avatarKind: '',
     avatarColor: '',
     avatarBgColor: '',
   }

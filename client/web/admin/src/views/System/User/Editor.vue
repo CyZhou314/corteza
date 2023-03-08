@@ -53,7 +53,11 @@
     />
 
     <c-user-editor-avatar
+      v-if="user && userID"
       :user="user"
+      :processing="info.processing"
+      :success="info.success"
+      :can-create="canCreate"
       class="mt-3"
       @submit="onAvatarSubmit"
       @onUpload="onAvatarUpload"

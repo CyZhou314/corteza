@@ -1100,6 +1100,7 @@ func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipa
 		}
 
 		u.Meta.AvatarID = att.ID
+		u.Meta.AvatarKind = types.AttachmentKindAvatar
 
 		if err = store.UpdateUser(ctx, svc.store, u); err != nil {
 			return
@@ -1125,6 +1126,15 @@ func (svc user) DeleteAvatar(ctx context.Context, userID uint64) (err error) {
 
 		if u.Kind == types.SystemUser {
 			return UserErrNotAllowedToDeleteAvatar()
+		}
+
+		att, err := svc.att.FindByID(ctx, u.Meta.AvatarID)
+		if err != nil {
+			return err
+		}
+
+		if att.Meta.Labels["key"] != types.AttachmentKindAvatar {
+			return nil
 		}
 
 		if !svc.ac.CanUpdateUser(ctx, u) {
@@ -1240,6 +1250,15 @@ func (svc user) generateUserAvatarInitial(ctx context.Context, u *types.User) er
 	}
 
 	u.Meta.AvatarID = att.ID
+	u.Meta.AvatarKind = types.AttachmentKindAvatarInitials
+
+	if u.Meta.AvatarBgColor == "" {
+		u.Meta.AvatarBgColor = att.Meta.Original.Image.BackgroundColor
+	}
+
+	if u.Meta.AvatarColor == "" {
+		u.Meta.AvatarColor = att.Meta.Original.Image.InitialColor
+	}
 
 	return nil
 }
