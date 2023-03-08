@@ -71,6 +71,9 @@ actions:
   - action: uploadAvatar
     log: "uploaded avatar of {{user}}"
 
+  - action: generateAvatar
+    log: "generated avatar of {{user}}"
+
   - action: deleteAvatar
     log: "deleted avatar of {{user}}"
 

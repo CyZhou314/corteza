@@ -15,6 +15,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"unicode"
 
 	"github.com/cortezaproject/corteza/server/pkg/actionlog"
 	intAuth "github.com/cortezaproject/corteza/server/pkg/auth"
@@ -53,7 +54,7 @@ type (
 		CreateSettingsAttachment(ctx context.Context, name string, size int64, fh io.ReadSeeker, labels map[string]string) (*types.Attachment, error)
 		CreateApplicationAttachment(ctx context.Context, name string, size int64, fh io.ReadSeeker, labels map[string]string) (*types.Attachment, error)
 		CreateAuthAttachment(ctx context.Context, name string, size int64, fh io.ReadSeeker, labels map[string]string) (*types.Attachment, error)
-		CreateAvatarInitialsAttachment(ctx context.Context, initials string, bgColor string, textColor string) (att *types.Attachment, err error)
+		CreateAvatarInitialsAttachment(ctx context.Context, inits string, bgColor string, textColor string) (att *types.Attachment, err error)
 		OpenOriginal(att *types.Attachment) (io.ReadSeekCloser, error)
 		OpenPreview(att *types.Attachment) (io.ReadSeekCloser, error)
 		DeleteByID(ctx context.Context, ID uint64) error
@@ -250,17 +251,22 @@ func (svc attachment) CreateAuthAttachment(ctx context.Context, name string, siz
 	return att, svc.recordAction(ctx, aaProps, AttachmentActionCreate, err)
 }
 
-func (svc attachment) CreateAvatarInitialsAttachment(ctx context.Context, initials string, bgColor string, textColor string) (att *types.Attachment, err error) {
+func (svc attachment) CreateAvatarInitialsAttachment(ctx context.Context, inits string, bgColor string, textColor string) (att *types.Attachment, err error) {
 	var (
 		aaProps       = &attachmentActionProps{}
 		currentUserID = intAuth.GetIdentityFromContext(ctx).Identity()
 	)
 
-	// Validate initials ASCII characters
-	for _, c := range initials {
-		if c > 127 {
-			return nil, AttachmentErrInvalidInitialsCharacter()
+	initials := ""
+
+	// Validate initials: if initials are letters if not assign a default "C"
+	for _, c := range inits {
+		if unicode.IsLetter(c) {
+			initials += string(c)
 		}
+	}
+	if initials == "" {
+		initials = "C"
 	}
 
 	// validate initials characters length

@@ -556,6 +556,25 @@ func UserActionUploadAvatar(props ...*userActionProps) *userAction {
 	return a
 }
 
+// UserActionGenerateAvatar returns "system:user.generateAvatar" action
+//
+// This function is auto-generated.
+func UserActionGenerateAvatar(props ...*userActionProps) *userAction {
+	a := &userAction{
+		timestamp: time.Now(),
+		resource:  "system:user",
+		action:    "generateAvatar",
+		log:       "generated avatar of {{user}}",
+		severity:  actionlog.Notice,
+	}
+
+	if len(props) > 0 {
+		a.props = props[0]
+	}
+
+	return a
+}
+
 // UserActionDeleteAvatar returns "system:user.deleteAvatar" action
 //
 // This function is auto-generated.

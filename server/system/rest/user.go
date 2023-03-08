@@ -164,7 +164,7 @@ func (ctrl User) ProfileAvatar(ctx context.Context, r *request.UserProfileAvatar
 }
 
 func (ctrl User) ProfileAvatarInitial(ctx context.Context, r *request.UserProfileAvatarInitial) (interface{}, error) {
-	return api.OK(), ctrl.user.UploadAvatar(ctx, r.UserID, nil, r.AvatarBgColor, r.AvatarColor)
+	return api.OK(), ctrl.user.GenerateAvatar(ctx, r.UserID, r.AvatarBgColor, r.AvatarColor)
 }
 
 func (ctrl User) DeleteAvatar(ctx context.Context, r *request.UserDeleteAvatar) (interface{}, error) {

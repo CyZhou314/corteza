@@ -81,7 +81,3 @@ errors:
   - error: invalidInitialsLength
     message: "initials characters length should not exceed 3 characters"
     severity: warning
-
-  - error: invalidInitialsCharacter
-    message: "invalid initials character"
-    severity: warning

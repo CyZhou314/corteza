@@ -32,7 +32,7 @@ func (h *AuthHandlers) profileForm(req *request.AuthReq) (err error) {
 		}
 	}
 
-	avatarUrl = fmt.Sprintf("/api/system/attachment/avatar/%d/original/%s", u.Meta.AvatarID, types.AttachmentKindAvatar)
+	avatarUrl = fmt.Sprintf("%sapi/system/attachment/avatar/%d/original/%s", GetLinks().Base, u.Meta.AvatarID, types.AttachmentKindAvatar)
 
 	if form := req.PopKV(); len(form) > 0 {
 		req.Data["form"] = form
@@ -50,10 +50,19 @@ func (h *AuthHandlers) profileForm(req *request.AuthReq) (err error) {
 
 	req.Data["emailConfirmationRequired"] = !u.EmailConfirmed && h.Settings.EmailConfirmationRequired
 	req.Data["avatarEnabled"] = h.Settings.ProfileAvatarEnabled
-	req.Data["isAvatar"] = true
 
-	if u.Meta.AvatarColor != "" {
+	if h.Settings.ProfileAvatarEnabled {
+		// check avatar type
+		att, err := h.Attachment.FindByID(req.Context(), u.Meta.AvatarID)
+		if err != nil {
+			return err
+		}
+
 		req.Data["isAvatar"] = false
+
+		if att.Meta.Labels["key"] == types.AttachmentKindAvatar {
+			req.Data["isAvatar"] = true
+		}
 	}
 
 	return nil
@@ -88,42 +97,26 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 	// this way user service will pass us through.
 	user, err := h.UserService.Update(req.Context(), u)
 
+	// process avatar initial generate
 	bgColor := req.Request.PostFormValue("initial-bg")
 	initialColor := req.Request.PostFormValue("initial-color")
-	// get the file from the form
-	_, header, err := req.Request.FormFile("avatar")
+	if bgColor != u.Meta.AvatarBgColor || initialColor != u.Meta.AvatarColor {
+		err = h.UserService.GenerateAvatar(
+			req.Context(),
+			u.ID,
+			bgColor,
+			initialColor,
+		)
+	}
 
-	// process avatar upload and generation
-	initialColorLogic := u.Meta.AvatarColor != "" && initialColor != u.Meta.AvatarColor
-	bgColorLogic := u.Meta.AvatarBgColor != "" && bgColor != u.Meta.AvatarBgColor
-	if header != nil || initialColorLogic || bgColorLogic {
+	// process avatar upload
+	_, header, err := req.Request.FormFile("avatar")
+	if header != nil {
 		err = h.UserService.UploadAvatar(
 			req.Context(),
 			u.ID,
 			header,
-			bgColor,
-			initialColor,
 		)
-
-		if err != nil {
-			switch {
-			case
-				service.AttachmentErrInvalidAvatarFileType().Is(err),
-				service.AttachmentErrInvalidAvatarFileSize().Is(err),
-				service.AttachmentErrInvalidInitialsLength().Is(err),
-				service.AttachmentErrInvalidInitialsCharacter().Is(err):
-				req.SetKV(map[string]string{
-					"error": err.Error(),
-				})
-
-				h.Log.Warn("handled error", zap.Error(err))
-				return nil
-
-			default:
-				h.Log.Error("unhandled error", zap.Error(err))
-				return err
-			}
-		}
 	}
 
 	// Process avatar and delete
@@ -156,7 +149,10 @@ func (h *AuthHandlers) profileProc(req *request.AuthReq) error {
 		service.UserErrInvalidHandle().Is(err),
 		service.UserErrInvalidEmail().Is(err),
 		service.UserErrHandleNotUnique().Is(err),
-		service.UserErrNotAllowedToUpdate().Is(err):
+		service.UserErrNotAllowedToUpdate().Is(err),
+		service.AttachmentErrInvalidAvatarFileType().Is(err),
+		service.AttachmentErrInvalidAvatarFileSize().Is(err),
+		service.AttachmentErrInvalidInitialsLength().Is(err):
 		req.SetKV(map[string]string{
 			"error":  err.Error(),
 			"email":  u.Email,

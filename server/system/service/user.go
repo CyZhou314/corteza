@@ -2,14 +2,6 @@ package service
 
 import (
 	"context"
-	"io"
-	"mime/multipart"
-	"net/mail"
-	"regexp"
-	"strconv"
-	"strings"
-	"time"
-
 	"github.com/cortezaproject/corteza/server/pkg/actionlog"
 	internalAuth "github.com/cortezaproject/corteza/server/pkg/auth"
 	"github.com/cortezaproject/corteza/server/pkg/errors"
@@ -20,6 +12,13 @@ import (
 	"github.com/cortezaproject/corteza/server/store"
 	"github.com/cortezaproject/corteza/server/system/service/event"
 	"github.com/cortezaproject/corteza/server/system/types"
+	"io"
+	"mime/multipart"
+	"net/mail"
+	"regexp"
+	"strconv"
+	"strings"
+	"time"
 )
 
 const (
@@ -103,7 +102,8 @@ type (
 		DeleteAuthTokensByUserID(ctx context.Context, userID uint64) (err error)
 		DeleteAuthSessionsByUserID(ctx context.Context, userID uint64) (err error)
 
-		UploadAvatar(ctx context.Context, userID uint64, Upload *multipart.FileHeader, initialColor ...string) (err error)
+		UploadAvatar(ctx context.Context, userID uint64, Upload *multipart.FileHeader) (err error)
+		GenerateAvatar(ctx context.Context, userID uint64, bgColor string, initialColor string) (err error)
 		DeleteAvatar(ctx context.Context, id uint64) error
 	}
 )
@@ -457,6 +457,12 @@ func (svc user) Update(ctx context.Context, upd *types.User) (u *types.User, err
 		if upd.Meta != nil {
 			// Only update meta when set
 			u.Meta = upd.Meta
+		}
+
+		if upd.Name != u.Name || upd.Handle != u.Name {
+			if err = svc.generateUserAvatarInitial(ctx, u); err != nil {
+				return err
+			}
 		}
 
 		if err = svc.eventbus.WaitFor(ctx, event.UserBeforeUpdate(upd, u)); err != nil {
@@ -1056,7 +1062,7 @@ func toLabeledUsers(set []*types.User) []label.LabeledResource {
 	return ll
 }
 
-func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipart.FileHeader, initialColor ...string) (err error) {
+func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipart.FileHeader) (err error) {
 	var (
 		u       *types.User
 		att     *types.Attachment
@@ -1074,37 +1080,23 @@ func (svc user) UploadAvatar(ctx context.Context, userID uint64, upload *multipa
 			}
 		}
 
-		if upload != nil {
-			file, err := upload.Open()
-			if err != nil {
-				return err
-			}
+		file, err := upload.Open()
+		if err != nil {
+			return err
+		}
 
-			defer file.Close()
+		defer file.Close()
 
-			att, err = svc.att.CreateAuthAttachment(
-				ctx,
-				upload.Filename,
-				upload.Size,
-				file,
-				map[string]string{"key": types.AttachmentKindAvatar},
-			)
+		att, err = svc.att.CreateAuthAttachment(
+			ctx,
+			upload.Filename,
+			upload.Size,
+			file,
+			map[string]string{"key": types.AttachmentKindAvatar},
+		)
 
-			if err != nil {
-				return err
-			}
-
-			u.Meta.AvatarBgColor = ""
-			u.Meta.AvatarColor = ""
-		} else {
-			initial := processAvatarInitials(u)
-			att, err = svc.att.CreateAvatarInitialsAttachment(ctx, initial, initialColor[0], initialColor[1])
-			if err != nil {
-				return err
-			}
-
-			u.Meta.AvatarBgColor = att.Meta.Original.Image.BackgroundColor
-			u.Meta.AvatarColor = att.Meta.Original.Image.InitialColor
+		if err != nil {
+			return err
 		}
 
 		u.Meta.AvatarID = att.ID
@@ -1127,7 +1119,7 @@ func (svc user) DeleteAvatar(ctx context.Context, userID uint64) (err error) {
 	)
 
 	err = func() (err error) {
-		if u, err = loadUser(ctx, svc.store, userID); err != nil {
+		if u, err = svc.FindByID(ctx, userID); err != nil {
 			return
 		}
 
@@ -1142,6 +1134,8 @@ func (svc user) DeleteAvatar(ctx context.Context, userID uint64) (err error) {
 		if err = svc.att.DeleteByID(ctx, u.Meta.AvatarID); err != nil {
 			return err
 		}
+
+		u.Meta.AvatarID = 0
 
 		// When an uploaded avatar is deleted, generate avatar initial
 		if err = svc.generateUserAvatarInitial(ctx, u); err != nil {
@@ -1166,21 +1160,77 @@ func processAvatarInitials(u *types.User) (initial string) {
 		} else {
 			initial = string(parts[0][0])
 		}
-	} else {
+	} else if u.Handle != "" {
 		if strings.ContainsAny(u.Handle, "._-") {
 			parts := strings.Split(u.Handle, "._-")
 			initial = string(parts[0][0]) + string(parts[1][0])
 		} else {
 			initial = string(u.Handle[0])
 		}
+	} else {
+		email := strings.Split(u.Email, "@")
+		if strings.ContainsAny(email[0], "._-") {
+			parts := strings.Split(email[0], "._-")
+			initial = string(parts[0][0]) + string(parts[1][0])
+		} else {
+			initial = string(email[0][0])
+		}
 	}
 
 	return initial
 }
 
+func (svc user) GenerateAvatar(ctx context.Context, userID uint64, bgColor string, initialColor string) (err error) {
+	var (
+		u       *types.User
+		uaProps = &userActionProps{user: &types.User{ID: userID}}
+	)
+
+	err = func() (err error) {
+		if u, err = loadUser(ctx, svc.store, userID); err != nil {
+			return
+		}
+
+		u.Meta.AvatarColor = initialColor
+		u.Meta.AvatarBgColor = bgColor
+		if err = svc.generateUserAvatarInitial(ctx, u); err != nil {
+			return err
+		}
+
+		if err = store.UpdateUser(ctx, svc.store, u); err != nil {
+			return
+		}
+
+		return nil
+	}()
+
+	return svc.recordAction(ctx, uaProps, UserActionGenerateAvatar, err)
+}
+
 func (svc user) generateUserAvatarInitial(ctx context.Context, u *types.User) error {
-	initials := processAvatarInitials(u)
-	att, err := svc.att.CreateAvatarInitialsAttachment(ctx, initials, "", "")
+	initial := processAvatarInitials(u)
+
+	if u.Meta.AvatarID != 0 {
+		oldAtt, err := svc.att.FindByID(ctx, u.Meta.AvatarID)
+		if err != nil {
+			return err
+		}
+
+		if oldAtt.Meta.Labels["key"] == types.AttachmentKindAvatar {
+			return nil
+		}
+
+		colorLogic := oldAtt.Meta.Original.Image.BackgroundColor == u.Meta.AvatarBgColor && oldAtt.Meta.Original.Image.InitialColor == u.Meta.AvatarColor
+		if oldAtt.Meta.Original.Image.Initial == initial && colorLogic {
+			return nil
+		}
+
+		if err = svc.att.DeleteByID(ctx, u.Meta.AvatarID); err != nil {
+			return err
+		}
+	}
+
+	att, err := svc.att.CreateAvatarInitialsAttachment(ctx, initial, u.Meta.AvatarBgColor, u.Meta.AvatarColor)
 	if err != nil {
 		return err
 	}
@@ -1190,8 +1240,6 @@ func (svc user) generateUserAvatarInitial(ctx context.Context, u *types.User) er
 	}
 
 	u.Meta.AvatarID = att.ID
-	u.Meta.AvatarColor = att.Meta.Original.Image.InitialColor
-	u.Meta.AvatarBgColor = att.Meta.Original.Image.BackgroundColor
 
 	return nil
 }
