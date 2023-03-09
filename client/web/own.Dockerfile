@@ -15,7 +15,7 @@ RUN yarn install
 
 COPY ./one/ ./
 
-RUN yarn build
+RUN yarn --non-interactive --no-progress --silent --emoji false build --production
 
 # build the admin
 WORKDIR /app/admin
