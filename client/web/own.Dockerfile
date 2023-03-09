@@ -4,94 +4,64 @@ FROM node:16-alpine as build-stage
 ENV PATH /app/node_modules/.bin:$PATH
 
 # build the one
-WORKDIR /app/one
+WORKDIR /app
 
 RUN apk update && apk add --no-cache git
 
-COPY ./one/package.json ./
-COPY ./one/yarn.lock ./
+COPY . .
+
+# build the app
+WORKDIR /app/one
 
 RUN yarn install
-
-COPY ./one/ ./
 
 RUN yarn --non-interactive --no-progress --silent --emoji false build --production
 
 # build the admin
 WORKDIR /app/admin
 
-COPY ./admin/package.json ./
-COPY ./admin/yarn.lock ./
-
 RUN yarn install
 
-COPY ./admin/ ./
+RUN yarn --non-interactive --no-progress --silent --emoji false build --production
 
-RUN yarn build
 
 # build the compose
 WORKDIR /app/compose
 
-COPY ./compose/package.json ./
-COPY ./compose/yarn.lock ./
-
 RUN yarn install
 
-COPY ./compose/ ./
+RUN yarn --non-interactive --no-progress --silent --emoji false build --production
 
-RUN yarn build
 
 # build the discovery
 WORKDIR /app/discovery
 
-COPY ./discovery/package.json ./
-COPY ./discovery/yarn.lock ./
-
 RUN yarn install
 
-COPY ./discovery/ ./
-
-RUN yarn build
+RUN yarn --non-interactive --no-progress --silent --emoji false build --production
 
 # build the privacy
 WORKDIR /app/privacy
 
-COPY ./privacy/package.json ./
-COPY ./privacy/yarn.lock ./
-
 RUN yarn install
 
-COPY ./privacy/ ./
+RUN yarn --non-interactive --no-progress --silent --emoji false build --production
 
-RUN yarn build
 
 # build the reporter
 WORKDIR /app/reporter
 
-COPY ./reporter/package.json ./
-COPY ./reporter/yarn.lock ./
-
 RUN yarn install
 
-COPY ./reporter/ ./
+RUN yarn --non-interactive --no-progress --silent --emoji false build --production
 
-RUN yarn build
 
 # build the workflow
 WORKDIR /app/workflow
 
-COPY ./workflow/package.json ./
-COPY ./workflow/yarn.lock ./
-
 RUN yarn install
 
-COPY ./workflow/ ./
-
-RUN yarn build
-
-# add the applications
-WORKDIR /app/applications
-COPY ./applications/ ./
+RUN yarn --non-interactive --no-progress --silent --emoji false build --production
 
 
 # deploy stage
