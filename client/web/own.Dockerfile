@@ -8,7 +8,7 @@ WORKDIR /app
 
 RUN apk update && apk add --no-cache git
 
-COPY . .
+COPY one .
 
 # build the app
 WORKDIR /app/one
