@@ -108,7 +108,7 @@ COPY --from=build-stage /app/reporter/dist /usr/share/nginx/html/reporter
 COPY --from=build-stage /app/workflow/dist /usr/share/nginx/html/workflow
 COPY --from=build-stage /app/applications /usr/share/nginx/html/applications
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY CONTRIBUTING.* DCO LICENSE README.* ./
+# COPY CONTRIBUTING.* DCO LICENSE README.* ./
 COPY entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
