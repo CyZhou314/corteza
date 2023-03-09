@@ -27,15 +27,15 @@ jobs:
       uses: crazy-max/ghaction-docker-buildx@v1
       with:
         buildx-version: latest
-    - name: Build webapp dockerfile (with push)
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      run: |
-        docker buildx build \
-        --platform=linux/amd64,linux/arm/v7,linux/arm64 \
-        --output "type=image,push=true" \
-        --file ./client/web/own.Dockerfile ./client/web \
-        --tag cyzhou314/corteza-webapp:latest
+   # - name: Build webapp dockerfile (with push)
+   #   env:
+   #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+   #  run: |
+   #     docker buildx build \
+   #     --platform=linux/amd64,linux/arm/v7,linux/arm64 \
+   #     --output "type=image,push=true" \
+   #     --file ./client/web/own.Dockerfile ./client/web \
+   #     --tag cyzhou314/corteza-webapp:latest
     - name: Build server dockerfile (with push)
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
