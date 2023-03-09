@@ -13,7 +13,7 @@ COPY ./one/yarn.lock ./
 
 RUN yarn install
 
-COPY ./one ./
+COPY ./one/ ./
 
 RUN yarn build
 
@@ -25,7 +25,7 @@ COPY ./admin/yarn.lock ./
 
 RUN yarn install
 
-COPY ./admin ./
+COPY ./admin/ ./
 
 RUN yarn build
 
@@ -37,7 +37,7 @@ COPY ./compose/yarn.lock ./
 
 RUN yarn install
 
-COPY ./compose ./
+COPY ./compose/ ./
 
 RUN yarn build
 
@@ -49,7 +49,7 @@ COPY ./discovery/yarn.lock ./
 
 RUN yarn install
 
-COPY ./discovery ./
+COPY ./discovery/ ./
 
 RUN yarn build
 
@@ -61,7 +61,7 @@ COPY ./privacy/yarn.lock ./
 
 RUN yarn install
 
-COPY ./privacy ./
+COPY ./privacy/ ./
 
 RUN yarn build
 
@@ -73,7 +73,7 @@ COPY ./reporter/yarn.lock ./
 
 RUN yarn install
 
-COPY ./reporter ./
+COPY ./reporter/ ./
 
 RUN yarn build
 
@@ -85,13 +85,13 @@ COPY ./workflow/yarn.lock ./
 
 RUN yarn install
 
-COPY ./workflow ./
+COPY ./workflow/ ./
 
 RUN yarn build
 
 # add the applications
 WORKDIR /app/applications
-COPY ./applications ./
+COPY ./applications/ ./
 
 
 # deploy stage
