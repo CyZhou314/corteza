@@ -41,7 +41,7 @@ module.exports = ({ appFlavour, appLabel, version = process.env.BUILD_VERSION, t
         new webpack.DefinePlugin({
           FLAVOUR: JSON.stringify(appFlavour),
           WEBAPP: JSON.stringify(appLabel),
-          VERSION: JSON.stringify(version || ('' + exec('git describe --always --tags')).trim()),
+          VERSION: JSON.stringify(version || process.env.VUE_APP_VERSION|| ('' + exec('git describe --always --tags')).trim()),
           BUILD_TIME: JSON.stringify((new Date()).toISOString()),
         }),
       ],

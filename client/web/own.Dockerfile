@@ -2,7 +2,8 @@
 FROM node:16.14-alpine as build-stage
 
 ENV PATH /app/node_modules/.bin:$PATH
-ENV PATH /app/node_modules/.bin:$PATH
+ENV BUILD_VERSION latest:$APP_VERSION
+ENV VUE_APP_VERSION latest:$APP_VERSION
 
 # build the one
 WORKDIR /app
@@ -14,49 +15,35 @@ COPY . .
 # build the app
 WORKDIR /app/one
 
-RUN echo "BUILD_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
 RUN yarn install && yarn build
 
 # build the admin
 WORKDIR /app/admin
-
-RUN echo "BUILD_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
 RUN yarn install && yarn build
 
 # build the compose
 WORKDIR /app/compose
 
-RUN echo "BUILD_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
 RUN yarn install && yarn build
 
 # build the discovery
 WORKDIR /app/discovery
-
-RUN echo "BUILD_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
 RUN yarn install && yarn build
 
 # build the privacy
 WORKDIR /app/privacy
 
-RUN echo "BUILD_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
 RUN yarn install && yarn build
 
 # build the reporter
 WORKDIR /app/reporter
 
-RUN echo "BUILD_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
 RUN yarn install && yarn build
 
 # build the workflow
 WORKDIR /app/workflow
-
-RUN echo "BUILD_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
 RUN yarn install && yarn build
 
