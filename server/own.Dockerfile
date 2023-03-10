@@ -20,6 +20,13 @@ WORKDIR /corteza
 COPY . ./
 
 COPY --from=webconsole-build-stage /webconsole/dist ./webconsole/dist
+
+WORKDIR /corteza/server/pkg/locale
+
+RUN make src/en src/de src/fr
+
+WORKDIR /corteza
+
 RUN make release-clean release
 # RUN go build "-X github.com/CyZhou314/corteza/server/pkg/version.Version=${BUILD_VERSION}" -o build/pkg/corteza-server cmd/corteza/main.go
 # RUN go build -o build/corteza-server cmd/corteza/main.go
