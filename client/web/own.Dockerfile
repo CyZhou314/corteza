@@ -13,56 +13,37 @@ COPY one .
 # build the app
 WORKDIR /app/one
 
-RUN yarn install
-
-RUN yarn --non-interactive --no-progress --silent --emoji false build --production
+RUN yarn install && yarn build
 
 # build the admin
 WORKDIR /app/admin
 
-RUN yarn install
-
-RUN yarn --non-interactive --no-progress --silent --emoji false build --production
-
+RUN yarn install && yarn build
 
 # build the compose
 WORKDIR /app/compose
 
-RUN yarn install
-
-RUN yarn --non-interactive --no-progress --silent --emoji false build --production
-
+RUN yarn install && yarn build
 
 # build the discovery
 WORKDIR /app/discovery
 
-RUN yarn install
-
-RUN yarn --non-interactive --no-progress --silent --emoji false build --production
+RUN yarn install && yarn build
 
 # build the privacy
 WORKDIR /app/privacy
 
-RUN yarn install
-
-RUN yarn --non-interactive --no-progress --silent --emoji false build --production
-
+RUN yarn install && yarn build
 
 # build the reporter
 WORKDIR /app/reporter
 
-RUN yarn install
-
-RUN yarn --non-interactive --no-progress --silent --emoji false build --production
-
+RUN yarn install && yarn build
 
 # build the workflow
 WORKDIR /app/workflow
 
-RUN yarn install
-
-RUN yarn --non-interactive --no-progress --silent --emoji false build --production
-
+RUN yarn install && yarn build
 
 # deploy stage
 FROM nginx:stable-alpine
