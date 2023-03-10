@@ -71,7 +71,7 @@ RUN chmod +x /entrypoint.sh
 
 EXPOSE 80
 
-HEALTHCHECK --interval=30s --start-period=10s --timeout=30s \
-  CMD wget --quiet --tries=1 --spider "http://127.0.0.1:80/config.js" || exit 1
+# HEALTHCHECK --interval=30s --start-period=10s --timeout=30s \
+#   CMD wget --quiet --tries=1 --spider "http://127.0.0.1:80/config.js" || exit 1
 
 ENTRYPOINT ["/entrypoint.sh"]

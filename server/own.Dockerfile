@@ -53,8 +53,8 @@ VOLUME /data
 
 COPY --from=server-build-stage /corteza/build/pkg/corteza-server ./
 
-HEALTHCHECK --interval=30s --start-period=1m --timeout=30s --retries=3 \
-    CMD curl --silent --fail --fail-early http://127.0.0.1:80/healthcheck || exit 1
+# HEALTHCHECK --interval=30s --start-period=1m --timeout=30s --retries=3 \
+#     CMD curl --silent --fail --fail-early http://127.0.0.1:80/healthcheck || exit 1
 
 EXPOSE 80
 
