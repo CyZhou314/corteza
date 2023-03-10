@@ -4,7 +4,8 @@ FROM node:16.14-alpine as webconsole-build-stage
 WORKDIR /webconsole
 COPY ./webconsole ./
 # Snapshot is built in development mode and with source map
-RUN yarn install && yarn build --mode dev --sourcemap
+# RUN yarn install && yarn build --mode dev --sourcemap
+RUN yarn install && yarn build --production
 
 
 # build server
@@ -19,9 +20,9 @@ WORKDIR /corteza
 COPY . ./
 
 COPY --from=webconsole-build-stage /webconsole/dist ./webconsole/dist
-# RUN make release-clean release
+RUN make release-clean release
 # RUN go build "-X github.com/CyZhou314/corteza/server/pkg/version.Version=${BUILD_VERSION}" -o build/pkg/corteza-server cmd/corteza/main.go
-RUN go build -o build/corteza-server cmd/corteza/main.go
+# RUN go build -o build/corteza-server cmd/corteza/main.go
 
 # deploy stage
 FROM ubuntu:20.04
