@@ -3,6 +3,10 @@ FROM node:16.14-alpine as webconsole-build-stage
 
 WORKDIR /webconsole
 COPY ./webconsole ./
+
+RUN npm config set registry https://registry.npm.taobao.org
+RUN npm config set disturl https://npm.taobao.org/dist
+
 # Snapshot is built in development mode and with source map
 # RUN yarn install && yarn build --mode dev --sourcemap
 RUN yarn install && yarn build
