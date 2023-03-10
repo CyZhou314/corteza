@@ -22,7 +22,9 @@ COPY . ./
 COPY --from=webconsole-build-stage /webconsole/dist ./webconsole/dist
 
 WORKDIR /corteza/pkg/locale
-
+RUN apt-get -y update \
+ && apt-get -y install \
+ zip
 RUN make src/en src/de src/fr
 
 WORKDIR /corteza
