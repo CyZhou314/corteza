@@ -10,6 +10,9 @@ WORKDIR /app
 
 RUN apk update && apk add git
 
+RUN npm config set registry https://registry.npm.taobao.org
+RUN npm config set disturl https://npm.taobao.org/dist
+
 COPY . .
 
 # build the app
