@@ -1,5 +1,5 @@
 # build-stage
-FROM node:16-alpine as build-stage
+FROM node:16.14-alpine as build-stage
 
 ENV PATH /app/node_modules/.bin:$PATH
 
