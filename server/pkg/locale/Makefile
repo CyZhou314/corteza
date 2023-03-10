@@ -12,9 +12,9 @@ copy-english-from-root-locale-dir: src/en
 # Copy internal language files (english) to pkg/locale/src
 #
 # This way languages will be embedded into the build
-src/en:
-	rm -rf $*
-	cp -r $(PATH_INTERNAL)/en ./src
+# src/en:
+# 	rm -rf $*
+# 	cp -r $(PATH_INTERNAL)/en ./src
 
 # Catch-all for external locales
 src/%: unpack-external
