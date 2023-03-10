@@ -81,7 +81,7 @@ help:
 build: $(BUILD_DEST_DIR)/$(BUILD_BIN_NAME)
 
 $(BUILD_DEST_DIR)/$(BUILD_BIN_NAME):
-		go build $(LDFLAGS) -o $@ cmd/corteza/main.go
+		go build -o $@ cmd/corteza/main.go
 		# GOOS=$(BUILD_OS) GOARCH=$(BUILD_ARCH) go build $(LDFLAGS) -o $@ cmd/corteza/main.go
 
 release: build $(BUILD_DEST_DIR)/$(RELEASE_NAME)
