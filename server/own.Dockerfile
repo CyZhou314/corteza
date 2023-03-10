@@ -5,7 +5,7 @@ WORKDIR /webconsole
 COPY ./webconsole ./
 # Snapshot is built in development mode and with source map
 # RUN yarn install && yarn build --mode dev --sourcemap
-RUN yarn install && yarn build --production
+RUN yarn install && yarn build
 
 
 # build server
