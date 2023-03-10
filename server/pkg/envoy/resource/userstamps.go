@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/cortezaproject/corteza/server/system/types"
+	"github.com/cyzhou314/corteza/server/system/types"
 )
 
 type (

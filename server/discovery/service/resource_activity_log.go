@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/cortezaproject/corteza/server/pkg/discovery/types"
-	"github.com/cortezaproject/corteza/server/store"
+	"github.com/cyzhou314/corteza/server/pkg/discovery/types"
+	"github.com/cyzhou314/corteza/server/store"
 )
 
 type (

@@ -4,13 +4,13 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/cortezaproject/corteza/server/compose/service"
-	"github.com/cortezaproject/corteza/server/pkg/dal"
+	"github.com/cyzhou314/corteza/server/compose/service"
+	"github.com/cyzhou314/corteza/server/pkg/dal"
 
-	"github.com/cortezaproject/corteza/server/compose/types"
-	"github.com/cortezaproject/corteza/server/pkg/envoy/resource"
-	"github.com/cortezaproject/corteza/server/store"
-	systemTypes "github.com/cortezaproject/corteza/server/system/types"
+	"github.com/cyzhou314/corteza/server/compose/types"
+	"github.com/cyzhou314/corteza/server/pkg/envoy/resource"
+	"github.com/cyzhou314/corteza/server/store"
+	systemTypes "github.com/cyzhou314/corteza/server/system/types"
 )
 
 func NewComposeModuleFromResource(res *resource.ComposeModule, cfg *EncoderConfig) resourceState {

@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/cortezaproject/corteza/server/federation/types"
+	"github.com/cyzhou314/corteza/server/federation/types"
 )
 
 type (

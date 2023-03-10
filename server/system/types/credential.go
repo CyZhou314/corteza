@@ -3,7 +3,7 @@ package types
 import (
 	"time"
 
-	"github.com/cortezaproject/corteza/server/pkg/filter"
+	"github.com/cyzhou314/corteza/server/pkg/filter"
 	"github.com/jmoiron/sqlx/types"
 )
 

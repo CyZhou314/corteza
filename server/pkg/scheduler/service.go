@@ -7,8 +7,8 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/cortezaproject/corteza/server/pkg/eventbus"
-	"github.com/cortezaproject/corteza/server/pkg/sentry"
+	"github.com/cyzhou314/corteza/server/pkg/eventbus"
+	"github.com/cyzhou314/corteza/server/pkg/sentry"
 )
 
 type (

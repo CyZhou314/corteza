@@ -1,8 +1,8 @@
 package service
 
 import (
-	ct "github.com/cortezaproject/corteza/server/compose/types"
-	"github.com/cortezaproject/corteza/server/federation/types"
+	ct "github.com/cyzhou314/corteza/server/compose/types"
+	"github.com/cyzhou314/corteza/server/federation/types"
 )
 
 type (

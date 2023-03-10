@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cortezaproject/corteza/server/store/adapters/rdbms/ddl"
-	"github.com/cortezaproject/corteza/server/store/adapters/rdbms/ql"
+	"github.com/cyzhou314/corteza/server/store/adapters/rdbms/ddl"
+	"github.com/cyzhou314/corteza/server/store/adapters/rdbms/ql"
 	"github.com/spf13/cast"
 
-	"github.com/cortezaproject/corteza/server/pkg/dal"
-	"github.com/cortezaproject/corteza/server/pkg/expr"
-	"github.com/cortezaproject/corteza/server/store/adapters/rdbms/drivers"
+	"github.com/cyzhou314/corteza/server/pkg/dal"
+	"github.com/cyzhou314/corteza/server/pkg/expr"
+	"github.com/cyzhou314/corteza/server/store/adapters/rdbms/drivers"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/dialect/mysql"
 	"github.com/doug-martin/goqu/v9/exp"

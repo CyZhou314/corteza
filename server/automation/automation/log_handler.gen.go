@@ -10,9 +10,9 @@ package automation
 
 import (
 	"context"
-	atypes "github.com/cortezaproject/corteza/server/automation/types"
-	"github.com/cortezaproject/corteza/server/pkg/expr"
-	"github.com/cortezaproject/corteza/server/pkg/wfexec"
+	atypes "github.com/cyzhou314/corteza/server/automation/types"
+	"github.com/cyzhou314/corteza/server/pkg/expr"
+	"github.com/cyzhou314/corteza/server/pkg/wfexec"
 )
 
 var _ wfexec.ExecResponse

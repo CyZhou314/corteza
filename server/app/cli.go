@@ -3,17 +3,17 @@ package app
 import (
 	"context"
 	"fmt"
-	composeCommands "github.com/cortezaproject/corteza/server/compose/commands"
+	composeCommands "github.com/cyzhou314/corteza/server/compose/commands"
 	"sync"
 
-	authCommands "github.com/cortezaproject/corteza/server/auth/commands"
-	federationCommands "github.com/cortezaproject/corteza/server/federation/commands"
-	"github.com/cortezaproject/corteza/server/pkg/actionlog"
-	"github.com/cortezaproject/corteza/server/pkg/api/server"
-	"github.com/cortezaproject/corteza/server/pkg/cli"
-	"github.com/cortezaproject/corteza/server/pkg/options"
-	"github.com/cortezaproject/corteza/server/store"
-	systemCommands "github.com/cortezaproject/corteza/server/system/commands"
+	authCommands "github.com/cyzhou314/corteza/server/auth/commands"
+	federationCommands "github.com/cyzhou314/corteza/server/federation/commands"
+	"github.com/cyzhou314/corteza/server/pkg/actionlog"
+	"github.com/cyzhou314/corteza/server/pkg/api/server"
+	"github.com/cyzhou314/corteza/server/pkg/cli"
+	"github.com/cyzhou314/corteza/server/pkg/options"
+	"github.com/cyzhou314/corteza/server/store"
+	systemCommands "github.com/cyzhou314/corteza/server/system/commands"
 	"go.uber.org/zap"
 )
 

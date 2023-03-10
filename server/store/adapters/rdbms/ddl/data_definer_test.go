@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/cortezaproject/corteza/server/pkg/dal"
+	"github.com/cyzhou314/corteza/server/pkg/dal"
 	"github.com/stretchr/testify/require"
 )
 

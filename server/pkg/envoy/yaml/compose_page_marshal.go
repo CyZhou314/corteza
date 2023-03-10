@@ -4,10 +4,10 @@ import (
 	"context"
 	"strconv"
 
-	automationTypes "github.com/cortezaproject/corteza/server/automation/types"
-	composeTypes "github.com/cortezaproject/corteza/server/compose/types"
-	"github.com/cortezaproject/corteza/server/pkg/envoy"
-	"github.com/cortezaproject/corteza/server/pkg/envoy/resource"
+	automationTypes "github.com/cyzhou314/corteza/server/automation/types"
+	composeTypes "github.com/cyzhou314/corteza/server/compose/types"
+	"github.com/cyzhou314/corteza/server/pkg/envoy"
+	"github.com/cyzhou314/corteza/server/pkg/envoy/resource"
 )
 
 func composePageFromResource(r *resource.ComposePage, cfg *EncoderConfig) *composePage {

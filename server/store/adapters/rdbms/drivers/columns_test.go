@@ -2,8 +2,8 @@ package drivers
 
 import (
 	"database/sql"
-	"github.com/cortezaproject/corteza/server/compose/types"
-	"github.com/cortezaproject/corteza/server/pkg/dal"
+	"github.com/cyzhou314/corteza/server/compose/types"
+	"github.com/cyzhou314/corteza/server/pkg/dal"
 	"github.com/stretchr/testify/require"
 	"testing"
 )

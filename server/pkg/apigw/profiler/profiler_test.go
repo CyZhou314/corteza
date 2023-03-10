@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	h "github.com/cortezaproject/corteza/server/pkg/http"
+	h "github.com/cyzhou314/corteza/server/pkg/http"
 	"github.com/stretchr/testify/require"
 )
 

@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cortezaproject/corteza/server/auth/request"
-	"github.com/cortezaproject/corteza/server/pkg/errors"
-	"github.com/cortezaproject/corteza/server/system/types"
+	"github.com/cyzhou314/corteza/server/auth/request"
+	"github.com/cyzhou314/corteza/server/pkg/errors"
+	"github.com/cyzhou314/corteza/server/system/types"
 )
 
 type (

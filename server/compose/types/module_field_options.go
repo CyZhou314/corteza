@@ -4,8 +4,8 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
-	discovery "github.com/cortezaproject/corteza/server/discovery/types"
-	"github.com/cortezaproject/corteza/server/pkg/sql"
+	discovery "github.com/cyzhou314/corteza/server/discovery/types"
+	"github.com/cyzhou314/corteza/server/pkg/sql"
 	"github.com/spf13/cast"
 	"strconv"
 )

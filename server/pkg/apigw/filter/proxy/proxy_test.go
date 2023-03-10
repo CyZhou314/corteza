@@ -11,9 +11,9 @@ import (
 	"strings"
 	"testing"
 
-	agctx "github.com/cortezaproject/corteza/server/pkg/apigw/ctx"
-	"github.com/cortezaproject/corteza/server/pkg/apigw/types"
-	"github.com/cortezaproject/corteza/server/pkg/options"
+	agctx "github.com/cyzhou314/corteza/server/pkg/apigw/ctx"
+	"github.com/cyzhou314/corteza/server/pkg/apigw/types"
+	"github.com/cyzhou314/corteza/server/pkg/options"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 )

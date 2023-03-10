@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/cortezaproject/corteza/server/pkg/filter"
-	"github.com/cortezaproject/corteza/server/pkg/ql"
+	"github.com/cyzhou314/corteza/server/pkg/filter"
+	"github.com/cyzhou314/corteza/server/pkg/ql"
 	"github.com/tidwall/btree"
 )
 

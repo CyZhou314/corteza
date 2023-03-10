@@ -3,8 +3,8 @@ package store
 import (
 	"fmt"
 
-	"github.com/cortezaproject/corteza/server/pkg/envoy/resource"
-	"github.com/cortezaproject/corteza/server/system/types"
+	"github.com/cyzhou314/corteza/server/pkg/envoy/resource"
+	"github.com/cyzhou314/corteza/server/system/types"
 )
 
 type (

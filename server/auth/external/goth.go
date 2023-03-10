@@ -3,8 +3,8 @@ package external
 import (
 	"strings"
 
-	"github.com/cortezaproject/corteza/server/auth/external/nylas"
-	"github.com/cortezaproject/corteza/server/auth/settings"
+	"github.com/cyzhou314/corteza/server/auth/external/nylas"
+	"github.com/cyzhou314/corteza/server/auth/settings"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/providers/facebook"
 	"github.com/markbates/goth/providers/github"

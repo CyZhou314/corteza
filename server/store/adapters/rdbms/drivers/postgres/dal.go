@@ -3,10 +3,10 @@ package postgres
 import (
 	"context"
 
-	"github.com/cortezaproject/corteza/server/pkg/dal"
-	"github.com/cortezaproject/corteza/server/pkg/logger"
-	"github.com/cortezaproject/corteza/server/store/adapters/rdbms"
-	rdbmsdal "github.com/cortezaproject/corteza/server/store/adapters/rdbms/dal"
+	"github.com/cyzhou314/corteza/server/pkg/dal"
+	"github.com/cyzhou314/corteza/server/pkg/logger"
+	"github.com/cyzhou314/corteza/server/store/adapters/rdbms"
+	rdbmsdal "github.com/cyzhou314/corteza/server/store/adapters/rdbms/dal"
 	"github.com/jmoiron/sqlx"
 )
 

@@ -1,7 +1,7 @@
 package corredor
 
 import (
-	"github.com/cortezaproject/corteza/server/pkg/eventbus"
+	"github.com/cyzhou314/corteza/server/pkg/eventbus"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

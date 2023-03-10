@@ -7,18 +7,18 @@ import (
 	"regexp"
 	"strings"
 
-	internalAuth "github.com/cortezaproject/corteza/server/pkg/auth"
-	"github.com/cortezaproject/corteza/server/pkg/handle"
-	"github.com/cortezaproject/corteza/server/pkg/id"
-	"github.com/cortezaproject/corteza/server/pkg/mail"
-	"github.com/cortezaproject/corteza/server/pkg/options"
-	"github.com/cortezaproject/corteza/server/system/service"
+	internalAuth "github.com/cyzhou314/corteza/server/pkg/auth"
+	"github.com/cyzhou314/corteza/server/pkg/handle"
+	"github.com/cyzhou314/corteza/server/pkg/id"
+	"github.com/cyzhou314/corteza/server/pkg/mail"
+	"github.com/cyzhou314/corteza/server/pkg/options"
+	"github.com/cyzhou314/corteza/server/system/service"
 	"go.uber.org/zap"
 
-	"github.com/cortezaproject/corteza/server/pkg/errors"
-	"github.com/cortezaproject/corteza/server/pkg/rand"
-	"github.com/cortezaproject/corteza/server/store"
-	"github.com/cortezaproject/corteza/server/system/types"
+	"github.com/cyzhou314/corteza/server/pkg/errors"
+	"github.com/cyzhou314/corteza/server/pkg/rand"
+	"github.com/cyzhou314/corteza/server/store"
+	"github.com/cyzhou314/corteza/server/system/types"
 )
 
 var (

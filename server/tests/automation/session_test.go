@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cortezaproject/corteza/server/automation/service"
-	"github.com/cortezaproject/corteza/server/automation/types"
-	"github.com/cortezaproject/corteza/server/pkg/id"
-	"github.com/cortezaproject/corteza/server/store"
-	"github.com/cortezaproject/corteza/server/tests/helpers"
+	"github.com/cyzhou314/corteza/server/automation/service"
+	"github.com/cyzhou314/corteza/server/automation/types"
+	"github.com/cyzhou314/corteza/server/pkg/id"
+	"github.com/cyzhou314/corteza/server/store"
+	"github.com/cyzhou314/corteza/server/tests/helpers"
 	jsonpath "github.com/steinfletcher/apitest-jsonpath"
 )
 

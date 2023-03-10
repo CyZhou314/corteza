@@ -1,7 +1,7 @@
 package decoder
 
 import (
-	"github.com/cortezaproject/corteza/server/compose/types"
+	"github.com/cyzhou314/corteza/server/compose/types"
 )
 
 type (

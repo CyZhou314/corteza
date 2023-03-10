@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	composeTypes "github.com/cortezaproject/corteza/server/compose/types"
-	"github.com/cortezaproject/corteza/server/pkg/envoy/resource"
-	"github.com/cortezaproject/corteza/server/store"
-	"github.com/cortezaproject/corteza/server/system/types"
+	composeTypes "github.com/cyzhou314/corteza/server/compose/types"
+	"github.com/cyzhou314/corteza/server/pkg/envoy/resource"
+	"github.com/cyzhou314/corteza/server/store"
+	"github.com/cyzhou314/corteza/server/system/types"
 	"golang.org/x/text/language"
 )
 

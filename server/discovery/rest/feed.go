@@ -2,8 +2,8 @@ package rest
 
 import (
 	"context"
-	"github.com/cortezaproject/corteza/server/discovery/rest/internal/feed"
-	"github.com/cortezaproject/corteza/server/discovery/rest/request"
+	"github.com/cyzhou314/corteza/server/discovery/rest/internal/feed"
+	"github.com/cyzhou314/corteza/server/discovery/rest/request"
 	"time"
 )
 

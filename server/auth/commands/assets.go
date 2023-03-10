@@ -5,8 +5,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/cortezaproject/corteza/server/auth"
-	"github.com/cortezaproject/corteza/server/pkg/cli"
+	"github.com/cyzhou314/corteza/server/auth"
+	"github.com/cyzhou314/corteza/server/pkg/cli"
 	"github.com/spf13/cobra"
 )
 

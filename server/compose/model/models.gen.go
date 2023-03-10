@@ -7,8 +7,8 @@ package model
 //
 
 import (
-	"github.com/cortezaproject/corteza/server/compose/types"
-	"github.com/cortezaproject/corteza/server/pkg/dal"
+	"github.com/cyzhou314/corteza/server/compose/types"
+	"github.com/cyzhou314/corteza/server/pkg/dal"
 )
 
 var Attachment = &dal.Model{

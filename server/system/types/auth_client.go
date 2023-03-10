@@ -4,10 +4,10 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
-	"github.com/cortezaproject/corteza/server/pkg/sql"
+	"github.com/cyzhou314/corteza/server/pkg/sql"
 	"time"
 
-	"github.com/cortezaproject/corteza/server/pkg/filter"
+	"github.com/cyzhou314/corteza/server/pkg/filter"
 )
 
 type (

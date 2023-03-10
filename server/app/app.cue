@@ -1,12 +1,12 @@
 package app
 
 import (
-	"github.com/cortezaproject/corteza/server/codegen/schema"
-	"github.com/cortezaproject/corteza/server/app/options"
-	"github.com/cortezaproject/corteza/server/system"
-	"github.com/cortezaproject/corteza/server/compose"
-	"github.com/cortezaproject/corteza/server/automation"
-	"github.com/cortezaproject/corteza/server/federation"
+	"github.com/cyzhou314/corteza/server/codegen/schema"
+	"github.com/cyzhou314/corteza/server/app/options"
+	"github.com/cyzhou314/corteza/server/system"
+	"github.com/cyzhou314/corteza/server/compose"
+	"github.com/cyzhou314/corteza/server/automation"
+	"github.com/cyzhou314/corteza/server/federation"
 )
 
 corteza: schema.#platform & {

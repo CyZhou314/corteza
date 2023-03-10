@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/cortezaproject/corteza/server/compose/types"
+	"github.com/cyzhou314/corteza/server/compose/types"
 )
 
 type (

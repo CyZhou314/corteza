@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/cortezaproject/corteza/server/pkg/auth"
-	"github.com/cortezaproject/corteza/server/pkg/expr"
+	"github.com/cyzhou314/corteza/server/pkg/auth"
+	"github.com/cyzhou314/corteza/server/pkg/expr"
 )
 
 type (

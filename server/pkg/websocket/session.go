@@ -8,10 +8,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cortezaproject/corteza/server/pkg/auth"
-	"github.com/cortezaproject/corteza/server/pkg/errors"
-	"github.com/cortezaproject/corteza/server/pkg/id"
-	"github.com/cortezaproject/corteza/server/pkg/options"
+	"github.com/cyzhou314/corteza/server/pkg/auth"
+	"github.com/cyzhou314/corteza/server/pkg/errors"
+	"github.com/cyzhou314/corteza/server/pkg/id"
+	"github.com/cyzhou314/corteza/server/pkg/options"
 	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
 )

@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"context"
-	"github.com/cortezaproject/corteza/extra/server-discovery/searcher/rest/request"
-	"github.com/cortezaproject/corteza/server/pkg/api"
+	"github.com/cyzhou314/corteza/extra/server-discovery/searcher/rest/request"
+	"github.com/cyzhou314/corteza/server/pkg/api"
 	"github.com/go-chi/chi/v5"
 	"net/http"
 )

@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	agctx "github.com/cortezaproject/corteza/server/pkg/apigw/ctx"
-	"github.com/cortezaproject/corteza/server/pkg/apigw/types"
-	"github.com/cortezaproject/corteza/server/pkg/expr"
+	agctx "github.com/cyzhou314/corteza/server/pkg/apigw/ctx"
+	"github.com/cyzhou314/corteza/server/pkg/apigw/types"
+	"github.com/cyzhou314/corteza/server/pkg/expr"
 	"github.com/stretchr/testify/require"
 )
 

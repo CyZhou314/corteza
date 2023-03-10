@@ -2,13 +2,13 @@ package service
 
 import (
 	"context"
-	"github.com/cortezaproject/corteza/server/pkg/actionlog"
-	"github.com/cortezaproject/corteza/server/pkg/apigw"
-	a "github.com/cortezaproject/corteza/server/pkg/auth"
-	"github.com/cortezaproject/corteza/server/pkg/errors"
+	"github.com/cyzhou314/corteza/server/pkg/actionlog"
+	"github.com/cyzhou314/corteza/server/pkg/apigw"
+	a "github.com/cyzhou314/corteza/server/pkg/auth"
+	"github.com/cyzhou314/corteza/server/pkg/errors"
 
-	"github.com/cortezaproject/corteza/server/store"
-	"github.com/cortezaproject/corteza/server/system/types"
+	"github.com/cyzhou314/corteza/server/store"
+	"github.com/cyzhou314/corteza/server/system/types"
 )
 
 type (

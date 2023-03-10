@@ -3,13 +3,13 @@ package types
 import (
 	"database/sql/driver"
 	"encoding/json"
-	"github.com/cortezaproject/corteza/server/pkg/sql"
+	"github.com/cyzhou314/corteza/server/pkg/sql"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/cortezaproject/corteza/server/pkg/filter"
-	"github.com/cortezaproject/corteza/server/pkg/locale"
+	"github.com/cyzhou314/corteza/server/pkg/filter"
+	"github.com/cyzhou314/corteza/server/pkg/locale"
 	"github.com/spf13/cast"
 )
 

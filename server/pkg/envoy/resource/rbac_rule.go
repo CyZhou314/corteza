@@ -3,8 +3,8 @@ package resource
 import (
 	"fmt"
 
-	composeTypes "github.com/cortezaproject/corteza/server/compose/types"
-	"github.com/cortezaproject/corteza/server/pkg/rbac"
+	composeTypes "github.com/cyzhou314/corteza/server/compose/types"
+	"github.com/cyzhou314/corteza/server/pkg/rbac"
 )
 
 type (

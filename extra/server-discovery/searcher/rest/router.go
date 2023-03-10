@@ -1,8 +1,8 @@
 package rest
 
 import (
-	"github.com/cortezaproject/corteza/extra/server-discovery/pkg/auth"
-	"github.com/cortezaproject/corteza/extra/server-discovery/searcher/rest/handlers"
+	"github.com/cyzhou314/corteza/extra/server-discovery/pkg/auth"
+	"github.com/cyzhou314/corteza/extra/server-discovery/searcher/rest/handlers"
 	"github.com/go-chi/chi/v5"
 )
 

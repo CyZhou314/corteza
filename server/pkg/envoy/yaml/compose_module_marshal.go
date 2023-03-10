@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"github.com/cortezaproject/corteza/server/compose/types"
-	"github.com/cortezaproject/corteza/server/pkg/envoy"
-	"github.com/cortezaproject/corteza/server/pkg/envoy/resource"
+	"github.com/cyzhou314/corteza/server/compose/types"
+	"github.com/cyzhou314/corteza/server/pkg/envoy"
+	"github.com/cyzhou314/corteza/server/pkg/envoy/resource"
 )
 
 func composeModuleFromResource(r *resource.ComposeModule, cfg *EncoderConfig) *composeModule {

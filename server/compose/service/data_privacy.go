@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
-	"github.com/cortezaproject/corteza/server/compose/types"
-	"github.com/cortezaproject/corteza/server/pkg/locale"
-	sysService "github.com/cortezaproject/corteza/server/system/service"
-	sysTypes "github.com/cortezaproject/corteza/server/system/types"
+	"github.com/cyzhou314/corteza/server/compose/types"
+	"github.com/cyzhou314/corteza/server/pkg/locale"
+	sysService "github.com/cyzhou314/corteza/server/system/service"
+	sysTypes "github.com/cyzhou314/corteza/server/system/types"
 )
 
 type (

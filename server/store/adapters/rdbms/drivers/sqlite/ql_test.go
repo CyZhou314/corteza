@@ -1,7 +1,7 @@
 package sqlite
 
 import (
-	"github.com/cortezaproject/corteza/server/store/adapters/rdbms/ql"
+	"github.com/cyzhou314/corteza/server/store/adapters/rdbms/ql"
 	"strings"
 	"testing"
 

@@ -1,7 +1,7 @@
 package filter
 
 import (
-	"github.com/cortezaproject/corteza/server/pkg/apigw/types"
+	"github.com/cyzhou314/corteza/server/pkg/apigw/types"
 )
 
 const (

@@ -3,7 +3,7 @@ package ddl
 import (
 	"context"
 	"fmt"
-	"github.com/cortezaproject/corteza/server/pkg/dal"
+	"github.com/cyzhou314/corteza/server/pkg/dal"
 )
 
 // CreateModel creates table with columns and indexes that match Model definition

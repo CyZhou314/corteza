@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	atypes "github.com/cortezaproject/corteza/server/automation/types"
-	"github.com/cortezaproject/corteza/server/store"
-	"github.com/cortezaproject/corteza/server/system/types"
+	atypes "github.com/cyzhou314/corteza/server/automation/types"
+	"github.com/cyzhou314/corteza/server/store"
+	"github.com/cyzhou314/corteza/server/system/types"
 	"go.uber.org/zap"
 )
 

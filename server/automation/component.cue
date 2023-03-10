@@ -1,7 +1,7 @@
 package automation
 
 import (
-	"github.com/cortezaproject/corteza/server/codegen/schema"
+	"github.com/cyzhou314/corteza/server/codegen/schema"
 )
 
 component: schema.#component & {

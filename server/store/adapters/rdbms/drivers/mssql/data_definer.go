@@ -3,8 +3,8 @@ package mssql
 import (
 	"context"
 
-	"github.com/cortezaproject/corteza/server/pkg/dal"
-	"github.com/cortezaproject/corteza/server/store/adapters/rdbms/ddl"
+	"github.com/cyzhou314/corteza/server/pkg/dal"
+	"github.com/cyzhou314/corteza/server/store/adapters/rdbms/ddl"
 	"github.com/jmoiron/sqlx"
 )
 

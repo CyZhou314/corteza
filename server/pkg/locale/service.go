@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/cortezaproject/corteza/server/pkg/options"
+	"github.com/cyzhou314/corteza/server/pkg/options"
 	"go.uber.org/zap"
 	"golang.org/x/text/language"
 	"golang.org/x/text/language/display"

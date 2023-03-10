@@ -1,8 +1,8 @@
 package revisions
 
 import (
-	"github.com/cortezaproject/corteza/server/pkg/dal"
-	"github.com/cortezaproject/corteza/server/pkg/id"
+	"github.com/cyzhou314/corteza/server/pkg/dal"
+	"github.com/cyzhou314/corteza/server/pkg/id"
 )
 
 const (

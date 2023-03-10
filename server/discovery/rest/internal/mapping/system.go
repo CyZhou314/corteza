@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/cortezaproject/corteza/server/system/service"
+	"github.com/cyzhou314/corteza/server/system/service"
 )
 
 type (

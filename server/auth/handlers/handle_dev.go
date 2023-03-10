@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/cortezaproject/corteza/server/auth/request"
-	"github.com/cortezaproject/corteza/server/pkg/y7s"
+	"github.com/cyzhou314/corteza/server/auth/request"
+	"github.com/cyzhou314/corteza/server/pkg/y7s"
 	"gopkg.in/yaml.v3"
 )
 

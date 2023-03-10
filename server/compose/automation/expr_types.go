@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/PaesslerAG/gval"
-	"github.com/cortezaproject/corteza/server/compose/types"
-	"github.com/cortezaproject/corteza/server/pkg/expr"
-	"github.com/cortezaproject/corteza/server/pkg/slice"
+	"github.com/cyzhou314/corteza/server/compose/types"
+	"github.com/cyzhou314/corteza/server/pkg/expr"
+	"github.com/cyzhou314/corteza/server/pkg/slice"
 	"github.com/spf13/cast"
 )
 

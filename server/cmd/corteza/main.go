@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/cortezaproject/corteza/server/app"
-	"github.com/cortezaproject/corteza/server/pkg/cli"
-	"github.com/cortezaproject/corteza/server/pkg/logger"
+	"github.com/cyzhou314/corteza/server/app"
+	"github.com/cyzhou314/corteza/server/pkg/cli"
+	"github.com/cyzhou314/corteza/server/pkg/logger"
 )
 
 func main() {

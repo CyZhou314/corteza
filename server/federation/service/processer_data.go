@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	ct "github.com/cortezaproject/corteza/server/compose/types"
-	"github.com/cortezaproject/corteza/server/federation/service/decoder"
-	"github.com/cortezaproject/corteza/server/federation/types"
-	"github.com/cortezaproject/corteza/server/pkg/auth"
-	st "github.com/cortezaproject/corteza/server/system/types"
+	ct "github.com/cyzhou314/corteza/server/compose/types"
+	"github.com/cyzhou314/corteza/server/federation/service/decoder"
+	"github.com/cyzhou314/corteza/server/federation/types"
+	"github.com/cyzhou314/corteza/server/pkg/auth"
+	st "github.com/cyzhou314/corteza/server/system/types"
 )
 
 type (

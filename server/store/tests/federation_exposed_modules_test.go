@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/cortezaproject/corteza/server/store"
+	"github.com/cyzhou314/corteza/server/store"
 	"testing"
 )
 

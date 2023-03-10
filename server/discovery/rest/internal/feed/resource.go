@@ -2,14 +2,14 @@ package feed
 
 import (
 	"context"
-	"github.com/cortezaproject/corteza/server/discovery/service"
-	"github.com/cortezaproject/corteza/server/pkg/discovery/types"
-	"github.com/cortezaproject/corteza/server/pkg/errors"
-	"github.com/cortezaproject/corteza/server/pkg/filter"
-	"github.com/cortezaproject/corteza/server/pkg/options"
+	"github.com/cyzhou314/corteza/server/discovery/service"
+	"github.com/cyzhou314/corteza/server/pkg/discovery/types"
+	"github.com/cyzhou314/corteza/server/pkg/errors"
+	"github.com/cyzhou314/corteza/server/pkg/filter"
+	"github.com/cyzhou314/corteza/server/pkg/options"
 	"time"
 
-	"github.com/cortezaproject/corteza/server/pkg/rbac"
+	"github.com/cyzhou314/corteza/server/pkg/rbac"
 )
 
 type (

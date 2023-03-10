@@ -7,7 +7,7 @@ package resource
 //
 
 import (
-	"github.com/cortezaproject/corteza/server/system/types"
+	"github.com/cyzhou314/corteza/server/system/types"
 )
 
 // SystemApplicationRbacReferences generates RBAC references

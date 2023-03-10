@@ -3,7 +3,7 @@ package drivers
 import (
 	"fmt"
 
-	"github.com/cortezaproject/corteza/server/pkg/dal"
+	"github.com/cyzhou314/corteza/server/pkg/dal"
 	"github.com/doug-martin/goqu/v9/exp"
 )
 

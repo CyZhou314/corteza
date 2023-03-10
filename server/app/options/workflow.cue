@@ -1,7 +1,7 @@
 package options
 
 import (
-	"github.com/cortezaproject/corteza/server/codegen/schema"
+	"github.com/cyzhou314/corteza/server/codegen/schema"
 )
 
 workflow: schema.#optionsGroup & {

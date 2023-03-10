@@ -7,11 +7,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cortezaproject/corteza/server/pkg/locale"
-	"github.com/cortezaproject/corteza/server/pkg/sql"
+	"github.com/cyzhou314/corteza/server/pkg/locale"
+	"github.com/cyzhou314/corteza/server/pkg/sql"
 	"github.com/spf13/cast"
 
-	"github.com/cortezaproject/corteza/server/pkg/filter"
+	"github.com/cyzhou314/corteza/server/pkg/filter"
 )
 
 type (

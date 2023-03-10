@@ -7,8 +7,8 @@ import (
 	"github.com/spf13/cast"
 	"time"
 
-	"github.com/cortezaproject/corteza/server/pkg/dal"
-	"github.com/cortezaproject/corteza/server/store/adapters/rdbms/drivers"
+	"github.com/cyzhou314/corteza/server/pkg/dal"
+	"github.com/cyzhou314/corteza/server/store/adapters/rdbms/drivers"
 )
 
 type (

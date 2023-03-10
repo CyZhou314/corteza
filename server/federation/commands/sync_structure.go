@@ -3,9 +3,9 @@ package commands
 import (
 	"context"
 
-	cs "github.com/cortezaproject/corteza/server/compose/service"
-	"github.com/cortezaproject/corteza/server/federation/service"
-	ss "github.com/cortezaproject/corteza/server/system/service"
+	cs "github.com/cyzhou314/corteza/server/compose/service"
+	"github.com/cyzhou314/corteza/server/federation/service"
+	ss "github.com/cyzhou314/corteza/server/system/service"
 	"github.com/spf13/cobra"
 )
 

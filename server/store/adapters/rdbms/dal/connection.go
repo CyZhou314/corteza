@@ -3,16 +3,16 @@ package dal
 import (
 	"context"
 	"fmt"
-	"github.com/cortezaproject/corteza/server/pkg/options"
+	"github.com/cyzhou314/corteza/server/pkg/options"
 	"sync"
 
-	"github.com/cortezaproject/corteza/server/pkg/errors"
-	"github.com/cortezaproject/corteza/server/store/adapters/rdbms/ddl"
-	"github.com/cortezaproject/corteza/server/store/adapters/rdbms/ql"
+	"github.com/cyzhou314/corteza/server/pkg/errors"
+	"github.com/cyzhou314/corteza/server/store/adapters/rdbms/ddl"
+	"github.com/cyzhou314/corteza/server/store/adapters/rdbms/ql"
 
-	"github.com/cortezaproject/corteza/server/pkg/dal"
-	"github.com/cortezaproject/corteza/server/pkg/filter"
-	"github.com/cortezaproject/corteza/server/store/adapters/rdbms/drivers"
+	"github.com/cyzhou314/corteza/server/pkg/dal"
+	"github.com/cyzhou314/corteza/server/pkg/filter"
+	"github.com/cyzhou314/corteza/server/store/adapters/rdbms/drivers"
 	"github.com/jmoiron/sqlx"
 )
 

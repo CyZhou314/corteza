@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/cortezaproject/corteza/server/compose/types"
-	"github.com/cortezaproject/corteza/server/tests/helpers"
+	"github.com/cyzhou314/corteza/server/compose/types"
+	"github.com/cyzhou314/corteza/server/tests/helpers"
 	"github.com/steinfletcher/apitest-jsonpath"
 )
 

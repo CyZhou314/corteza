@@ -3,8 +3,8 @@ package store
 import (
 	"context"
 
-	"github.com/cortezaproject/corteza/server/pkg/envoy/resource"
-	"github.com/cortezaproject/corteza/server/store"
+	"github.com/cyzhou314/corteza/server/pkg/envoy/resource"
+	"github.com/cyzhou314/corteza/server/store"
 )
 
 func NewRoleFromResource(res *resource.Role, cfg *EncoderConfig) resourceState {

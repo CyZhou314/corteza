@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/PaesslerAG/gval"
-	"github.com/cortezaproject/corteza/server/pkg/gvalfnc"
+	"github.com/cyzhou314/corteza/server/pkg/gvalfnc"
 )
 
 func TimeFunctions() []gval.Language {

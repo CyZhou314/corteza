@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/cortezaproject/corteza/server/automation/service"
-	"github.com/cortezaproject/corteza/server/pkg/apigw/filter"
-	"github.com/cortezaproject/corteza/server/pkg/apigw/filter/proxy"
-	"github.com/cortezaproject/corteza/server/pkg/apigw/types"
+	"github.com/cyzhou314/corteza/server/automation/service"
+	"github.com/cyzhou314/corteza/server/pkg/apigw/filter"
+	"github.com/cyzhou314/corteza/server/pkg/apigw/filter/proxy"
+	"github.com/cyzhou314/corteza/server/pkg/apigw/types"
 )
 
 type (

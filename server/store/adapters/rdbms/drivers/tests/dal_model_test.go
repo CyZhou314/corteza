@@ -2,8 +2,8 @@ package tests
 
 import (
 	"context"
-	"github.com/cortezaproject/corteza/server/pkg/dal"
-	"github.com/cortezaproject/corteza/server/pkg/logger"
+	"github.com/cyzhou314/corteza/server/pkg/dal"
+	"github.com/cyzhou314/corteza/server/pkg/logger"
 	"github.com/stretchr/testify/require"
 	"testing"
 )

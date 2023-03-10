@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"testing"
 
-	cs "github.com/cortezaproject/corteza/server/compose/service"
-	"github.com/cortezaproject/corteza/server/federation/types"
-	ss "github.com/cortezaproject/corteza/server/system/service"
-	st "github.com/cortezaproject/corteza/server/system/types"
+	cs "github.com/cyzhou314/corteza/server/compose/service"
+	"github.com/cyzhou314/corteza/server/federation/types"
+	ss "github.com/cyzhou314/corteza/server/system/service"
+	st "github.com/cyzhou314/corteza/server/system/types"
 	"github.com/stretchr/testify/require"
 )
 

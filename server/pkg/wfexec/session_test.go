@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cortezaproject/corteza/server/pkg/expr"
+	"github.com/cyzhou314/corteza/server/pkg/expr"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/atomic"
 )

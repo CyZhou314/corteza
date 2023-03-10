@@ -7,16 +7,16 @@ package rdbms
 //
 
 import (
-	automationType "github.com/cortezaproject/corteza/server/automation/types"
-	composeType "github.com/cortezaproject/corteza/server/compose/types"
-	federationType "github.com/cortezaproject/corteza/server/federation/types"
-	actionlogType "github.com/cortezaproject/corteza/server/pkg/actionlog"
-	discoveryType "github.com/cortezaproject/corteza/server/pkg/discovery/types"
-	flagType "github.com/cortezaproject/corteza/server/pkg/flag/types"
-	labelsType "github.com/cortezaproject/corteza/server/pkg/label/types"
-	rbacType "github.com/cortezaproject/corteza/server/pkg/rbac"
-	"github.com/cortezaproject/corteza/server/store/adapters/rdbms/drivers"
-	systemType "github.com/cortezaproject/corteza/server/system/types"
+	automationType "github.com/cyzhou314/corteza/server/automation/types"
+	composeType "github.com/cyzhou314/corteza/server/compose/types"
+	federationType "github.com/cyzhou314/corteza/server/federation/types"
+	actionlogType "github.com/cyzhou314/corteza/server/pkg/actionlog"
+	discoveryType "github.com/cyzhou314/corteza/server/pkg/discovery/types"
+	flagType "github.com/cyzhou314/corteza/server/pkg/flag/types"
+	labelsType "github.com/cyzhou314/corteza/server/pkg/label/types"
+	rbacType "github.com/cyzhou314/corteza/server/pkg/rbac"
+	"github.com/cyzhou314/corteza/server/store/adapters/rdbms/drivers"
+	systemType "github.com/cyzhou314/corteza/server/system/types"
 	"github.com/doug-martin/goqu/v9"
 	"strings"
 )

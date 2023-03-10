@@ -6,7 +6,7 @@ import (
 	"math/rand"
 
 	"github.com/PaesslerAG/gval"
-	"github.com/cortezaproject/corteza/server/pkg/gvalfnc"
+	"github.com/cyzhou314/corteza/server/pkg/gvalfnc"
 	"github.com/spf13/cast"
 )
 

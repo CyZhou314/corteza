@@ -1,8 +1,8 @@
 package codegen
 
 import (
-	"github.com/cortezaproject/corteza/server/app"
-	"github.com/cortezaproject/corteza/server/codegen/schema"
+	"github.com/cyzhou314/corteza/server/app"
+	"github.com/cyzhou314/corteza/server/codegen/schema"
 )
 
 [...schema.#codegen] &
@@ -15,7 +15,7 @@ import (
 			payload: {
 				package: "service"
 				imports: [
-					"\"github.com/cortezaproject/corteza/server/\(cmp.ident)/types\"",
+					"\"github.com/cyzhou314/corteza/server/\(cmp.ident)/types\"",
 				]
 
 				resources: [

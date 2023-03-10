@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/cortezaproject/corteza/server/pkg/eventbus"
-	"github.com/cortezaproject/corteza/server/pkg/slice"
+	"github.com/cyzhou314/corteza/server/pkg/eventbus"
+	"github.com/cyzhou314/corteza/server/pkg/slice"
 )
 
 type (

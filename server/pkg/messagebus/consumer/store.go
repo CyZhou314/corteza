@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/cortezaproject/corteza/server/pkg/messagebus/store"
-	"github.com/cortezaproject/corteza/server/pkg/messagebus/types"
+	"github.com/cyzhou314/corteza/server/pkg/messagebus/store"
+	"github.com/cyzhou314/corteza/server/pkg/messagebus/types"
 )
 
 type (

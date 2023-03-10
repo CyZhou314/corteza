@@ -7,9 +7,9 @@ import (
 	"os"
 	"runtime/debug"
 
-	"github.com/cortezaproject/corteza/server/pkg/api"
-	"github.com/cortezaproject/corteza/server/pkg/locale"
-	"github.com/cortezaproject/corteza/server/pkg/logger"
+	"github.com/cyzhou314/corteza/server/pkg/api"
+	"github.com/cyzhou314/corteza/server/pkg/locale"
+	"github.com/cyzhou314/corteza/server/pkg/logger"
 	"github.com/getsentry/sentry-go/http"
 	"github.com/go-chi/chi/v5/middleware"
 	"go.uber.org/zap"

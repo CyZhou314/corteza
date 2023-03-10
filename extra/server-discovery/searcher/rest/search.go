@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/cortezaproject/corteza/extra/server-discovery/searcher"
-	"github.com/cortezaproject/corteza/extra/server-discovery/searcher/rest/request"
-	types2 "github.com/cortezaproject/corteza/server/compose/types"
+	"github.com/cyzhou314/corteza/extra/server-discovery/searcher"
+	"github.com/cyzhou314/corteza/extra/server-discovery/searcher/rest/request"
+	types2 "github.com/cyzhou314/corteza/server/compose/types"
 	"net/http"
 )
 
