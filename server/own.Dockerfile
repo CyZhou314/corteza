@@ -21,7 +21,7 @@ COPY . ./
 
 COPY --from=webconsole-build-stage /webconsole/dist ./webconsole/dist
 
-WORKDIR /corteza/server/pkg/locale
+WORKDIR /corteza/pkg/locale
 
 RUN make src/en src/de src/fr
 
