@@ -21,7 +21,7 @@ COPY . ./
 COPY --from=webconsole-build-stage /webconsole/dist ./webconsole/dist
 # RUN make release-clean release
 # RUN go build "-X github.com/CyZhou314/corteza/server/pkg/version.Version=${BUILD_VERSION}" -o build/pkg/corteza-server cmd/corteza/main.go
-RUN go build -ldflags "-X github.com/cyzhou314/corteza/server/pkg/version.Version=latest" -o build/corteza-server cmd/corteza/own-main.go
+RUN go build -o build/corteza-server cmd/corteza/main.go
 
 # deploy stage
 FROM ubuntu:20.04
